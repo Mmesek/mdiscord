@@ -143,7 +143,7 @@ class Message(Message):
         content=content if content != "" else self.content,
         embed=embed if embed else self.embeds[0] if self.embeds != [] else None, 
         filename=filename, file=file,
-        message_reference=Message_Reference(message_id=self.id, channel_id=self.channel_id, guild_id=self.guild_id))
+        message_reference=Message_Reference(message_id=self.id, channel_id=self.channel_id, guild_id=self.guild_id if self.guild_id != 0 else None))
     
     async def delete(self) -> None:
         '''Deletes message'''
