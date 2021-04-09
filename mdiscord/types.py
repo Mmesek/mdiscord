@@ -31,6 +31,17 @@ class GuildID(Snowflake):
     '''Snowflake representing GuildID'''
     pass
 
+#class CDN_Endpoints(CDN_Endpoints):
+#    @classmethod
+#    def cdn(cls, value):
+#        return CDN_URL + cls.value
+
+class Discord_Paths(Enum):
+    MessageLink = "{guild_id}/{channel_id}/{message_id}"
+    @classmethod
+    def link(cls, value):
+        return BASE_URL + cls.value
+
 from typing import Dict
 
 @dataclass
@@ -173,6 +184,13 @@ class Message(Message):
         '''Reacts to message'''
         return await self._Client.create_reaction(self.channel_id, self.id, reaction)
     
+    async def get_reactions(self, emoji, users=[], last_id=0, limit=100):
+        #for chunk in range(int(count / 100) + (count % 100 > 0)): #Alternative pagination method
+        r = await self._Client.get_reactions(self.channel_id, self.id, emoji, after=last_id, limit=limit)
+        if len(r) < limit or len(r) == 0:
+            return [i for i in users+r if i.id != self._Client.user_id]
+        return await self.get_reactions(emoji, users=users+r, last_id=r[-1].id)
+
     async def delete_reaction(self, reaction) -> None:
         '''Deletes reaction'''
         return await self._Client.delete_own_reaction(self.channel_id, self.id, reaction)
