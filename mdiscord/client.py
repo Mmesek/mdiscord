@@ -32,7 +32,7 @@ class Client(Endpoints, Opcodes):
     primary_guild: Snowflake = 463433273620824104
     def __init__(self, name: str, cfg: dict, db: object, cache: object, shard: int = 0, total_shards: int = 1):
         self.token = cfg['DiscordTokens'][name]
-        self.username = '[NOT CONNTECTED] ' + self.token
+        self.username = '[NOT CONNTECTED] ' + name
         self.counters = {"EXECUTED_COMMANDS": 0}
         
         self.db = db
