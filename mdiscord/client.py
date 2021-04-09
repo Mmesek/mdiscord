@@ -180,7 +180,7 @@ class Client(Endpoints, Opcodes):
         
         self._client_session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False, resolver=resolver))#, json_serialize=Encoder().encode)
         gate = await self.get_gateway_bot()
-        self._ws = await self._client_session.ws_connect(f"{gate['url']}?v={self.cfg['Discord']['api_version']}&encoding=json&compress=zlib-stream",)
+        self._ws = await self._client_session.ws_connect(f"{gate['url']}?v={self.cfg['Discord']['api_version']}&encoding=json&compress=zlib-stream")
         return self
 
     async def receive(self):
