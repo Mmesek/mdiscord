@@ -11,6 +11,7 @@ Discord API Opcodes.
 import asyncio, time
 import sys, traceback, platform
 from typing import List, Optional
+from collections import Counter
 
 from .types import (
     Gateway_Events, 
@@ -30,10 +31,14 @@ from mlib.types import Invalid, aInvalid
 Dispatch = {}
 
 class Opcodes:
+    counters: Counter = Counter()
+    keepConnection: bool = True
+    latency: float = 0.0
+    heartbeat_sent: float = 0.0
+    heartbeating: asyncio.Task
+
     async def dispatch(self, data: Gateway_Payload) -> None:
         data.d = getattr(Gateway_Events, data.t.title(), Invalid)(_Client=self, **data.d)
-        if data.t not in self.counters:
-            self.counters[data.t] = 0
         self.counters[data.t] += 1
         try:
             for function in Dispatch.get(data.t, [aInvalid]):

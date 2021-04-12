@@ -10,7 +10,6 @@ Discord API Client.
 '''
 
 import asyncio
-from mdiscord.base_model import Snowflake
 from . import types as objects
 from .http_client import HTTP_Client
 from .opcodes import Opcodes
@@ -19,24 +18,14 @@ from .serializer import Deserializer, as_dict
 
 class WebSocket_Client(HTTP_Client, Opcodes):
     username: str = "[NOT CONNECTED]"
-    counters: dict = dict
     latency: float = 0.0
     presence: objects.Gateway_Status_Update = None
-    alias: str = "?"
     sub: bool = False
     intents: int = 0
-    emoji: dict = dict
-    primary_guild: Snowflake = 463433273620824104
-    def __init__(self, name: str, cfg: dict, db: object, cache: object, shard: int = 0, total_shards: int = 1):
+    decompress: Deserializer = None
+    def __init__(self, name: str, cfg: dict, shard: int = 0, total_shards: int = 1):
         self.username = '[NOT CONNTECTED] ' + name
-        self.counters = {"EXECUTED_COMMANDS": 0}
-        
-        self.db = db
-        self.cache = cache
-        self.context = {"dm": {}}
 
-        self.latency = None
-        
         self.cfg = cfg
 
         import time
@@ -50,16 +39,10 @@ class WebSocket_Client(HTTP_Client, Opcodes):
             status= cfg[name].get('status', objects.Status_Types.ONLINE.value),
             afk= False)
 
-        self.alias = cfg[name].get('alias', '?')
         self.sub = cfg[name].get('subscription', False) #True
         self.intents = cfg[name].get('intents', 0) #14271 # https://ziad87.net/intents/
-
-        self.emoji = cfg["Emoji"]
-        self.primary_guild = cfg[name].get('primary_guild', 463433273620824104)
-        
         self.shards = [shard, total_shards]
 
-        self.decompress = Deserializer()
         super().__init__(token=cfg['DiscordTokens'][name], user_id=cfg[name].get('user_id'))
         print("\nInitating Bot with token: ", self.token)
 
