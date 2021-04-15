@@ -37,10 +37,10 @@ class GuildID(Snowflake):
 #        return CDN_URL + cls.value
 
 class Discord_Paths(Enum):
-    MessageLink = "{guild_id}/{channel_id}/{message_id}"
-    @classmethod
-    def link(cls, value):
-        return BASE_URL + cls.value
+    MessageLink = "channels/{guild_id}/{channel_id}/{message_id}"
+    @property
+    def link(self) -> str:
+        return BASE_URL + self.value
 
 from typing import Dict
 

@@ -77,7 +77,7 @@ class HTTP_Client(Endpoints):
             return await self._api_call(path, method, **kwargs)
 
         from mdiscord.base_model import BASE_URL
-        async with self._session.request(method, BASE_URL+path, **kwargs) as res:
+        async with self._session.request(method, BASE_URL+"api"+path, **kwargs) as res:
             from mdiscord.models import HTTP_Response_Codes
             from mdiscord.exceptions import BadRequest, RequestError, JsonBadRequest
 

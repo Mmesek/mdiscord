@@ -16,7 +16,7 @@ from datetime import datetime
 from typing import Optional
 
 DISCORD_EPOCH = 1420070400000
-BASE_URL = "https://discord.com/api"
+BASE_URL = "https://discord.com/"
 CDN_URL = "https://cdn.discordapp.com/"
 
 from enum import Flag
