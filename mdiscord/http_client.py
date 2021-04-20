@@ -21,6 +21,7 @@ class HTTP_Client(Endpoints):
         
         self._session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False, resolver=resolver))#, json_serialize=Encoder().encode)
         self.lock = {"global": False}
+        super().__init__()
     
     def _prepare_payload(self, **kwargs):
         if 'headers' not in kwargs:

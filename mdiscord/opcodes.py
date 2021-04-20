@@ -171,17 +171,5 @@ class Opcodes:
                 afk = afk
             )
         ))
-
-    opcodes = {
-        0: dispatch,
-        1: heartbeat,
-        2: identify,
-        3: presence_update,
-        4: voice_state_update,
-        6: resume,
-        7: reconnect,
-        8: request_guild_members,
-        9: invalid_session,
-        10: hello,
-        11: heartbeat_ack,
-    }
+    def __init__(self):
+        self.opcodes = {i.value: getattr(self, i.name.lower(), aInvalid) for i in Gateway_Opcodes}
