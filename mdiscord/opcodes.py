@@ -82,7 +82,7 @@ class Opcodes:
             await self.resume(data)
         else:
             print('Reidentifying')
-            await self.identify(self)
+            await self.identify()
 
     async def hello(self, data: dict) -> None:
         self.heartbeating = asyncio.create_task(self.heartbeat(data.d["heartbeat_interval"]))#, name="Heartbeat")
