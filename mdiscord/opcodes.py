@@ -17,7 +17,7 @@ from .types import (
     Gateway_Events, 
     Gateway_Payload, 
     Gateway_Opcodes,
-    Gateway_Status_Update,
+    Gateway_Presence_Update,
     Gateway_Voice_State_Update,
     Identify, Resume,
     Guild_Request_Members,
@@ -161,7 +161,7 @@ class Opcodes:
         """Status type: 0 - Playing, 1 - Streaming, 2 - Listening, 3 - Watching"""
         await self.send(Gateway_Payload(
             op = Gateway_Opcodes.PRESENCE_UPDATE,
-            d = Gateway_Status_Update(
+            d = Gateway_Presence_Update(
                 since = time.time() if afk else None,
                 activities= [Bot_Activity(
                     name=status_name.strip(),

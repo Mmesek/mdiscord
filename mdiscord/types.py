@@ -42,19 +42,6 @@ class Discord_Paths(Enum):
     def link(self) -> str:
         return BASE_URL + self.value
 
-from typing import Dict
-
-@dataclass
-class Application_Command_Interaction_Data(Application_Command_Interaction_Data):
-    resolved: Resolved = None
-
-@dataclass
-class Resolved(DiscordObject):
-    members: Dict[Snowflake, Guild_Member] = dict
-    users: Dict[Snowflake, User] = dict
-    roles: Dict[Snowflake, Role] = dict
-    channels: Dict[Snowflake, Channel] = dict
-
 @dataclass
 class Embed(Embed):
     def setTitle(self, title: str) -> Embed:
@@ -211,6 +198,8 @@ class Guild(Guild):
 
 @dataclass
 class User(User):
+    def __str__(self):
+        return f"{self.username}#{self.discriminator}"
     def get_avatar(self) -> str:
         if self.avatar:
             return CDN_URL+CDN_Endpoints.User_Avatar.value.format(user_id=self.id, user_avatar=self.avatar)
@@ -223,7 +212,7 @@ class Interaction(Interaction):
     async def pong(self):
         '''Pongs'''
         response = Interaction_Response(
-            type=Interaction_Response_Type.PONG,
+            type=Interaction_Callback_Type.PONG,
             data=None
         )
         return await self._Client.create_interaction_response(self.id, self.token, response)
@@ -231,25 +220,25 @@ class Interaction(Interaction):
         '''Sends ACK message to Discord to prevent token from expiring.
         Use it if processing takes more than 3 seconds'''
         response = Interaction_Response(
-            type=Interaction_Response_Type.ACKNOWLEDGE,
+            type=Interaction_Callback_Type.ACKNOWLEDGE,
             data=None
         )
         return await self._Client.create_interaction_response(self.id, self.token, response)
     async def respond_private(self, content: str=None, embeds: List[Embed]=None, flags: int=64):
         return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
-            type=Interaction_Response_Type.CHANNELMESSAGEWITHSOURCE, data=Interaction_Application_Command_Callback_Data(content=content, embeds=embeds, allowed_mentions=Allowed_Mentions(parse=[]), flags=flags)
+            type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(content=content, embeds=embeds, allowed_mentions=Allowed_Mentions(parse=[]), flags=flags)
             )
         )
     async def deffered_message(self):
         '''Acknowledges Interaction with Source'''
         return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
-            type=Interaction_Response_Type.DEFFERED_CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(flags=64))
+            type=Interaction_Callback_Type.DEFFERED_CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(flags=64))
         )
     async def send(self, content: str=None, embeds: List[Embed]=None):
         '''Responds to Channel with Source'''
         return await self._Client.create_interaction_response(self.id, self.token, 
             Interaction_Response(
-                type=Interaction_Response_Type.CHANNELMESSAGEWITHSOURCE, 
+                type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE, 
                 data=Interaction_Application_Command_Callback_Data(
                     content=content, 
                     embeds=embeds, 

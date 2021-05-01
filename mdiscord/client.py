@@ -19,7 +19,7 @@ from .serializer import Deserializer, as_dict
 class WebSocket_Client(HTTP_Client, Opcodes):
     username: str = "[NOT CONNECTED]"
     latency: float = 0.0
-    presence: objects.Gateway_Status_Update = None
+    presence: objects.Gateway_Presence_Update = None
     sub: bool = False
     intents: int = 0
     decompress: Deserializer = None
@@ -29,7 +29,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         self.cfg = cfg
 
         import time
-        self.presence = objects.Gateway_Status_Update(
+        self.presence = objects.Gateway_Presence_Update(
             since= time.time(),
             activities=[objects.Bot_Activity(
                 name=cfg[name].get('presence'), #"How the world burns"
@@ -78,4 +78,4 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         if hasattr(self, 'heartbeating'):
             self.heartbeating.cancel()
         await self._ws.close()
-        await self._client_session.close()
+        await self._session.close()
