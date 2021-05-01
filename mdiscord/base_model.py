@@ -40,7 +40,7 @@ class Events(Enum):
         return self.value(*args, **kwargs)
 
 try:
-    from .client import Client as Bot
+    from .client import WebSocket_Client as Bot
 except:
     #HACK
     # The Above causes circular import *however* we only need it for 
