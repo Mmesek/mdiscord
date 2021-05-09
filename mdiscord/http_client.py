@@ -11,17 +11,18 @@ class HTTP_Client(Endpoints):
     def __init__(self, token=None, user_id=None) -> None:
         self.token=token
         self.user_id = user_id
-        
+        self.lock = {"global": False}
+        self._new_session()
+        super().__init__()
+    
+    def _new_session(self):
         import platform
         if 'linux' in platform.system().lower():
             from aiohttp.resolver import AsyncResolver
             resolver = AsyncResolver(nameservers=['8.8.8.8', '8.8.4.4'])
         else:
-            resolver = None
-        
+            resolver = None        
         self._session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False, resolver=resolver))#, json_serialize=Encoder().encode)
-        self.lock = {"global": False}
-        super().__init__()
     
     def _prepare_payload(self, **kwargs):
         if 'headers' not in kwargs:
@@ -46,12 +47,13 @@ class HTTP_Client(Endpoints):
         return kwargs
 
     def _serialize(self, **kwargs):
+        from mlib.utils import remove_None
         if kwargs.get('json'):
-            from mlib.utils import remove_None
             from .serializer import as_dict
             kwargs['json'] = as_dict(kwargs['json'])
             kwargs['json'] = remove_None(kwargs.get('json',{}))
         if kwargs.get('params'):
+            kwargs["params"] = remove_None(kwargs.get("params"))
             for param in kwargs["params"]:
                 kwargs["params"][param] = str(kwargs["params"][param])
             for i in ["before", "after", "between"]:

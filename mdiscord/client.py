@@ -48,7 +48,9 @@ class WebSocket_Client(HTTP_Client, Opcodes):
 
     async def __aenter__(self):
         self.decompress = Deserializer()
-        
+        if self._session.closed:
+            print("Restarting session")
+            self._new_session()
         gate = await self.get_gateway_bot()
         self._ws = await self._session.ws_connect(f"{gate['url']}?v={self.cfg['Discord']['api_version']}&encoding=json&compress=zlib-stream")
         return self
