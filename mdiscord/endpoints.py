@@ -1572,12 +1572,12 @@ class Endpoints:
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "GET")
         return [Application_Command(**i) for i in r]
 
-    async def bulk_overwrite_global_application_commands(self, application_id: Snowflake) -> Application_Command:
+    async def bulk_overwrite_global_application_commands(self, application_id: Snowflake, application_commands: List[Application_Command]) -> List[Application_Command]:
         '''
         Takes a list of application commands, overwriting existing commands that are registered globally for this application. Updates will be available in all guilds after 1 hour. Returns `200` and a list of [ApplicationCommand](https://discord.com/developers/docs/interactions/slash_commands#applicationcommand) objects. Commands that do not already exist will count toward daily application command create limits.
         '''
-        r = await self.api_call(path = f"/applications/{application_id}/commands", method = "PUT")
-        return Application_Command(**r)
+        r = await self.api_call(path = f"/applications/{application_id}/commands", method = "PUT", json= application_commands)
+        return [Application_Command(**i) for i in r]
 
     async def create_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False) -> Application_Command:
         '''
@@ -1632,12 +1632,12 @@ class Endpoints:
         '''
         await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}", method = "DELETE")
 
-    async def bulk_overwrite_guild_application_commands(self, application_id: Snowflake, guild_id: Snowflake) -> Application_Command:
+    async def bulk_overwrite_guild_application_commands(self, application_id: Snowflake, guild_id: Snowflake, application_commands: List[Application_Command]) -> List[Application_Command]:
         '''
         Takes a list of application commands, overwriting existing commands for the guild. Returns `200` and a list of [ApplicationCommand](https://discord.com/developers/docs/interactions/slash_commands#applicationcommand) objects.
         '''
-        r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "PUT")
-        return Application_Command(**r)
+        r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "PUT", json = application_commands)
+        return [Application_Command(**i) for i in r]
 
     async def create_interaction_response(self, interaction_id: Snowflake, interaction_token: int, response: Interaction_Response) -> None:
         '''
@@ -1645,19 +1645,19 @@ class Endpoints:
         '''
         await self.api_call(path = f"/interactions/{interaction_id}/{interaction_token}/callback", method = "POST", json = as_dict(response))
 
-    async def get_original_interaction_response(self, application_id: Snowflake, interaction_token: int) -> Interaction_Response:
+    async def get_original_interaction_response(self, application_id: Snowflake, interaction_token: int) -> Message:
         '''
         Returns the initial Interaction response. Functions the same as [Get Webhook Message](https://discord.com/developers/docs/resources/webhook#get-webhook-message).
         '''
         r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "GET")
-        return Interaction_Response(**r)
+        return Message(**r)
 
-    async def edit_original_interaction_response(self, application_id: Snowflake, interaction_token: int, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = Allowed_Mentions(parse=[])) -> Interaction_Response:
+    async def edit_original_interaction_response(self, application_id: Snowflake, interaction_token: int, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = Allowed_Mentions(parse=[])) -> Message:
         '''
         Edits the initial Interaction response. Functions the same as [Edit Webhook Message](https://discord.com/developers/docs/resources/webhook#edit-webhook-message).
         '''
         r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "PATCH", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions})
-        return Interaction_Response(**r)
+        return Message(**r)
 
     async def delete_original_interaction_response(self, application_id: Snowflake, interaction_token: int) -> None:
         '''
