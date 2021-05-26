@@ -44,6 +44,8 @@ def as_dict(object):
     elif type(object) is list:
         return [as_dict(key) for key in object]
     elif is_dataclass(object):
+        if object._Client:
+            object._Client = None
         return object.as_dict()
     elif isinstance(object, datetime):
         return object.isoformat()
