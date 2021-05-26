@@ -25,7 +25,7 @@ from .types import (
     Status_Types, Activity_Types,
     Bot_Activity
 )
-
+from .utils import log
 from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions
 from mlib.types import Invalid, aInvalid
 Dispatch = {}
@@ -45,13 +45,12 @@ class Opcodes:
                 try:
                     await function(self, data.d)
                 except BadRequest as ex:
-                    print(ex)
+                    log.warn("Bad Request", exc_info=ex)
                 except Exception as ex:
-                    t = traceback.extract_tb(sys.exc_info()[2], limit=-1)
-                    print(ex)
-                    print(t)
+                    log.debug("Exception in server %s", getattr(data.d, 'guild_id', None))
+                    log.debug(exc_info=ex)
         except Insufficient_Permissions as ex:
-            print(ex)
+            log.info("Insufficient Permissions", exc_info=ex)
         except TypeError as ex:
             t = traceback.extract_tb(sys.exc_info()[2], limit=-1)
             if 'missing' in str(ex):
@@ -67,21 +66,21 @@ class Opcodes:
             print(ex)
         except Exception as ex:
             t = traceback.extract_tb(sys.exc_info()[2], limit=-1)
-            print(f"Dispatch Error: {type(ex)}: {ex} at {t}")
+            log.exception("Dispatch Error %s: %s at %s", type(ex), ex, t, exc_info=ex)
         return
 
     async def reconnect(self, data: dict) -> None:
-        print("Reconnect", self.username)
+        log.info("Reconnecting %s", self.username)
         await self.resume(data)
 
     async def invalid_session(self, data: dict) -> None:
-        print("Invalid Session")
+        log.info("Invalid Session")
         print(data)
         if data.d:
-            print('Resuming')
+            log.info("Resuming")
             await self.resume(data)
         else:
-            print('Reidentifying')
+            log.info("Reidentifying")
             await self.identify()
 
     async def hello(self, data: dict) -> None:
@@ -96,7 +95,7 @@ class Opcodes:
         raise NotImplementedError
 
     async def identify(self) -> None:
-        print("Identifing")
+        log.info("Identifing")
         await self.send(Gateway_Payload(
             op= Gateway_Opcodes.IDENTIFY,
             d= Identify(
@@ -123,7 +122,7 @@ class Opcodes:
             await self._ws.send_json({"op": 1, "d": self.last_sequence})
 
     async def resume(self, data: dict) -> None:
-        print("Resuming, yes?")
+        log.info("Resuming, yes?")
         await self.send(Gateway_Payload(
             op = Gateway_Opcodes.RESUME,
             d = Resume(

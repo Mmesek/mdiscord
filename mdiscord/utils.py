@@ -49,7 +49,7 @@ def Permissions(*permissions):
     def inner(f):
         def wrapped(Client, id, *args, **kwargs):
             for permission in permissions:
-                if id in Client.cache:
+                if hasattr(Client, 'cache') and id in Client.cache:
                     from .types import Bitwise_Permission_Flags
                     if not Bitwise_Permission_Flags.check(Client.cache[id].permissions, getattr(Bitwise_Permission_Flags, permission)):
                         from .exceptions import Insufficient_Permissions
@@ -67,3 +67,8 @@ def count(*intents):
         except AttributeError:
             pass
     return value
+
+import logging
+from mlib import logger
+log = logging.getLogger("mdiscord")
+log.setLevel(logger.log_level)

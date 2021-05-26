@@ -15,6 +15,7 @@ from .http_client import HTTP_Client
 from .opcodes import Opcodes
 
 from .serializer import Deserializer, as_dict
+from .utils import log
 
 class WebSocket_Client(HTTP_Client, Opcodes):
     username: str = "[NOT CONNECTED]"
@@ -44,12 +45,12 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         self.shards = [shard, total_shards]
 
         super().__init__(token=cfg['DiscordTokens'][name], user_id=cfg[name].get('user_id'))
-        print("\nInitating Bot with token: ", self.token)
+        log.debug("Initating Bot with token %s", self.token)
 
     async def __aenter__(self):
         self.decompress = Deserializer()
         if self._session.closed:
-            print("Restarting session")
+            log.info("Restarting session")
             self._new_session()
         gate = await self.get_gateway_bot()
         self._ws = await self._session.ws_connect(f"{gate['url']}?v={self.cfg['Discord']['api_version']}&encoding=json&compress=zlib-stream")
@@ -65,15 +66,14 @@ class WebSocket_Client(HTTP_Client, Opcodes):
                     from mlib.types import Invalid
                     asyncio.create_task(self.opcodes.get(data.op, Invalid)(data))#, name="Dispatch")
             except Exception as ex:
-                print(f"Exception! {ex}\nType: {msg.type}\nData: {msg.data}\nExtra: {msg.extra}")
+                log.exception("Exception!", exc_info=ex)
 
     async def send(self, _json: object):
         _json = as_dict(_json)
-        #TODO: json (object) to json (dict) #done?
         try: #
             return await self._ws.send_json(_json) ##
         except Exception as ex: #
-            print("Send Error", ex) #
+            log.exception("Send Error", exc_info=ex)
 
     async def __aexit__(self, *args, **kwargs):
         await asyncio.sleep(1)
