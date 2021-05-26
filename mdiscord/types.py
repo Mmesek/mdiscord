@@ -130,7 +130,7 @@ class Embed(Embed):
 
     @property
     def total_characters(self) -> int:
-        return len(self.title or "") + len(self.description or "") + len(self.author.name or "" if self.author else "") + len(self.footer.text or "" if self.footer else "") + sum([len(field.name) + len(field.value) for field in self.fields])
+        return len(str(self.title) or "") + len(str(self.description) or "") + len(str(self.author.name) or "" if self.author else "") + len(str(self.footer.text) or "" if self.footer else "") + sum([len(str(field.name)) + len(str(field.value)) for field in self.fields])
 
 @dataclass
 class Message(Message):
