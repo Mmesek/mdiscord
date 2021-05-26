@@ -61,6 +61,7 @@ class HTTP_Client(Endpoints):
                     kwargs.pop(i)
         kwargs.pop('filename', None)
         kwargs.pop('file', None)
+        kwargs = remove_None(kwargs)
         return kwargs
 
     async def api_call(self, path: str, method: str, **kwargs):
