@@ -135,12 +135,37 @@ class Embed(Embed):
 @dataclass
 class Message(Message):
     embeds: List[Embed] = list
-    async def reply(self, content="", embed=None, file: bytes = None, filename: str="file.txt") -> Message:
+    @property
+    def is_private(self) -> bool:
+        return self.guild_id == 0
+    
+    @property
+    def is_thread(self) -> bool:
+        return self.thread is not None
+    
+    @property
+    def is_reply(self) -> bool:
+        return self.referenced_message is not None
+    
+    @property
+    def is_webhook(self) -> bool:
+        return self.webhook_id or False
+    
+    @property
+    def is_empty(self) -> bool:
+        return self.content == ""
+    
+    @property
+    def is_bot(self) -> bool:
+        return self.author and self.author.bot or self.webhook_id
+
+    async def reply(self, content="", embed=None, file: bytes = None, filename: str="file.txt", allowed_mentions: Allowed_Mentions = None) -> Message:
         '''Creates replay message'''
         return await self._Client.create_message(self.channel_id,
         content=content if content != "" else self.content,
         embed=embed if embed else self.embeds[0] if self.embeds != [] else None, 
         filename=filename, file=file,
+        allowed_mentions=allowed_mentions,
         message_reference=Message_Reference(message_id=self.id, channel_id=self.channel_id, guild_id=self.guild_id if self.guild_id != 0 else None))
     
     async def delete(self) -> None:
@@ -151,9 +176,13 @@ class Message(Message):
         '''Edits message'''
         return await self._Client.edit_message(self.channel_id, self.id, self.content, self.embeds[0], self.flags, self.allowed_mentions)
     
-    async def send(self) -> Message:
+    async def send(self, content=None, embed=None, file: bytes = None, filename: str=None, allowed_mentions: Allowed_Mentions = None) -> Message:
         '''Creates new message'''
-        return await self._Client.create_message(self.channel_id, content=self.content, embed=self.embeds[0])
+        return await self._Client.create_message(self.channel_id, 
+        content=content or self.content, 
+        embed=embed or self.embeds[0],
+        filename=filename, file=file,
+        allowed_mentions=allowed_mentions)
     
     async def webhook(self, webhook_id: Snowflake, webhook_token: int, username: str = None, avatar_url: str = None, file: bytes = None) -> Message:
         '''Sends message as a webhook'''
@@ -185,6 +214,19 @@ class Message(Message):
     async def publish(self) -> Message:
         '''Publishes Message'''
         return await self._Client.crosspost_message(self.channel_id, self.id)
+    
+    def attachments_as_embed(self, embed=None, title_attachments="Attachments", title_image="Image"):
+        if len(self.attachments) == 0:
+            return embed
+        if embed is None:
+            embed = Embed()
+        embed.setImage(self.attachments[0].url)
+        if self.attachments[0].url[-3:] not in ['png', 'jpg', 'jpeg', 'webp', 'gif'] or len(self.attachments) > 1:
+            filename = '\n'.join([f"[{i.filename}]({i.url})" for i in self.attachments])
+            embed.addFields(title_attachments, filename, True)
+        else:
+            embed.addField(title_image, self.attachments[0].filename, True)
+        return embed
 
 @dataclass
 class Guild(Guild):
@@ -229,12 +271,12 @@ class Interaction(Interaction):
             type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(content=content, embeds=embeds, allowed_mentions=Allowed_Mentions(parse=[]), flags=flags)
             )
         )
-    async def deffered_message(self):
+    async def deferred_message(self, private: bool=True):
         '''Acknowledges Interaction with Source'''
         return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
-            type=Interaction_Callback_Type.DEFFERED_CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(flags=64))
+            type=Interaction_Callback_Type.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(flags=64 if private else None))
         )
-    async def send(self, content: str=None, embeds: List[Embed]=None):
+    async def send(self, content: str=None, embeds: List[Embed]=None, allowed_mentions: Allowed_Mentions = Allowed_Mentions(parse=[])):
         '''Responds to Channel with Source'''
         return await self._Client.create_interaction_response(self.id, self.token, 
             Interaction_Response(
@@ -242,7 +284,7 @@ class Interaction(Interaction):
                 data=Interaction_Application_Command_Callback_Data(
                     content=content, 
                     embeds=embeds, 
-                    allowed_mentions=Allowed_Mentions(parse=[]))
+                    allowed_mentions=allowed_mentions)
                 )
             )
     async def respond(self, response: Interaction_Response):
