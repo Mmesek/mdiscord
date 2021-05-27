@@ -66,7 +66,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
                     from mlib.types import Invalid
                     asyncio.create_task(self.opcodes.get(data.op, Invalid)(data))#, name="Dispatch")
             except Exception as ex:
-                log.exception("Exception!", exc_info=ex)
+                log.exception("Exception! Type: %s", msg.type, exc_info=ex)
 
     async def send(self, _json: object):
         _json = as_dict(_json)
