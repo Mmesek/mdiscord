@@ -47,8 +47,9 @@ class Opcodes:
                 except BadRequest as ex:
                     log.warn("Bad Request", exc_info=ex)
                 except Exception as ex:
-                    log.debug("Exception in server %s", getattr(data.d, 'guild_id', None))
-                    log.debug(exc_info=ex)
+                    log.exception("Exception in server %s", getattr(data.d, 'guild_id', None), exc_info=ex)
+                    t = traceback.extract_tb(sys.exc_info()[2])#, limit=-1)
+                    log.exception("Location: %s", t[-1])
         except Insufficient_Permissions as ex:
             log.info("Insufficient Permissions", exc_info=ex)
         except TypeError as ex:
