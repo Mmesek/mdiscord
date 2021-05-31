@@ -180,7 +180,7 @@ class Message(Message):
         '''Creates new message'''
         return await self._Client.create_message(self.channel_id, 
         content=content or self.content, 
-        embed=embed or self.embeds[0],
+        embed=embed or (self.embeds[0] if self.embeds else None),
         filename=filename, file=file,
         allowed_mentions=allowed_mentions)
     
