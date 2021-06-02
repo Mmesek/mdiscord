@@ -26,7 +26,7 @@ from .types import (
     Bot_Activity
 )
 from .utils import log
-from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions
+from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound
 from mlib.types import Invalid, aInvalid
 Dispatch = {}
 
@@ -46,6 +46,8 @@ class Opcodes:
                     await function(self, data.d)
                 except BadRequest as ex:
                     log.warn("Bad Request", exc_info=ex)
+                except NotFound:
+                    pass
                 except Exception as ex:
                     log.exception("Exception in server %s", getattr(data.d, 'guild_id', None), exc_info=ex)
                     t = traceback.extract_tb(sys.exc_info()[2])#, limit=-1)

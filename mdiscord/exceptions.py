@@ -18,5 +18,8 @@ class RequestError(Exception):
 class BadRequest(RequestError):
     pass
 
+class NotFound(RequestError):
+    pass
+
 class JsonBadRequest(BadRequest):
     pass

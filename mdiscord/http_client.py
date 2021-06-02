@@ -83,7 +83,7 @@ class HTTP_Client(Endpoints):
         from mdiscord.base_model import BASE_URL
         async with self._session.request(method, BASE_URL+"api"+path, **kwargs) as res:
             from mdiscord.models import HTTP_Response_Codes
-            from mdiscord.exceptions import BadRequest, RequestError, JsonBadRequest
+            from mdiscord.exceptions import BadRequest, RequestError, JsonBadRequest, NotFound
 
             try:
                 res.raise_for_status()
@@ -105,6 +105,8 @@ class HTTP_Client(Endpoints):
                 return list(dict({"_Client":self}, **i) for i in r)
             elif res.status == HTTP_Response_Codes.BAD_REQUEST.value:
                 raise BadRequest(f"[{res.reason}] {await res.text()}", f"[{method}] {path}")
+            elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
+                raise NotFound(f"[{res.reason}] {await res.text()}", f"[{method}] {path}")
 
             elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
                 is_global = res.headers.get('X-RateLimit-Global') is True
