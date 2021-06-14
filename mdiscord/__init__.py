@@ -12,11 +12,16 @@ from .types import * # noqa: F401
 from .client import WebSocket_Client as Client # noqa: F401
 from .exceptions import * # noqa: F401
 
-def onDispatch(f):
+def onDispatch(f=None, priority=100):
     def inner(f):
         from .opcodes import Dispatch
-        if f.__name__.upper() not in Dispatch:
-            Dispatch[f.__name__.upper()] = []
-        Dispatch[f.__name__.upper()].append(f)
+        name = f.__name__.upper()
+        if name not in Dispatch:
+            Dispatch[name] = {}
+        if priority not in Dispatch[name]:
+            Dispatch[name][priority] = []
+        Dispatch[name][priority].append(f)
         return f
-    return inner(f)
+    if f:
+        return inner(f)
+    return inner

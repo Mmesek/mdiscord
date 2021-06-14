@@ -39,19 +39,23 @@ class Opcodes:
 
     async def dispatch(self, data: Gateway_Payload) -> None:
         data.d = getattr(Gateway_Events, data.t.title(), Invalid)(_Client=self, **data.d)
+        if hasattr(data.d, 'guild_id') and not data.d.guild_id and 'MESSAGE' in data.t:
+            data.t = 'DIRECT_'+data.t
         self.counters[data.t] += 1
         try:
-            for function in Dispatch.get(data.t, [aInvalid]):
-                try:
-                    await function(self, data.d)
-                except BadRequest as ex:
-                    log.warn("Bad Request", exc_info=ex)
-                except NotFound:
-                    pass
-                except Exception as ex:
-                    log.exception("Exception in server %s", getattr(data.d, 'guild_id', None), exc_info=ex)
-                    t = traceback.extract_tb(sys.exc_info()[2])#, limit=-1)
-                    log.exception("Location: %s", t[-1])
+            for priority in sorted(Dispatch.get(data.t, {})):
+                for function in Dispatch.get(data.t, [aInvalid])[priority]:
+                    try:
+                        if await function(self, data.d):
+                            return
+                    except BadRequest as ex:
+                        log.warn("Bad Request", exc_info=ex)
+                    except NotFound as ex:
+                        log.warn(ex)
+                    except Exception as ex:
+                        log.exception("Exception in server %s", getattr(data.d, 'guild_id', None), exc_info=ex)
+                        t = traceback.extract_tb(sys.exc_info()[2])#, limit=-1)
+                        log.exception("Location: %s", t[-1])
         except Insufficient_Permissions as ex:
             log.info("Insufficient Permissions", exc_info=ex)
         except TypeError as ex:
