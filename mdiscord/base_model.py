@@ -104,6 +104,8 @@ class DiscordObject:
                         if value & _flag.value == 0:
                             _flags.append(_flag)
                     self.__setattr__(field, _flags)
+                elif value == 0:
+                    self.__setattr__(field, 0 if _type is not str else '0')
                 else:
                     self.__setattr__(field, _type(value or (0 if _type is not str else '')))
    # @property
