@@ -39,8 +39,10 @@ class Opcodes:
 
     async def dispatch(self, data: Gateway_Payload) -> None:
         data.d = getattr(Gateway_Events, data.t.title(), Invalid)(_Client=self, **data.d)
-        if hasattr(data.d, 'guild_id') and not data.d.guild_id and 'MESSAGE' in data.t:
+        if not getattr(data.d, 'guild_id', False) and 'MESSAGE' in data.t:
             data.t = 'DIRECT_'+data.t
+        if getattr(data.d, 'is_bot', False):
+            return
         self.counters[data.t] += 1
         try:
             for priority in sorted(Dispatch.get(data.t, {})):
