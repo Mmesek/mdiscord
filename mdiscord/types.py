@@ -42,6 +42,9 @@ class Discord_Paths(Enum):
     def link(self) -> str:
         return BASE_URL + self.value
 
+from typing import Union, Tuple
+from datetime import datetime
+
 @dataclass
 class Embed(Embed):
     def setTitle(self, title: str) -> Embed:
@@ -58,7 +61,7 @@ class Embed(Embed):
             self.description = description
         return self
 
-    def setColor(self, color) -> Embed:
+    def setColor(self, color: Union[str, Tuple[int, int, int], int]) -> Embed:
         '''Set's Embed's Color. 
 
         Params
@@ -73,6 +76,7 @@ class Embed(Embed):
         return self
 
     def setUrl(self, url:str) -> Embed:
+        '''Sets URL.'''
         self.url = url
         return self
 
@@ -93,7 +97,17 @@ class Embed(Embed):
             self.footer = Embed_Footer(text=text, icon_url=icon_url, proxy_icon_url=proxy_icon_url)
         return self
 
-    def setTimestamp(self, timestamp) -> Embed:
+    def setTimestamp(self, timestamp: datetime) -> Embed:
+        '''Sets Timestamp.
+        
+        Params
+        ------
+        timestamp:
+            Accepts direct ISO string, datetime object or POSIX float'''
+        if type(timestamp) is datetime:
+            timestamp = timestamp.isoformat()
+        elif type(timestamp) is float:
+            timestamp = datetime.fromtimestamp(timestamp).isoformat()
         self.timestamp = timestamp
         return self
 
@@ -130,6 +144,7 @@ class Embed(Embed):
 
     @property
     def total_characters(self) -> int:
+        '''Counts total characters'''
         return len(str(self.title) or "") + len(str(self.description) or "") + len(str(self.author.name) or "" if self.author else "") + len(str(self.footer.text) or "" if self.footer else "") + sum([len(str(field.name)) + len(str(field.value)) for field in self.fields])
 
 @dataclass
@@ -201,6 +216,7 @@ class Message(Message):
         return await self._Client.create_reaction(self.channel_id, self.id, reaction)
     
     async def get_reactions(self, emoji, users=[], last_id=0, limit=100):
+        '''Retrieves all reactions from message'''
         #for chunk in range(int(count / 100) + (count % 100 > 0)): #Alternative pagination method
         r = await self._Client.get_reactions(self.channel_id, self.id, emoji, after=last_id, limit=limit)
         if len(r) < limit or len(r) == 0:
@@ -216,6 +232,7 @@ class Message(Message):
         return await self._Client.crosspost_message(self.channel_id, self.id)
     
     def attachments_as_embed(self, embed=None, title_attachments="Attachments", title_image="Image"):
+        '''Returns Attachments as URLs listed in an Embed'''
         if len(self.attachments) == 0:
             return embed
         if embed is None:
