@@ -54,3 +54,45 @@ def as_dict(object):
     elif type(object) is type:
         return None
     return object
+
+class Serializer:
+    token: str = None
+    def _prepare_payload(self, **kwargs):
+        if 'headers' not in kwargs:
+            kwargs['headers'] = []
+        if self.token:
+            kwargs['headers'].append(("Authorization", f"Bot {self.token}"))
+        if kwargs.get('reason'):
+            kwargs['headers'].append(("X-Audit-Log-Reason", kwargs.pop('reason')))
+        if not kwargs.get('file'):
+            kwargs['headers'].append(("Content-Type", "application/json"))
+        else:
+            import aiohttp
+            kwargs['data'] = aiohttp.FormData()
+            import ujson as json
+            kwargs['data'].add_field("payload_json", json.dumps(kwargs["json"]))
+            kwargs['data'].add_field("file", kwargs["file"],
+                filename=kwargs["filename"],
+                content_type="application/octet-stream"
+            )
+            kwargs.pop('json')
+
+        kwargs = self._serialize(**kwargs)
+        return kwargs
+
+    def _serialize(self, **kwargs):
+        from mlib.utils import remove_None
+        if kwargs.get('json'):
+            kwargs['json'] = as_dict(kwargs['json'])
+            kwargs['json'] = remove_None(kwargs.get('json',{}))
+        if kwargs.get('params'):
+            kwargs["params"] = remove_None(kwargs.get("params"))
+            for param in kwargs["params"]:
+                kwargs["params"][param] = str(kwargs["params"][param])
+            for i in ["before", "after", "between"]:
+                if kwargs["params"].get(i, False) is None:
+                    kwargs.pop(i)
+        kwargs.pop('filename', None)
+        kwargs.pop('file', None)
+        kwargs = remove_None(kwargs)
+        return kwargs

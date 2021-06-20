@@ -1,9 +1,10 @@
 from typing import Dict
 from mdiscord.base_model import Snowflake
 from mdiscord.endpoints import Endpoints
+from mdiscord.serializer import Serializer
 import aiohttp
 
-class HTTP_Client(Endpoints):
+class HTTP_Client(Endpoints, Serializer):
     token: str
     user_id: Snowflake
     _session: aiohttp.ClientSession
@@ -23,46 +24,6 @@ class HTTP_Client(Endpoints):
         else:
             resolver = None        
         self._session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False, resolver=resolver))#, json_serialize=Encoder().encode)
-    
-    def _prepare_payload(self, **kwargs):
-        if 'headers' not in kwargs:
-            kwargs['headers'] = []
-        if self.token:
-            kwargs['headers'].append(("Authorization", f"Bot {self.token}"))
-        if kwargs.get('reason'):
-            kwargs['headers'].append(("X-Audit-Log-Reason", kwargs.pop('reason')))
-        if not kwargs.get('file'):
-            kwargs['headers'].append(("Content-Type", "application/json"))
-        else:
-            kwargs['data'] = aiohttp.FormData()
-            import ujson as json
-            kwargs['data'].add_field("payload_json", json.dumps(kwargs["json"]))
-            kwargs['data'].add_field("file", kwargs["file"],
-                filename=kwargs["filename"],
-                content_type="application/octet-stream"
-            )
-            kwargs.pop('json')
-
-        kwargs = self._serialize(**kwargs)
-        return kwargs
-
-    def _serialize(self, **kwargs):
-        from mlib.utils import remove_None
-        if kwargs.get('json'):
-            from .serializer import as_dict
-            kwargs['json'] = as_dict(kwargs['json'])
-            kwargs['json'] = remove_None(kwargs.get('json',{}))
-        if kwargs.get('params'):
-            kwargs["params"] = remove_None(kwargs.get("params"))
-            for param in kwargs["params"]:
-                kwargs["params"][param] = str(kwargs["params"][param])
-            for i in ["before", "after", "between"]:
-                if kwargs["params"].get(i, False) is None:
-                    kwargs.pop(i)
-        kwargs.pop('filename', None)
-        kwargs.pop('file', None)
-        kwargs = remove_None(kwargs)
-        return kwargs
 
     async def api_call(self, path: str, method: str, **kwargs):
         kwargs = self._prepare_payload(**kwargs)
@@ -110,6 +71,7 @@ class HTTP_Client(Endpoints):
 
             elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
                 is_global = res.headers.get('X-RateLimit-Global') is True
+                #TODO: Actual ratelimiter, get reset and remaining from headers, put into local dict (as tuple of remaining, reset?)
                 if not is_global:
                     self.lock[bucket] = True
                 else:
