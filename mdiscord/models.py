@@ -9,11 +9,11 @@ Discord raw API types.
 
 '''
 
-#Generated structure from docs at 08:45 2021/05/01
-#Generated source code at 08:45 2021/05/01
+#Generated structure from docs at 16:34 2021/07/07
+#Generated source code at 16:34 2021/07/07
 from __future__ import annotations
 from enum import IntEnum
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from datetime import datetime
 from ctypes import c_byte, c_uint, c_ushort
 from dataclasses import dataclass
@@ -21,10 +21,81 @@ from dataclasses import dataclass
 from .base_model import *
 
 @dataclass
+class Application(DiscordObject):
+    '''
+    Atrributes
+    ----------
+    id:
+        the id of the app
+    name:
+        the name of the app
+    icon:
+        Icon_Hash
+    description:
+        the description of the app
+    rpc_origins:
+        an  rpc origin urls, if rpc is enabled
+    bot_public:
+        when false only app owner can join the app's bot to guilds
+    bot_require_code_grant:
+        when true the app's bot will only join upon completion of the full oauth2 code grant flow
+    terms_of_service_url:
+        the url of the app's terms of service
+    privacy_policy_url:
+        the url of the app's privacy policy
+    owner:
+        user  containing info on the owner of the application
+    summary:
+        if this application is a game sold on Discord, this field will be the summary field for the store page of its primary sku
+    verify_key:
+        GetTicket
+    team:
+        if the application belongs to a team, this will be a list of the members of that team
+    guild_id:
+        if this application is a game sold on Discord, this field will be the guild to which it has been linked
+    primary_sku_id:
+        if this application is a game sold on Discord, this field will be the id of the "Game SKU" that is created, if exists
+    slug:
+        if this application is a game sold on Discord, this field will be the URL slug that links to the store page
+    cover_image:
+        Cover_Image_Hash
+    flags:
+        Flags
+    '''
+    id: Snowflake = None
+    name: str = ''
+    icon: str = ''
+    description: str = ''
+    rpc_origins: List[str] = None
+    bot_public: bool = False
+    bot_require_code_grant: bool = False
+    terms_of_service_url: str = ''
+    privacy_policy_url: str = ''
+    owner: User = None
+    summary: str = ''
+    verify_key: str = ''
+    team: Team = None
+    guild_id: Snowflake = None
+    primary_sku_id: Snowflake = None
+    slug: str = ''
+    cover_image: str = ''
+    flags: int = 0
+
+
+class Application_Flags(Flag):
+    GATEWAY_PRESENCE = 1 << 12
+    GATEWAY_PRESENCE_LIMITED = 1 << 13
+    GATEWAY_GUILD_MEMBERS = 1 << 14
+    GATEWAY_GUILD_MEMBERS_LIMITED = 1 << 15
+    VERIFICATION_PENDING_GUILD_LIMIT = 1 << 16
+    EMBEDDED = 1 << 17
+
+
+@dataclass
 class Audit_Log(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     webhooks:
         list of webhooks found in the audit log
     users:
@@ -43,8 +114,8 @@ class Audit_Log(DiscordObject):
 @dataclass
 class Audit_Log_Entry(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     target_id:
         id of the affected entity
     changes:
@@ -105,13 +176,16 @@ class Audit_Log_Events(Enum):
     INTEGRATION_CREATE = 80
     INTEGRATION_UPDATE = 81
     INTEGRATION_DELETE = 82
+    STAGE_INSTANCE_CREATE = 83
+    STAGE_INSTANCE_UPDATE = 84
+    STAGE_INSTANCE_DELETE = 85
 
 
 @dataclass
 class Optional_Audit_Entry_Info(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     delete_member_days:
         number of days after which inactive members were kicked
     members_removed:
@@ -142,8 +216,10 @@ class Optional_Audit_Entry_Info(DiscordObject):
 @dataclass
 class Audit_Log_Change(DiscordObject):
     '''
-    Params
-    ------
+    > info
+    
+    Atrributes
+    ----------
     new_value:
         new value of the key
     old_value:
@@ -159,8 +235,8 @@ class Audit_Log_Change(DiscordObject):
 @dataclass
 class Audit_Log_Change_Key(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     name:
         name changed
     description:
@@ -212,7 +288,7 @@ class Audit_Log_Change_Key(DiscordObject):
     position:
         text
     topic:
-        text channel topic changed
+        text channel topic
     bitrate:
         voice channel bitrate changed
     permission_overwrites:
@@ -269,6 +345,8 @@ class Audit_Log_Change_Key(DiscordObject):
         integration expire grace period changed
     user_limit:
         new user limit in a voice channel
+    privacy_level:
+        the privacy level of the stage instance.
     '''
     name: str = ''
     description: str = None
@@ -323,14 +401,17 @@ class Audit_Log_Change_Key(DiscordObject):
     enable_emoticons: bool = False
     expire_behavior: int = 0
     expire_grace_period: int = 0
-    user_limit: int = None
+    user_limit: int = 0
+    privacy_level: Privacy_Level = None
 
 
 @dataclass
 class Channel(DiscordObject):
     '''
-    Params
-    ------
+    * `rate_limit_per_user` also applies to thread creation. Users can send one message and create one thread during each `rate_limit_per_user` interval.
+    
+    Atrributes
+    ----------
     id:
         the id of this channel
     type:
@@ -379,6 +460,8 @@ class Channel(DiscordObject):
         thread-specific fields not needed by other channels
     member:
         thread member  for the current user, if they have joined the thread, only included on certain API endpoints
+    default_auto_archive_duration:
+        default duration for newly created threads, in minutes, to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
     '''
     id: Snowflake = 0
     type: int = 0
@@ -404,12 +487,15 @@ class Channel(DiscordObject):
     member_count: int = 0
     thread_metadata: Thread_Metadata = None
     member: Thread_Member = None
+    default_auto_archive_duration: int = 0
 
 
 class Channel_Types(Enum):
     '''
-    Params
-    ------
+    > warn
+    
+    Atrributes
+    ----------
     GUILD_TEXT:
         a text channel within a server
     DM:
@@ -448,8 +534,8 @@ class Channel_Types(Enum):
 
 class Video_Quality_Modes(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     AUTO:
         Discord chooses the quality for optimal performance
     FULL:
@@ -463,13 +549,14 @@ class Video_Quality_Modes(Enum):
 class Message(DiscordObject):
     '''
     * The author object follows the structure of the user object, but is only a valid user in the case where the message is generated by a user or bot user. If the message is generated by a webhook, the author object corresponds to the webhook's id, username, and avatar. You can tell if a message is generated by a webhook by checking for the `webhook_id` on the message object.
-    ** The member object exists in [MESSAGE_CREATE](#DOCS_TOPICS_GATEWAY/message-create) and [MESSAGE_UPDATE](#DOCS_TOPICS_GATEWAY/message-update) events from text-based guild channels. This allows bots to obtain real-time member data without requiring bots to store member state in memory.
-    *** The user objects in the mentions array will only have the partial `member` field present in [MESSAGE_CREATE](#DOCS_TOPICS_GATEWAY/message-create) and [MESSAGE_UPDATE](#DOCS_TOPICS_GATEWAY/message-update) events from text-based guild channels.
+** The member object exists in [MESSAGE_CREATE](https:#/discord.com/developers/docs/topics/gateway#message-create) and [MESSAGE_UPDATE](https:#/discord.com/developers/docs/topics/gateway#message-update) events from text-based guild channels, provided that the author of the message is not a webhook. This allows bots to obtain real-time member data without requiring bots to store member state in memory.
+*** The user objects in the mentions array will only have the partial `member` field present in [MESSAGE_CREATE](https:#/discord.com/developers/docs/topics/gateway#message-create) and [MESSAGE_UPDATE](https:#/discord.com/developers/docs/topics/gateway#message-update) events from text-based guild channels.
     **** Not all channel mentions in a message will appear in `mention_channels`. Only textual channels that are visible to everyone in a lurkable guild will ever be included. Only crossposted messages (via Channel Following) currently include `mention_channels` at all. If no mentions in the message meet these requirements, this field will not be sent.
     ***** This field is only returned for messages with a `type` of `19` (REPLY) or `21` (THREAD_STARTER_MESSAGE). If the message is a reply but the `referenced_message` field is not present, the backend did not attempt to fetch the message that was being replied to, so its state is unknown. If the field exists but is null, the referenced message was deleted.
+****** Bots cannot send stickers.
     
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         id of the message
     channel_id:
@@ -514,18 +601,24 @@ class Message(DiscordObject):
         sent with Rich Presence-related chat embeds
     application:
         sent with Rich Presence-related chat embeds
+    application_id:
+        Interaction
     message_reference:
         data showing the source of a crosspost, channel follow add, pin,
     flags:
         Message_Flags
-    stickers:
-        the stickers sent with the message
     referenced_message:
         the message associated with the message_reference
     interaction:
         Interaction
     thread:
         Thread_Member
+    components:
+        sent if the message contains components like buttons, action rows,
+    sticker_items:
+        sent if the message contains stickers
+    stickers:
+        Deprecated the stickers sent with the message
     '''
     id: Snowflake = 0
     channel_id: Snowflake = 0
@@ -549,15 +642,21 @@ class Message(DiscordObject):
     type: int = 0
     activity: Message_Activity = None
     application: Application = None
+    application_id: Snowflake = 0
     message_reference: Message_Reference = None
     flags: int = 0
     stickers: List[Message_Sticker] = list
     referenced_message: Message = None
     interaction: Message_Interaction = None
     thread: Channel = None
+    components: List[Component] = None
+    sticker_items: Message_Sticker_Item = None
 
 
 class Message_Types(Enum):
+    '''
+    > warn
+    '''
     DEFAULT = 0
     RECIPIENT_ADD = 1
     RECIPIENT_REMOVE = 2
@@ -585,8 +684,8 @@ class Message_Types(Enum):
 @dataclass
 class Message_Activity(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     type:
         Type_Of_Message_Activity
     party_id:
@@ -594,28 +693,6 @@ class Message_Activity(DiscordObject):
     '''
     type: int = 0
     party_id: str = ''
-
-
-@dataclass
-class Message_Reference(DiscordObject):
-    '''
-    * `channel_id` is optional when creating a reply, but will always be present when receiving an event/response that includes this data model.
-    
-    Params
-    ------
-    message_id:
-        id of the originating message
-    channel_id:
-        id of the originating message's channel
-    guild_id:
-        id of the originating message's guild
-    fail_if_not_exists:
-        when sending, whether to error if the referenced message doesn't exist instead of sending as a normal
-    '''
-    message_id: Snowflake = 0
-    channel_id: Snowflake = 0
-    guild_id: Snowflake = 0
-    fail_if_not_exists: bool = False
 
 
 class Message_Activity_Types(Enum):
@@ -627,8 +704,8 @@ class Message_Activity_Types(Enum):
 
 class Message_Flags(Flag):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     CROSSPOSTED:
         this message has been published to subscribed channels
     IS_CROSSPOST:
@@ -657,33 +734,21 @@ class Message_Flags(Flag):
 
 
 @dataclass
-class Message_Sticker(DiscordObject):
+class Message_Sticker_Item(DiscordObject):
     '''
-    * The URL for fetching sticker assets is currently private.
+    The smallest amount of data required to render a sticker.
     
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         id of the sticker
-    pack_id:
-        id of the pack the sticker is from
     name:
         name of the sticker
-    description:
-        description of the sticker
-    tags:
-        a comma-separated list of tags for the sticker
-    asset:
-        sticker asset hash
     format_type:
         Type_Of_Sticker_Format
     '''
-    id: Snowflake = 0
-    pack_id: Snowflake = 0
+    id: Snowflake = None
     name: str = ''
-    description: str = ''
-    tags: List[str] = list
-    asset: str = ''
     format_type: int = 0
 
 
@@ -694,10 +759,75 @@ class Message_Sticker_Format_Types(Enum):
 
 
 @dataclass
+class Message_Sticker(DiscordObject):
+    '''
+    * The URL for fetching sticker assets is currently private.
+    
+    Atrributes
+    ----------
+    id:
+        id of the sticker
+    pack_id:
+        id of the pack the sticker is from
+    name:
+        name of the sticker
+    description:
+        description of the sticker
+    tags:
+        for guild stickers, a unicode emoji representing the sticker's expression. for nitro stickers, a comma-separated list of related expressions.
+    asset:
+        Deprecated previously the sticker asset hash, now an empty string
+    format_type:
+        Type_Of_Sticker_Format
+    available:
+        whether
+    guild_id:
+        id of the guild that owns this sticker
+    user:
+        the user that uploaded the sticker
+    sort_value:
+        a sticker's sort order within a pack
+    '''
+    id: Snowflake = 0
+    pack_id: Snowflake = 0
+    name: str = ''
+    description: str = ''
+    tags: List[str] = list
+    asset: str = ''
+    format_type: int = 0
+    available: bool = False
+    guild_id: Snowflake = None
+    user: User = None
+    sort_value: int = 0
+
+
+@dataclass
+class Message_Reference(DiscordObject):
+    '''
+    * `channel_id` is optional when creating a reply, but will always be present when receiving an event/response that includes this data model.
+    
+    Atrributes
+    ----------
+    message_id:
+        id of the originating message
+    channel_id:
+        id of the originating message's channel
+    guild_id:
+        id of the originating message's guild
+    fail_if_not_exists:
+        when sending, whether to error if the referenced message doesn't exist instead of sending as a normal
+    '''
+    message_id: Snowflake = None
+    channel_id: Snowflake = None
+    guild_id: Snowflake = None
+    fail_if_not_exists: bool = False
+
+
+@dataclass
 class Followed_Channel(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     channel_id:
         source channel id
     webhook_id:
@@ -710,8 +840,8 @@ class Followed_Channel(DiscordObject):
 @dataclass
 class Reaction(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     count:
         times this emoji has been used to react
     me:
@@ -727,8 +857,8 @@ class Reaction(DiscordObject):
 @dataclass
 class Overwrite(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         role
     type:
@@ -747,12 +877,10 @@ class Overwrite(DiscordObject):
 @dataclass
 class Thread_Metadata(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     archived:
         whether the thread is archived
-    archiver_id:
-        id of the user that last archived
     auto_archive_duration:
         duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
     archive_timestamp:
@@ -761,7 +889,6 @@ class Thread_Metadata(DiscordObject):
         when a thread is locked, only users with MANAGE_THREADS can unarchive it
     '''
     archived: bool = False
-    archiver_id: Snowflake = None
     auto_archive_duration: int = 0
     archive_timestamp: datetime = None
     locked: bool = False
@@ -770,8 +897,10 @@ class Thread_Metadata(DiscordObject):
 @dataclass
 class Thread_Member(DiscordObject):
     '''
-    Params
-    ------
+    ** * These fields are ommitted on the member sent within each thread in the [GUILD_CREATE](https:#/discord.com/developers/docs/topics/gateway#guild-create) event **
+    
+    Atrributes
+    ----------
     id:
         the id of the thread
     user_id:
@@ -790,8 +919,8 @@ class Thread_Member(DiscordObject):
 @dataclass
 class Embed(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     title:
         title of embed
     type:
@@ -836,8 +965,10 @@ class Embed(DiscordObject):
 
 class Embed_Types(Enum):
     '''
-    Params
-    ------
+    Embed types are "loosely defined" and, for the most part, are not used by our clients for rendering. Embed attributes power what is rendered. Embed types should be considered deprecated and might be removed in a future API version.
+    
+    Atrributes
+    ----------
     rich:
         generic embed rendered from embed attributes
     image:
@@ -862,8 +993,8 @@ class Embed_Types(Enum):
 @dataclass
 class Embed_Thumbnail(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     url:
         source url of thumbnail
     proxy_url:
@@ -882,8 +1013,8 @@ class Embed_Thumbnail(DiscordObject):
 @dataclass
 class Embed_Video(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     url:
         source url of video
     proxy_url:
@@ -902,8 +1033,8 @@ class Embed_Video(DiscordObject):
 @dataclass
 class Embed_Image(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     url:
         source url of image
     proxy_url:
@@ -922,8 +1053,8 @@ class Embed_Image(DiscordObject):
 @dataclass
 class Embed_Provider(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     name:
         name of provider
     url:
@@ -936,8 +1067,8 @@ class Embed_Provider(DiscordObject):
 @dataclass
 class Embed_Author(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     name:
         name of author
     url:
@@ -956,8 +1087,8 @@ class Embed_Author(DiscordObject):
 @dataclass
 class Embed_Footer(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     text:
         footer text
     icon_url:
@@ -973,8 +1104,8 @@ class Embed_Footer(DiscordObject):
 @dataclass
 class Embed_Field(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     name:
         name of the field
     value:
@@ -990,8 +1121,8 @@ class Embed_Field(DiscordObject):
 @dataclass
 class Attachment(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         attachment id
     filename:
@@ -1009,7 +1140,7 @@ class Attachment(DiscordObject):
     width:
         width of file
     '''
-    id: Snowflake = 0
+    id: Snowflake = None
     filename: str = ''
     content_type: str = ''
     size: int = 0
@@ -1022,8 +1153,8 @@ class Attachment(DiscordObject):
 @dataclass
 class Channel_Mention(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         id of the channel
     guild_id:
@@ -1041,8 +1172,8 @@ class Channel_Mention(DiscordObject):
 
 class Allowed_Mention_Types(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     Role Mentions:
         Controls role mentions
     User Mentions:
@@ -1058,8 +1189,8 @@ class Allowed_Mention_Types(Enum):
 @dataclass
 class Allowed_Mentions(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     parse:
         Allowed_Mention_Types
     roles:
@@ -1077,6 +1208,7 @@ class Allowed_Mentions(DiscordObject):
 
 class Limits(IntEnum):
     '''
+    All of the following limits are measured inclusively. Leading and trailing whitespace characters are not included (they are trimmed automatically).
     Additionally, the characters in all `title`, `description`, `field.name`, `field.value`, `footer.text`, and `author.name` fields must not exceed 6000 characters in total. Violating any of these constraints will result in a `Bad Request` response.
     '''
     TITLE = 256
@@ -1112,8 +1244,8 @@ class Thread_List(DiscordObject):
 @dataclass
 class Emoji(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         Emoji_Id
     name:
@@ -1144,11 +1276,12 @@ class Emoji(DiscordObject):
 @dataclass
 class Guild(DiscordObject):
     '''
-    ** * These fields are only sent within the [GUILD_CREATE](#DOCS_TOPICS_GATEWAY/guild-create) event **
-    ** ** These fields are only sent when using the [GET Current User Guilds](#DOCS_RESOURCES_USER/get-current-user-guilds) endpoint and are relative to the requested user **
+    ** * These fields are only sent within the [GUILD_CREATE](https:#/discord.com/developers/docs/topics/gateway#guild-create) event **
+** ** These fields are only sent when using the [GET Current User Guilds](https:#/discord.com/developers/docs/resources/user#get-current-user-guilds) endpoint and are relative to the requested user **
+** *** This field is deprecated and will be removed in v9 and is replaced by [rtc_region](https:#/discord.com/developers/docs/resources/channel#channel-object-channel-structure)**
     
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         guild id
     name:
@@ -1224,7 +1357,7 @@ class Guild(DiscordObject):
     vanity_url_code:
         the vanity url code for the guild
     description:
-        the description for the guild, if the guild is discoverable
+        the description of a Community guild
     banner:
         Banner_Hash
     premium_tier:
@@ -1243,8 +1376,10 @@ class Guild(DiscordObject):
         approximate number of non-offline members in this guild, returned from the `GET /guilds/<id>` endpoint when `with_counts` is `true`
     welcome_screen:
         Invite
-    nsfw:
-        Designated_As_NSFW
+    nsfw_level:
+        Guild_NSFW_Level
+    stage_instances:
+        Stage instances in the guild
     '''
     id: Snowflake = 0
     name: str = ""
@@ -1271,7 +1406,7 @@ class Guild(DiscordObject):
     system_channel_id: Snowflake = 0
     system_channel_flags: int = 0
     rules_channel_id: Snowflake = 0
-    joined_at: datetime = datetime.now().isoformat()
+    joined_at: datetime = None
     large: bool = False
     unavailable: bool = False
     member_count: int = 0
@@ -1293,11 +1428,14 @@ class Guild(DiscordObject):
     approximate_member_count: int = 0
     approximate_presence_count: int = 0
     welcome_screen: Welcome_Screen = None
-    nsfw: bool = False
+    nsfw_level: int = 0
+    stage_instances: Stage_Instance = None
 
 
 class Default_Message_Notification_Level(Enum):
     '''
+    Atrributes
+    ----------
     ALL_MESSAGES:
         members will receive notifications for all messages by default
     ONLY_MENTIONS:
@@ -1309,6 +1447,8 @@ class Default_Message_Notification_Level(Enum):
 
 class Explicit_Content_Filter_Level(Enum):
     '''
+    Atrributes
+    ----------
     DISABLED:
         media content will not be scanned
     MEMBERS_WITHOUT_ROLES:
@@ -1323,6 +1463,8 @@ class Explicit_Content_Filter_Level(Enum):
 
 class MFA_Level(Enum):
     '''
+    Atrributes
+    ----------
     NONE:
         guild has no MFA/2FA requirement for moderation actions
     ELEVATED:
@@ -1334,6 +1476,8 @@ class MFA_Level(Enum):
 
 class Verification_Level(Enum):
     '''
+    Atrributes
+    ----------
     NONE:
         unrestricted
     LOW:
@@ -1352,8 +1496,17 @@ class Verification_Level(Enum):
     VERY_HIGH = 4
 
 
+class Guild_NSFW_Level(Enum):
+    DEFAULT = 0
+    EXPLICIT = 1
+    SAFE = 2
+    AGE_RESTRICTED = 3
+
+
 class Premium_Tier(Enum):
     '''
+    Atrributes
+    ----------
     NONE:
         guild has not unlocked any Server Boost perks
     TIER_1:
@@ -1371,6 +1524,8 @@ class Premium_Tier(Enum):
 
 class System_Channel_Flags(Flag):
     '''
+    Atrributes
+    ----------
     SUPPRESS_JOIN_NOTIFICATIONS:
         Suppress member join notifications
     SUPPRESS_PREMIUM_SUBSCRIPTIONS:
@@ -1385,6 +1540,8 @@ class System_Channel_Flags(Flag):
 
 class Guild_Features(Enum):
     '''
+    Atrributes
+    ----------
     ANIMATED_ICON:
         guild has access to set an animated guild icon
     BANNER:
@@ -1415,6 +1572,18 @@ class Guild_Features(Enum):
         guild has access to set 384kbps bitrate in voice
     WELCOME_SCREEN_ENABLED:
         guild has enabled the welcome screen
+    TICKETED_EVENTS_ENABLED:
+        guild has enabled ticketed events
+    MONETIZATION_ENABLED:
+        guild has enabled monetization
+    MORE_STICKERS:
+        guild has increased custom sticker slots
+    THREE_DAY_THREAD_ARCHIVE:
+        guild has access to the three day archive time for threads
+    SEVEN_DAY_THREAD_ARCHIVE:
+        guild has access to the seven day archive time for threads
+    PRIVATE_THREADS:
+        guild has access to create private threads
     '''
     ANIMATED_ICON = "Guild has access to Set An Animated Guild Icon"
     BANNER = "Guild has access to Set A Guild Banner Image"
@@ -1431,13 +1600,19 @@ class Guild_Features(Enum):
     VERIFIED = "Guild Is Verified"
     VIP_REGIONS = "Guild has access to Set 384 Kbps Bitrate In Voice"
     WELCOME_SCREEN_ENABLED = "Guild has Enabled The Welcome Screen"
+    TICKETED_EVENTS_ENABLED = "Guild_Has_Enabled_Ticketed_Events"
+    MONETIZATION_ENABLED = "Guild_Has_Enabled_Monetization"
+    MORE_STICKERS = "Guild_Has_Increased_Custom_Sticker_Slots"
+    THREE_DAY_THREAD_ARCHIVE = "Guild_Has_Access_To_The_Three_Day_Archive_Time_For_Threads"
+    SEVEN_DAY_THREAD_ARCHIVE = "Guild_Has_Access_To_The_Seven_Day_Archive_Time_For_Threads"
+    PRIVATE_THREADS = "Guild_Has_Access_To_Create_Private_Threads"
 
 
 @dataclass
 class Guild_Preview(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         guild id
     name:
@@ -1474,8 +1649,8 @@ class Guild_Preview(DiscordObject):
 @dataclass
 class Guild_Widget(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     enabled:
         whether the widget is enabled
     channel_id:
@@ -1493,8 +1668,8 @@ class Guild_Member(DiscordObject):
     > info
     > In `GUILD_` events, `pending` will always be included as true or false. In non `GUILD_` events which can only be triggered by non-`pending` users, `pending` will not be included.
     
-    Params
-    ------
+    Atrributes
+    ----------
     user:
         the user this guild member represents
     nick:
@@ -1512,7 +1687,7 @@ class Guild_Member(DiscordObject):
     pending:
         Membership_Screening
     permissions:
-        total permissions of the member in the channel, including overrides, returned when in the interaction
+        total permissions of the member in the channel, including overwrites, returned when in the interaction
     '''
     user: User = None
     nick: str = None
@@ -1530,8 +1705,8 @@ class Integration(DiscordObject):
     '''
     ** * These fields are not provided for discord bot integrations. **
     
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         integration id
     name:
@@ -1588,8 +1763,8 @@ class Integration_Expire_Behaviors(Enum):
 @dataclass
 class Integration_Account(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         id of the account
     name:
@@ -1602,8 +1777,8 @@ class Integration_Account(DiscordObject):
 @dataclass
 class Integration_Application(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         the id of the app
     name:
@@ -1613,7 +1788,7 @@ class Integration_Application(DiscordObject):
     description:
         the description of the app
     summary:
-        the description of the app
+        the summary of the app
     bot:
         the bot associated with this application
     '''
@@ -1628,8 +1803,8 @@ class Integration_Application(DiscordObject):
 @dataclass
 class Ban(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     reason:
         the reason for the ban
     user:
@@ -1642,8 +1817,8 @@ class Ban(DiscordObject):
 @dataclass
 class Welcome_Screen(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     description:
         the server description shown in the welcome screen
     welcome_channels:
@@ -1656,8 +1831,8 @@ class Welcome_Screen(DiscordObject):
 @dataclass
 class Welcome_Screen_Channel(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     channel_id:
         the channel's id
     description:
@@ -1674,27 +1849,10 @@ class Welcome_Screen_Channel(DiscordObject):
 
 
 @dataclass
-class Welcome_Screen(DiscordObject):
-    '''
-    Params
-    ------
-    enabled:
-        whether the welcome screen is enabled
-    welcome_channels:
-        channels linked in the welcome screen and their display options
-    description:
-        the server description to show in the welcome screen
-    '''
-    enabled: bool = False
-    welcome_channels: List[Welcome_Screen_Channel] = list
-    description: str = ''
-
-
-@dataclass
 class Invite(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     code:
         the invite code
     guild:
@@ -1715,6 +1873,8 @@ class Invite(DiscordObject):
         approximate count of total members, returned from the `GET /invites/<code>` endpoint when `with_counts` is `true`
     expires_at:
         the expiration date of this invite, returned from the `GET /invites/<code>` endpoint when `with_expiration` is `true`
+    stage_instance:
+        Public_Stage_Instance
     '''
     code: str = ''
     guild: Guild = None
@@ -1726,6 +1886,7 @@ class Invite(DiscordObject):
     approximate_presence_count: int = 0
     approximate_member_count: int = 0
     expires_at: datetime = None
+    stage_instance: Invite_Stage_Instance = None
 
 
 class Invite_Target_Types(Enum):
@@ -1736,8 +1897,8 @@ class Invite_Target_Types(Enum):
 @dataclass
 class Invite_Metadata(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     uses:
         number of times this invite has been used
     max_uses:
@@ -1757,10 +1918,69 @@ class Invite_Metadata(DiscordObject):
 
 
 @dataclass
+class Invite_Stage_Instance(DiscordObject):
+    '''
+    Atrributes
+    ----------
+    members:
+        the members speaking in the Stage
+    participant_count:
+        the number of users in the Stage
+    speaker_count:
+        the number of users speaking in the Stage
+    topic:
+        the topic of the Stage instance
+    '''
+    members: Guild_Member = None
+    participant_count: int = 0
+    speaker_count: int = 0
+    topic: str = ''
+
+
+@dataclass
+class Stage_Instance(DiscordObject):
+    '''
+    Atrributes
+    ----------
+    id:
+        The id of this Stage instance
+    guild_id:
+        The guild id of the associated Stage channel
+    channel_id:
+        The id of the associated Stage channel
+    topic:
+        The topic of the Stage instance
+    privacy_level:
+        Privacy_Level
+    discoverable_disabled:
+        Whether
+    '''
+    id: Snowflake = None
+    guild_id: Snowflake = None
+    channel_id: Snowflake = None
+    topic: str = ''
+    privacy_level: int = 0
+    discoverable_disabled: bool = False
+
+
+class Privacy_Level(Enum):
+    '''
+    Atrributes
+    ----------
+    PUBLIC:
+        The Stage instance is visible publicly, such as on Stage discovery.
+    GUILD_ONLY:
+        The Stage instance is visible to only guild members.
+    '''
+    PUBLIC = 1
+    GUILD_ONLY = 2
+
+
+@dataclass
 class User(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         the user's id
     username:
@@ -1805,8 +2025,8 @@ class User(DiscordObject):
 
 class User_Flags(Flag):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     None:
         None
     Discord Employee:
@@ -1833,6 +2053,8 @@ class User_Flags(Flag):
         Verified Bot
     Early Verified Bot Developer:
         Early Verified Bot Developer
+    Discord Certified Moderator:
+        Discord Certified Moderator
     '''
     NONE = 0
     DISCORD_EMPLOYEE = 1 << 0
@@ -1848,9 +2070,13 @@ class User_Flags(Flag):
     BUG_HUNTER_LEVEL_2 = 1 << 14
     VERIFIED_BOT = 1 << 16
     EARLY_VERIFIED_BOT_DEVELOPER = 1 << 17
+    DISCORD_CERTIFIED_MODERATOR = 1 << 18
 
 
 class Premium_Types(Enum):
+    '''
+    Premium types denote the level of premium a user has. Visit the [Nitro](https:##discord.com/nitro) page to learn more about the premium plans we currently offer.
+    '''
     NONE = 0
     NITRO_CLASSIC = 1
     NITRO = 2
@@ -1859,8 +2085,8 @@ class Premium_Types(Enum):
 @dataclass
 class Connection(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         id of the connection account
     name:
@@ -1884,7 +2110,7 @@ class Connection(DiscordObject):
     name: str = ''
     type: str = ''
     revoked: bool = False
-    integrations: List[list] = list
+    integrations: List[Integration] = list
     verified: bool = False
     friend_sync: bool = False
     show_activity: bool = False
@@ -1893,8 +2119,8 @@ class Connection(DiscordObject):
 
 class Visibility_Types(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     None:
         invisible to everyone except the user themselves
     Everyone:
@@ -1907,8 +2133,8 @@ class Visibility_Types(Enum):
 @dataclass
 class Voice_State(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the guild id this voice state is for
     channel_id:
@@ -1954,8 +2180,8 @@ class Voice_State(DiscordObject):
 @dataclass
 class Voice_Region(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         unique ID for the region
     name:
@@ -1980,16 +2206,16 @@ class Voice_Region(DiscordObject):
 @dataclass
 class Webhook(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         the id of the webhook
     type:
         Type
     guild_id:
-        the guild id this webhook is for
+        the guild id this webhook is for, if any
     channel_id:
-        the channel id this webhook is for
+        the channel id this webhook is for, if any
     user:
         the user this webhook was created by
     name:
@@ -2023,19 +2249,18 @@ class Webhook(DiscordObject):
 
 class Webhook_Types(Enum):
     '''
+    Atrributes
+    ----------
     Incoming:
         Incoming Webhooks can post messages to channels with a generated token
     Channel Follower:
         Channel Follower Webhooks are internal webhooks used with Channel Following to post new messages into channels
+    Application:
+        Application webhooks are webhooks used with Interactions
     '''
     INCOMING = 1
     CHANNEL_FOLLOWER = 2
-
-
-class Gateway_Versions(Enum):
-    Latest = 9
-    Available = 8
-    Default = 6
+    APPLICATION = 3
 
 
 @dataclass
@@ -2043,8 +2268,8 @@ class Gateway_Payload(DiscordObject):
     '''
     * `s` and `t` are `null` when `op` is not `0` (Gateway Dispatch Opcode).
     
-    Params
-    ------
+    Atrributes
+    ----------
     op:
         Opcode
     d:
@@ -2061,10 +2286,31 @@ class Gateway_Payload(DiscordObject):
 
 
 @dataclass
+class Gateway_URL_Query_String_Params(DiscordObject):
+    '''
+    The first step in establishing connectivity to the gateway is requesting a valid websocket endpoint from the API. This can be done through either the [Get Gateway](https:#/discord.com/developers/docs/topics/gateway#get-gateway) or the [Get Gateway Bot](https:#/discord.com/developers/docs/topics/gateway#get-gateway-bot) endpoint.
+With the resulting payload, you can now open a websocket connection to the "url" (or endpoint) specified. Generally, it is a good idea to explicitly pass the gateway version and encoding. For example, we may connect to `wss://gateway.discord.gg/?v=9&encoding=json`.
+Once connected, the client should immediately receive an [Opcode 10 Hello](https:#/discord.com/developers/docs/topics/gateway#hello) payload, with information on the connection's heartbeat interval:
+    
+    Atrributes
+    ----------
+    v:
+        Gateway Version to use
+    encoding:
+        The encoding of received gateway packets
+    compress:
+        The
+    '''
+    v: int = 0
+    encoding: str = ''
+    compress: str = ''
+
+
+@dataclass
 class Identify(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     token:
         authentication token
     properties:
@@ -2084,7 +2330,7 @@ class Identify(DiscordObject):
     properties: dict = None
     compress: bool = False
     large_threshold: int = 50
-    shard: List[int] = list
+    shard: Tuple[int, int] = list
     presence: Gateway_Presence_Update = None
     intents: int = 0
 
@@ -2092,8 +2338,8 @@ class Identify(DiscordObject):
 @dataclass
 class Identify_Connection_Properties(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     $os:
         your operating system
     $browser:
@@ -2109,8 +2355,8 @@ class Identify_Connection_Properties(DiscordObject):
 @dataclass
 class Resume(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     token:
         session token
     session_id:
@@ -2129,8 +2375,8 @@ class Guild_Request_Members(DiscordObject):
     > info
     > Nonce can only be up to 32 bytes. If you send an invalid nonce it will be ignored and the reply member_chunk(s) will not have a nonce set.
     
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild to get members for
     query:
@@ -2155,8 +2401,8 @@ class Guild_Request_Members(DiscordObject):
 @dataclass
 class Gateway_Voice_State_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     channel_id:
@@ -2175,8 +2421,8 @@ class Gateway_Voice_State_Update(DiscordObject):
 @dataclass
 class Gateway_Presence_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     since:
         unix time
     activities:
@@ -2194,8 +2440,8 @@ class Gateway_Presence_Update(DiscordObject):
 
 class Status_Types(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     online:
         Online
     dnd:
@@ -2217,8 +2463,8 @@ class Status_Types(Enum):
 @dataclass
 class Hello(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     heartbeat_interval:
         the interval
     '''
@@ -2228,8 +2474,8 @@ class Hello(DiscordObject):
 @dataclass
 class Ready(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     v:
         Gateway_Version
     user:
@@ -2247,15 +2493,15 @@ class Ready(DiscordObject):
     user: User = None
     guilds: List[Guild] = list
     session_id: str = ''
-    shard: List[int] = list
+    shard: Tuple[int, int] = list
     application: Application = None
 
 
 @dataclass
 class Thread_List_Sync(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the id of the guild
     channel_ids:
@@ -2274,8 +2520,8 @@ class Thread_List_Sync(DiscordObject):
 @dataclass
 class Thread_Members_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         the id of the thread
     guild_id:
@@ -2297,8 +2543,8 @@ class Thread_Members_Update(DiscordObject):
 @dataclass
 class Channel_Pins_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the id of the guild
     channel_id:
@@ -2314,8 +2560,8 @@ class Channel_Pins_Update(DiscordObject):
 @dataclass
 class Guild_Ban_Add(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     user:
@@ -2328,8 +2574,8 @@ class Guild_Ban_Add(DiscordObject):
 @dataclass
 class Guild_Ban_Remove(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     user:
@@ -2342,8 +2588,8 @@ class Guild_Ban_Remove(DiscordObject):
 @dataclass
 class Guild_Emojis_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     emojis:
@@ -2356,8 +2602,8 @@ class Guild_Emojis_Update(DiscordObject):
 @dataclass
 class Guild_Integrations_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild whose integrations were updated
     '''
@@ -2367,8 +2613,8 @@ class Guild_Integrations_Update(DiscordObject):
 @dataclass
 class Guild_Member_Add(Guild_Member):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     '''
@@ -2378,8 +2624,8 @@ class Guild_Member_Add(Guild_Member):
 @dataclass
 class Guild_Member_Remove(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the id of the guild
     user:
@@ -2392,8 +2638,8 @@ class Guild_Member_Remove(DiscordObject):
 @dataclass
 class Guild_Member_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the id of the guild
     roles:
@@ -2427,8 +2673,8 @@ class Guild_Member_Update(DiscordObject):
 @dataclass
 class Guild_Members_Chunk(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the id of the guild
     members:
@@ -2456,8 +2702,8 @@ class Guild_Members_Chunk(DiscordObject):
 @dataclass
 class Guild_Role_Create(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the id of the guild
     role:
@@ -2470,8 +2716,8 @@ class Guild_Role_Create(DiscordObject):
 @dataclass
 class Guild_Role_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         the id of the guild
     role:
@@ -2484,8 +2730,8 @@ class Guild_Role_Update(DiscordObject):
 @dataclass
 class Guild_Role_Delete(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     role_id:
@@ -2498,8 +2744,8 @@ class Guild_Role_Delete(DiscordObject):
 @dataclass
 class Integration_Create(Integration):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     '''
@@ -2509,8 +2755,8 @@ class Integration_Create(Integration):
 @dataclass
 class Integration_Update(Integration):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     '''
@@ -2520,8 +2766,8 @@ class Integration_Update(Integration):
 @dataclass
 class Integration_Delete(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         integration id
     guild_id:
@@ -2537,8 +2783,8 @@ class Integration_Delete(DiscordObject):
 @dataclass
 class Invite_Create(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     channel_id:
         the channel the invite is for
     code:
@@ -2581,8 +2827,8 @@ class Invite_Create(DiscordObject):
 @dataclass
 class Invite_Delete(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     channel_id:
         the channel of the invite
     guild_id:
@@ -2598,8 +2844,8 @@ class Invite_Delete(DiscordObject):
 @dataclass
 class Message_Delete(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         the id of the message
     channel_id:
@@ -2615,8 +2861,8 @@ class Message_Delete(DiscordObject):
 @dataclass
 class Message_Delete_Bulk(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     ids:
         the ids of the messages
     channel_id:
@@ -2632,8 +2878,8 @@ class Message_Delete_Bulk(DiscordObject):
 @dataclass
 class Message_Reaction_Add(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     user_id:
         the id of the user
     channel_id:
@@ -2658,8 +2904,8 @@ class Message_Reaction_Add(DiscordObject):
 @dataclass
 class Message_Reaction_Remove(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     user_id:
         the id of the user
     channel_id:
@@ -2681,8 +2927,8 @@ class Message_Reaction_Remove(DiscordObject):
 @dataclass
 class Message_Reaction_Remove_All(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     channel_id:
         the id of the channel
     message_id:
@@ -2698,8 +2944,8 @@ class Message_Reaction_Remove_All(DiscordObject):
 @dataclass
 class Message_Reaction_Remove_Emoji(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     channel_id:
         the id of the channel
     guild_id:
@@ -2718,8 +2964,8 @@ class Message_Reaction_Remove_Emoji(DiscordObject):
 @dataclass
 class Presence_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     user:
         the user presence is being updated for
     guild_id:
@@ -2741,8 +2987,10 @@ class Presence_Update(DiscordObject):
 @dataclass
 class Client_Status(DiscordObject):
     '''
-    Params
-    ------
+    Active sessions are indicated with an "online", "idle", or "dnd" string per platform. If a user is offline or invisible, the corresponding field is not present.
+    
+    Atrributes
+    ----------
     desktop:
         the user's status set for an active desktop
     mobile:
@@ -2767,8 +3015,8 @@ class Activity(DiscordObject):
     > info
     > Bots are only able to send `name`, `type`, and optionally `url`.
     
-    Params
-    ------
+    Atrributes
+    ----------
     name:
         the activity's name
     type:
@@ -2776,7 +3024,7 @@ class Activity(DiscordObject):
     url:
         stream url, is validated when type is 1
     created_at:
-        unix timestamp of when the activity was added to the user's session
+        unix timestamp
     timestamps:
         unix timestamps for start and/or end of the game
     application_id:
@@ -2833,8 +3081,8 @@ class Activity_Types(Enum):
 @dataclass
 class Activity_Timestamps(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     start:
         unix time
     end:
@@ -2847,8 +3095,8 @@ class Activity_Timestamps(DiscordObject):
 @dataclass
 class Activity_Emoji(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     name:
         the name of the emoji
     id:
@@ -2864,22 +3112,22 @@ class Activity_Emoji(DiscordObject):
 @dataclass
 class Activity_Party(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         the id of the party
     size:
         used to show the party's current and maximum size
     '''
     id: str = ""
-    size: List[int] = list
+    size: Tuple[int, int] = list
 
 
 @dataclass
 class Activity_Assets(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     large_image:
         the id for a large asset of the activity, usually a snowflake
     large_text:
@@ -2898,8 +3146,8 @@ class Activity_Assets(DiscordObject):
 @dataclass
 class Activity_Secrets(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     join:
         the secret for joining a party
     spectate:
@@ -2924,8 +3172,10 @@ class Activity_Flags(Flag):
 @dataclass
 class Activity_Buttons(DiscordObject):
     '''
-    Params
-    ------
+    When received over the gateway, the `buttons` field is an array of strings, which are the button labels. Bots cannot access a user's activity button URLs. When sending, the `buttons` field must be an array of the below object:
+    
+    Atrributes
+    ----------
     label:
         the text shown on the button
     url:
@@ -2938,8 +3188,8 @@ class Activity_Buttons(DiscordObject):
 @dataclass
 class Typing_Start(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     channel_id:
         id of the channel
     guild_id:
@@ -2961,8 +3211,8 @@ class Typing_Start(DiscordObject):
 @dataclass
 class Voice_Server_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     token:
         voice connection token
     guild_id:
@@ -2978,8 +3228,8 @@ class Voice_Server_Update(DiscordObject):
 @dataclass
 class Webhook_Update(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild
     channel_id:
@@ -2991,14 +3241,20 @@ class Webhook_Update(DiscordObject):
 @dataclass
 class Application_Command(DiscordObject):
     '''
-    Params
-    ------
+    > info
+    > warn
+    > Required `options` must be listed before optional options
+    
+    Atrributes
+    ----------
     id:
         unique id of the command
     application_id:
         unique id of the parent application
+    guild_id:
+        guild id of the command, if not global
     name:
-        1-32 character name matching `^[\w-]{1,32}$`
+        1-32 lowercase character name matching `^[\w-]{1,32}$`
     description:
         1-100 character description
     options:
@@ -3008,6 +3264,7 @@ class Application_Command(DiscordObject):
     '''
     id: Snowflake = None
     application_id: Snowflake = None
+    guild_id: Snowflake = None
     name: str = ''
     description: str = ''
     options: List[Application_Command_Option] = list
@@ -3017,8 +3274,8 @@ class Application_Command(DiscordObject):
 @dataclass
 class Application_Command_Extra_Fields(Application_Command):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     guild_id:
         id of the guild the command is in
     '''
@@ -3056,8 +3313,8 @@ class Gateway_Bot(DiscordObject):
 @dataclass
 class Session_Start_Limit(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     total:
         The total number of session starts the current user is allowed
     remaining:
@@ -3078,8 +3335,8 @@ class O_Auth2_UR_Ls(Enum):
     > warn
     > In accordance with the relevant RFCs, the token and token revocation URLs will **only** accept a content type of `x-www-form-urlencoded`. JSON content is not permitted and will return an error.
     
-    Params
-    ------
+    Atrributes
+    ----------
     Base authorization URL:
         Base authorization URL
     Token URL:
@@ -3092,101 +3349,11 @@ class O_Auth2_UR_Ls(Enum):
     Token_Revocation = "https://discord.com/api/oauth2/token/revoke"
 
 
-@dataclass
-class Application(DiscordObject):
-    '''
-    Params
-    ------
-    id:
-        the id of the app
-    name:
-        the name of the app
-    icon:
-        the icon hash of the app
-    description:
-        the description of the app
-    rpc_origins:
-        an  rpc origin urls, if rpc is enabled
-    bot_public:
-        when false only app owner can join the app's bot to guilds
-    bot_require_code_grant:
-        when true the app's bot will only join upon completion of the full oauth2 code grant flow
-    terms_of_service_url:
-        the url of the app's terms of service
-    privacy_policy_url:
-        the url of the app's privacy policy
-    owner:
-        user  containing info on the owner of the application
-    summary:
-        if this application is a game sold on Discord, this field will be the summary field for the store page of its primary sku
-    verify_key:
-        GetTicket
-    team:
-        if the application belongs to a team, this will be a list of the members of that team
-    guild_id:
-        if this application is a game sold on Discord, this field will be the guild to which it has been linked
-    primary_sku_id:
-        if this application is a game sold on Discord, this field will be the id of the "Game SKU" that is created, if exists
-    slug:
-        if this application is a game sold on Discord, this field will be the URL slug that links to the store page
-    cover_image:
-        if this application is a game sold on Discord, this field will be the hash of the image on store embeds
-    flags:
-        Flags
-    '''
-    id: Snowflake = 0
-    name: str = ''
-    icon: str = ''
-    description: str = ''
-    rpc_origins: List[str] = list
-    bot_public: bool = False
-    bot_require_code_grant: bool = False
-    terms_of_service_url: str = ''
-    privacy_policy_url: str = ''
-    owner: User = None
-    summary: str = ''
-    verify_key: str = ''
-    team: List[Team] = list
-    guild_id: Snowflake = 0
-    primary_sku_id: Snowflake = 0
-    slug: str = ''
-    cover_image: str = ''
-    flags: int = 0
-
-
-class Application_Flags(Flag):
-    GATEWAY_PRESENCE = 1 << 12
-    GATEWAY_PRESENCE_LIMITED = 1 << 13
-    GATEWAY_GUILD_MEMBERS = 1 << 14
-    GATEWAY_GUILD_MEMBERS_LIMITED = 1 << 15
-    VERIFICATION_PENDING_GUILD_LIMIT = 1 << 16
-    EMBEDDED = 1 << 17
-
-
-@dataclass
-class Response(DiscordObject):
-    '''
-    Params
-    ------
-    application:
-        the current application
-    scopes:
-        the scopes the user has authorized the application for
-    expires:
-        when the access token expires
-    user:
-        the user who has authorized, if the user has authorized with the `identify` scope
-    '''
-    application: Application = None
-    scopes: List[str] = list
-    expires: datetime = datetime.now().isoformat()
-    user: User = None
-
 
 class Gateway_Opcodes(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     Dispatch:
         An event was dispatched.
     Heartbeat:
@@ -3225,8 +3392,8 @@ class Gateway_Opcodes(Enum):
 
 class Gateway_Close_Event_Codes(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     4000:
         Unknown error
     4001:
@@ -3274,8 +3441,8 @@ class Gateway_Close_Event_Codes(Enum):
 
 class Voice_Opcodes(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     Identify:
         Begin a voice websocket connection.
     Select Protocol:
@@ -3314,8 +3481,8 @@ class Voice_Opcodes(Enum):
 
 class Voice_Close_Event_Codes(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     4001:
         Unknown opcode
     4002:
@@ -3369,97 +3536,10 @@ class HTTP_Response_Codes(Enum):
     SERVER_ERROR = 500
     GATEWAY_UNAVAILABLE = 502
 
-
-class JSON_Error_Codes(Enum):
-    General_error = 0
-    Unknown_account = 10001
-    Unknown_application = 10002
-    Unknown_channel = 10003
-    Unknown_guild = 10004
-    Unknown_integration = 10005
-    Unknown_invite = 10006
-    Unknown_member = 10007
-    Unknown_message = 10008
-    Unknown_permission_overwrite = 10009
-    Unknown_provider = 10010
-    Unknown_role = 10011
-    Unknown_token = 10012
-    Unknown_user = 10013
-    Unknown_emoji = 10014
-    Unknown_webhook = 10015
-    Unknown_ban = 10026
-    Unknown_SKU = 10027
-    Unknown_Store_Listing = 10028
-    Unknown_entitlement = 10029
-    Unknown_build = 10030
-    Unknown_lobby = 10031
-    Unknown_branch = 10032
-    Unknown_redistributable = 10036
-    Unknown_guild_template = 10057
-    Unknown_interaction = 10062
-    Unknown_application_command = 10063
-    Only_Users = 20001
-    Only_Bots = 20002
-    Announcement_Rate_Limit = 20022
-    Write_Rate_Limit = 20028
-    Maximum_guilds_reached_100 = 30001
-    Maximum_friends_reached_1000 = 30002
-    Maximum_pins_reached_50 = 30003
-    Maximum_roles_reached_250 = 30005
-    Maximum_webhooks_reached_10 = 30007
-    Maximum_reactions_reached_20 = 30010
-    Maximum_channels_reached_500 = 30013
-    Maximum_attachments_reached_10 = 30015
-    Maximum_invites_reached_100 = 30016
-    Guild_already_has_a_template = 30031
-    Maximum_bans = 30035
-    Unauthorized = 40001
-    Verifiaction_Required = 40002
-    Too_Large = 40005
-    Disabled_Server_Side = 40006
-    User_Banned = 40007
-    Already_Crossposted = 40033
-    Missing_access = 50001
-    Invalid_account_type = 50002
-    DM_Channel = 50003
-    Widget_Disabled = 50004
-    Cannot_edit_a_message_authored_by_another_user = 50005
-    Cannot_send_an_empty_message = 50006
-    Cannot_send_messages_to_this_user = 50007
-    Cannot_send_messages_in_a_voice_channel = 50008
-    Verification_Level_Too_High = 50009
-    OAuth2_No_Bot = 50010
-    OAuth2_Limit = 50011
-    Invalid_OAuth2_state = 50012
-    No_Permission = 50013
-    Invalid_Token = 50014
-    Note_Too_Long = 50015
-    Too_High_or_Low = 50016
-    Wrong_Channel = 50019
-    Invalid_Invite = 50020
-    System_Message = 50021
-    Cannot_Execute_On_this_Channel_type = 50024
-    Invalid_OAuth2_Token = 50025
-    Invalid_Webhook_Token = 50027
-    Invalid_Recipents = 50033
-    Message_Too_Old = 50034
-    Invalid_Form_Body = 50035
-    Wrong_Guild = 50036
-    Invalid_API_version = 50041
-    Required_Channel = 50074
-    Invalid_sticker = 50081
-    Archived_Thread = 50083
-    Invalid_Notification_Setting = 50084
-    Before_Too_Early = 50085
-    Two_Factor_Required = 60003
-    Reaction_blocked = 90001
-    Try_Again_Later = 130000
-
-
 class RPC_Error_Codes(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     Unknown error:
         An unknown error occurred.
     Invalid payload:
@@ -3513,8 +3593,8 @@ class RPC_Error_Codes(Enum):
 
 class RPC_Close_Event_Codes(Enum):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     Invalid client ID:
         You connected to the RPC server with an invalid client ID.
     Invalid origin:
@@ -3554,11 +3634,11 @@ class Intents(Flag):
 
 class Bitwise_Permission_Flags(Flag):
     '''
-    *** These permissions require the owner account to use [two-factor authentication](#DOCS_TOPICS_OAUTH2/twofactor-authentication-requirement) when used on a guild that has server-wide 2FA enabled.**
+    *** These permissions require the owner account to use [two-factor authentication](https:#/discord.com/developers/docs/topics/oauth2#twofactor-authentication-requirement) when used on a guild that has server-wide 2FA enabled.**
     Note that these internal permission names may be referred to differently by the Discord client. For example, "Manage Permissions" refers to MANAGE_ROLES and "Use Voice Activity" refers to USE_VAD.
     
-    Params
-    ------
+    Atrributes
+    ----------
     CREATE_INSTANT_INVITE:
         Allows creation of instant invites
     KICK_MEMBERS:
@@ -3683,8 +3763,8 @@ class Role(DiscordObject):
     '''
     Roles without colors (`color == 0`) do not count towards the final computed color in the user list.
     
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         role id
     name:
@@ -3718,8 +3798,8 @@ class Role(DiscordObject):
 @dataclass
 class Role_Tags(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     bot_id:
         the id of the bot this role belongs to
     integration_id:
@@ -3735,10 +3815,10 @@ class Role_Tags(DiscordObject):
 @dataclass
 class Rate_Limit_Response(DiscordObject):
     '''
-    Note that the normal rate-limiting headers will be sent in this response. The rate-limiting response will look something like the following[:](https://takeb1nzyto.space/)
+    Note that the normal rate-limiting headers will be sent in this response. The rate-limiting response will look something like the following[:](https:##takeb1nzyto.space/)
     
-    Params
-    ------
+    Atrributes
+    ----------
     message:
         A message saying you are being rate limited.
     retry_after:
@@ -3754,28 +3834,31 @@ class Rate_Limit_Response(DiscordObject):
 @dataclass
 class Team(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     icon:
         a hash of the image of the team's icon
     id:
         the unique id of the team
     members:
         the members of the team
+    name:
+        the name of the team
     owner_user_id:
         the user id of the current team owner
     '''
     icon: str = ''
     id: Snowflake = 0
     members: List[Team_Members] = list
+    name: str = ''
     owner_user_id: Snowflake = 0
 
 
 @dataclass
 class Team_Members(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     membership_state:
         Membership_State
     permissions:
@@ -3796,17 +3879,11 @@ class Membership_State_Enum(Enum):
     ACCEPTED = 2
 
 
-class Voice_Gateway_Versions(Enum):
-    recommended = 4
-    available = 3
-    default = 1
-
-
 class Encryption_Modes(Enum):
     '''
     >warn
     >The nonce has to be stripped from the payload before encrypting and before decrypting the audio data
-    Finally, the voice server will respond with a [Opcode 4 Session Description](#DOCS_TOPICS_OPCODES_AND_STATUS_CODES/voice) that includes the `mode` and `secret_key`, a 32 byte array used for [encrypting and sending](#DOCS_TOPICS_VOICE_CONNECTIONS/encrypting-and-sending-voice) voice data:
+    Finally, the voice server will respond with a [Opcode 4 Session Description](https:#/discord.com/developers/docs/topics/opcodes_and_status_codes#voice) that includes the `mode` and `secret_key`, a 32 byte array used for [encrypting and sending](https:#/discord.com/developers/docs/topics/voice_connections#encrypting-and-sending-voice) voice data:
     '''
     Normal = "xsalsa20_poly1305"
     Suffix = "xsalsa20_poly1305_suffix"
@@ -3824,6 +3901,11 @@ class Voice_Packet(DiscordObject):
 
 
 class Speaking(Enum):
+    '''
+    To notify clients that you are speaking or have stopped speaking, send an [Opcode 5 Speaking](https://discord.com/developers/docs/topics/opcodes_and_status_codes#voice) payload:
+    Example Speaking Payload
+    > You must send at least one [Opcode 5 Speaking](https:#/discord.com/developers/docs/topics/opcodes_and_status_codes#voice) payload before sending voice data, or you will be disconnected with an invalid SSRC error.```json
+    '''
     MICROPHONE = 1 << 0
     SOUNDSHARE = 1 << 1
     PRIORITY = 1 << 2
@@ -3832,8 +3914,10 @@ class Speaking(Enum):
 @dataclass
 class IP_Discovery(DiscordObject):
     '''
-    Params
-    ------
+    Generally routers on the Internet mask or obfuscate UDP ports through a process called NAT. Most users who implement voice will want to utilize IP discovery to find their external IP and port which will then be used for receiving voice communications. To retrieve your external IP and port, send the following UDP packet to your voice port (all numeric are big endian):
+    
+    Atrributes
+    ----------
     Type:
         Values 0x1 and 0x2 indicate request and response, respectively
     Length:
@@ -3850,12 +3934,6 @@ class IP_Discovery(DiscordObject):
     SSRC: c_uint = None
     Address: str = None
     Port: c_ushort = None
-
-
-class API_Versions(Enum):
-    Latest = 9
-    Available = 8
-    Default = 6
 
 
 @dataclass
@@ -3880,15 +3958,47 @@ class Snowflake_ID_Format(DiscordObject):
 
 class Formats(Enum):
     '''
-    Using the markdown for either users, roles, or channels will usually mention the target(s) accordingly, but this can be suppressed using the `allowed_mentions` parameter when creating a message. Standard emoji are currently rendered using [Twemoji](https://twemoji.twitter.com/) for Desktop/Android and Apple's native emoji on iOS.
+    Using the markdown for either users, roles, or channels will usually mention the target(s) accordingly, but this can be suppressed using the `allowed_mentions` parameter when creating a message. Standard emoji are currently rendered using [Twemoji](https:##twemoji.twitter.com/) for Desktop/Android and Apple's native emoji on iOS.
+    Timestamps will display the given timestamp in the user's timezone and locale.
     '''
-    User = "<@{user_id}>"
     Nickname = "<@!{user_id}>"
     Channel = "<#{channel_id}>"
     Role = "<@&{role_id}>"
     Standard_Emoji = "Unicode Characters"
     Custom_Emoji = "<:{name}:{id}>"
     Custom_Animated_Emoji = "<a:{name}:{id}>"
+    Unix_Timestamp = "<t:{TIMESTAMP}>"
+    Unix_Timestamp_Styled = "<t:{TIMESTAMP}:{STYLE}>"
+
+
+class Timestamp_Styles(Enum):
+    '''
+    *default
+    
+    Atrributes
+    ----------
+    Short Time:
+        Short Time
+    Long Time:
+        Long Time
+    Short Date:
+        Short Date
+    Long Date:
+        Long Date
+    Short Date/Time:
+        Short Date/Time
+    Long Date/Time:
+        Long Date/Time
+    Relative Time:
+        Relative Time
+    '''
+    Short_Time = "t"
+    Long_Time = "T"
+    Short_Date = "d"
+    Long_Date = "D"
+    Short_DateTime = "f"
+    Long_DateTime = "F"
+    Relative_Time = "R"
 
 
 class Image_Formats(Enum):
@@ -3913,20 +4023,167 @@ class CDN_Endpoints(Enum):
     Default_User_Avatar = "embed/avatars/{user_discriminator}.png"
     User_Avatar = "avatars/{user_id}/{user_avatar}.png"
     Application_Icon = "app-icons/{application_id}/{icon}.png"
+    Application_Cover = "app-assets/{application_id}/cover_image.png"
     Application_Asset = "app-assets/{application_id}/{asset_id}.png"
     Achievement_Icon = "app-assets/{application_id}/achievements/{achievement_id}/icons/{icon_hash}.png"
     Team_Icon = "team-icons/{team_id}/{team_icon}.png"
 
 
 @dataclass
+class Component(DiscordObject):
+    '''
+    Atrributes
+    ----------
+    type:
+        Component_Type
+    style:
+        Button_Styles
+    label:
+        text that appears on the button, max 80 characters
+    emoji:
+        `name`, `id`, and `animated`
+    custom_id:
+        a developer-defined identifier for the button, max 100 characters
+    url:
+        a url for link-style buttons
+    disabled:
+        whether the button is disabled, default `false`
+    components:
+        a list of child components
+    '''
+    type: int = 0
+    style: int = 0
+    label: str = ''
+    emoji: Emoji = None
+    custom_id: str = ''
+    url: str = ''
+    disabled: bool = False
+    components: Component = None
+
+
+class Component_Types(Enum):
+    '''
+    Atrributes
+    ----------
+    Action Row:
+        A container for other components
+    Button:
+        A button
+    Select Menu:
+        A select menu for picking from choices
+    '''
+    ACTION_ROW = 1
+    BUTTON = 2
+    SELECT_MENU = 3
+
+
+@dataclass
+class Button(DiscordObject):
+    '''
+    Buttons come in a variety of styles to convey different types of actions. These styles also define what fields are valid for a button.
+    - Non-link buttons **must** have a `custom_id`, and cannot have a `url`
+    - Link buttons **must** have a `url`, and cannot have a `custom_id`
+    - Link buttons do not send an [interaction](https:#/discord.com/developers/docs/interactions/slash_commands#interaction-object) to your app when clicked
+    
+    Atrributes
+    ----------
+    type:
+        `2` for a button
+    style:
+        Button_Styles
+    label:
+        text that appears on the button, max 80 characters
+    emoji:
+        `name`, `id`, and `animated`
+    custom_id:
+        a developer-defined identifier for the button, max 100 characters
+    url:
+        a url for link-style buttons
+    disabled:
+        whether the button is disabled
+    '''
+    type: int = 0
+    style: int = 0
+    label: str = ''
+    emoji: Emoji = None
+    custom_id: str = ''
+    url: str = ''
+    disabled: bool = False
+
+
+@dataclass
+class Button_Styles(DiscordObject):
+    '''
+    ![An image showing the different button styles](button-styles.png)
+    When a user clicks on a button, your app will receive an [interaction](https:#/discord.com/developers/docs/interactions/slash_commands#interaction-object) including the message the button was on:
+    '''
+    PRIMARY: 1 = None
+    SECONDARY: 2 = None
+    SUCCESS: 3 = None
+    DANGER: 4 = None
+    LINK: 5 = None
+
+
+@dataclass
+class Select_Menu(DiscordObject):
+    '''
+    Atrributes
+    ----------
+    custom_id:
+        a developer-defined identifier for the button, max 100 characters
+    options:
+        the choices in the select, max 25
+    placeholder:
+        custom placeholder text if nothing is selected, max 100 characters
+    min_values:
+        the minimum number of items that must be chosen; default 1, min 0, max 25
+    max_values:
+        the maximum number of items that can be chosen; default 1, max 25
+    disabled:
+        disable the select, default false
+    '''
+    custom_id: str = ''
+    options: List[Select_Option] = None
+    placeholder: str = ''
+    min_values: int = 0
+    max_values: int = 0
+    disabled: bool = False
+
+
+@dataclass
+class Select_Option(DiscordObject):
+    '''
+    Atrributes
+    ----------
+    label:
+        the user-facing name of the option, max 25 characters
+    value:
+        the dev-define value of the option, max 100 characters
+    description:
+        an additional description of the option, max 50 characters
+    emoji:
+        `id`, `name`, and `animated`
+    default:
+        will render this option as selected by default
+    '''
+    label: str = ''
+    value: str = ''
+    description: str = ''
+    emoji: Emoji = None
+    default: bool = False
+
+
+@dataclass
 class Application_Command_Option(DiscordObject):
     '''
-    Params
-    ------
+    > info
+    
+    Atrributes
+    ----------
     type:
-        ApplicationCommandOptionType
+        Application_Command_Option_Type
     name:
-        1-32 character name matching `^[\w-]{1,32}$`
+        1-32 lowercase character name matching `^[\w-]{1,32}$`
     description:
         1-100 character description
     required:
@@ -3960,8 +4217,10 @@ class Application_Command_Option_Type(Enum):
 @dataclass
 class Application_Command_Option_Choice(DiscordObject):
     '''
-    Params
-    ------
+    If you specify `choices` for an option, they are the **only** valid values for a user to pick
+    
+    Atrributes
+    ----------
     name:
         1-100 character choice name
     value:
@@ -3974,8 +4233,10 @@ class Application_Command_Option_Choice(DiscordObject):
 @dataclass
 class Guild_Application_Command_Permissions(DiscordObject):
     '''
-    Params
-    ------
+    Returned when fetching the permissions for a command in a guild.
+    
+    Atrributes
+    ----------
     id:
         the id of the command
     application_id:
@@ -3994,8 +4255,10 @@ class Guild_Application_Command_Permissions(DiscordObject):
 @dataclass
 class Application_Command_Permissions(DiscordObject):
     '''
-    Params
-    ------
+    Application command permissions allow you to enable or disable commands for specific users or roles within a guild.
+    
+    Atrributes
+    ----------
     id:
         the id of the role
     type:
@@ -4016,11 +4279,11 @@ class Application_Command_Permission_Type(Enum):
 @dataclass
 class Interaction(DiscordObject):
     '''
-    * This is always present on `ApplicationCommand` interaction types. It is optional for future-proofing against new interaction types
+    * This is always present on application command interaction types. It is optional for future-proofing against new interaction types
     ** `member` is sent when the command is invoked in a guild, and `user` is sent when invoked in a DM
     
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         id of the interaction
     application_id:
@@ -4041,6 +4304,8 @@ class Interaction(DiscordObject):
         a continuation token for responding to the interaction
     version:
         read-only property, always `1`
+    message:
+        for components, the message they were attached to
     '''
     id: Snowflake = 0
     application_id: Snowflake = 0
@@ -4052,18 +4317,20 @@ class Interaction(DiscordObject):
     user: User = None
     token: str = ''
     version: int = 0
+    message: Message = None
 
 
 class Interaction_Type(Enum):
     PING = 1
-    APPLICATIONCOMMAND = 2
+    APPLICATION_COMMAND = 2
+    MESSAGE_COMPONENT = 3
 
 
 @dataclass
 class Application_Command_Interaction_Data(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         the ID of the invoked command
     name:
@@ -4072,29 +4339,36 @@ class Application_Command_Interaction_Data(DiscordObject):
         converted users + roles + channels
     options:
         the params + values from the user
+    custom_id:
+        `custom_id`
+    component_type:
+        Type
     '''
     id: Snowflake = 0
     name: str = ''
     resolved: Application_Command_Interaction_Data_Resolved = None
     options: List[Application_Command_Interaction_Data_Option] = list
+    custom_id: str = ''
+    component_type: int = 0
 
 
 @dataclass
 class Application_Command_Interaction_Data_Resolved(DiscordObject):
     '''
+    > info
     * Partial `Member` objects are missing `user`, `deaf` and `mute` fields
     ** Partial `Channel` objects only have `id`, `name`, `type` and `permissions` fields
     
-    Params
-    ------
+    Atrributes
+    ----------
     users:
-        the IDs and User s
+        the ids and User s
     members:
-        the IDs and  Member s
+        the ids and  Member s
     roles:
-        the IDs and Role s
+        the ids and Role s
     channels:
-        the IDs and  Channel s
+        the ids and  Channel s
     '''
     users: Dict[Snowflake, User] = dict
     members: Dict[Snowflake, Guild_Member] = dict
@@ -4105,12 +4379,14 @@ class Application_Command_Interaction_Data_Resolved(DiscordObject):
 @dataclass
 class Application_Command_Interaction_Data_Option(DiscordObject):
     '''
-    Params
-    ------
+    All options have names, and an option can either be a parameter and input value--in which case `value` will be set--or it can denote a subcommand or group--in which case it will contain a top-level key and another array of `options`.
+    
+    Atrributes
+    ----------
     name:
         the name of the parameter
     type:
-        ApplicationCommandOptionType
+        Application_Command_Option_Type
     value:
         the value of the pair
     options:
@@ -4125,8 +4401,8 @@ class Application_Command_Interaction_Data_Option(DiscordObject):
 @dataclass
 class Interaction_Response(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     type:
         the type of response
     data:
@@ -4138,23 +4414,35 @@ class Interaction_Response(DiscordObject):
 
 class Interaction_Callback_Type(Enum):
     '''
-    Pong:
+    * Only valid for [component-based](https:#/discord.com/developers/docs/interactions/message_components#) interactions
+    
+    Atrributes
+    ----------
+    PONG:
         ACK a `Ping`
-    ChannelMessageWithSource:
+    CHANNEL_MESSAGE_WITH_SOURCE:
         respond to an interaction with a message
-    DeferredChannelMessageWithSource:
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE:
         ACK an interaction and edit a response later, the user sees a loading state
+    DEFERRED_UPDATE_MESSAGE:
+        for components, ACK an interaction and edit the original message later; the user does not see a loading state
+    UPDATE_MESSAGE:
+        for components, edit the message the component was attached to
     '''
     PONG = 1
     CHANNEL_MESSAGE_WITH_SOURCE = 4
     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5
+    DEFERRED_UPDATE_MESSAGE = 6
+    UPDATE_MESSAGE = 7
 
 
 @dataclass
 class Interaction_Application_Command_Callback_Data(DiscordObject):
     '''
-    Params
-    ------
+    Not all message fields are currently supported.
+    
+    Atrributes
+    ----------
     tts:
         is the response TTS
     content:
@@ -4164,26 +4452,39 @@ class Interaction_Application_Command_Callback_Data(DiscordObject):
     allowed_mentions:
         Allowed_Mentions
     flags:
-        set to `64` to make your response ephemeral
+        Interaction_Application_Command_Callback_Data_Flags
+    components:
+        message components
     '''
     tts: bool = False
     content: str = None
     embeds: List[Embed] = None
     allowed_mentions: Allowed_Mentions = None
-    flags: int = None
+    flags: int = 0
+    components: List[Component] = list
+
+
+class Interaction_Application_Command_Callback_Data_Flags(Flag):
+    '''
+    Atrributes
+    ----------
+    EPHEMERAL:
+        only the user receiving the message can see it
+    '''
+    EPHEMERAL = 1 << 6
 
 
 @dataclass
 class Message_Interaction(DiscordObject):
     '''
-    Params
-    ------
+    Atrributes
+    ----------
     id:
         id of the interaction
     type:
         the type of interaction
     name:
-        ApplicationCommand
+        Application_Command
     user:
         the user who invoked the interaction
     '''
