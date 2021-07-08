@@ -147,8 +147,199 @@ class Embed(Embed):
         '''Counts total characters'''
         return len(str(self.title) or "") + len(str(self.description) or "") + len(str(self.author.name) or "" if self.author else "") + len(str(self.footer.text) or "" if self.footer else "") + sum([len(str(field.name)) + len(str(field.value)) for field in self.fields])
 
+class Sendable:
+    @property
+    def is_dm(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    def in_thread(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    def is_reply(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    def is_empty(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    def is_bot(self) -> bool:
+        raise NotImplementedError
+    
+    async def typing(self, channel_id: Snowflake =None, private: bool=False) -> None:
+        '''Shows in channel that Bot is Typing. Useful for signalising loading state'''
+        raise NotImplementedError
+
+    async def reply(self, content: str=None, embeds: List[Embed] = None, components: List[Component] = None, 
+                    file: bytes = None, filename: str=None, 
+                    allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, 
+                    private: bool=False) -> Message:
+        '''Creates reply message.
+        Basically a wrapper around `send` method.
+
+        Params
+        ------
+        content:
+            Message to send
+        embeds:
+            List of embeds to send
+        components:
+            List of components to send
+        file:
+            Binary blob to send
+        filename:
+            Name of file to send
+        allowed_mentions:
+            Allowed Mentions structure
+        message_reference:
+            Message_Reference object message is a reply to
+        private:
+            Whether message should be send as ephemeral response for interaction (or DM for message) or not
+        '''
+        raise NotImplementedError
+
+    async def send(self, content: str=None, embeds: List[Embed] = None, components: List[Component] = None, 
+                    file: bytes = None, filename: str=None, 
+                    allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, 
+                    reply: bool=False, private: bool=False, channel_id: Snowflake=None) -> Message:
+        '''Sends message
+
+        Params
+        ------
+        content:
+            Message to send
+        embeds:
+            List of embeds to send
+        components:
+            List of components to send
+        file:
+            Binary blob to send
+        filename:
+            Name of file to send
+        allowed_mentions:
+            Allowed Mentions structure
+        message_reference:
+            Message_Reference object message is a reply to
+        reply:
+            Whether this message should attach to original message and reply to it
+        private:
+            Whether message should be send as ephemeral response for interaction (or DM for message) or not'''
+        raise NotImplementedError
+
+    async def edit(self, content: str=None, embeds: List[Embed] = None, components: List[Component] = None, 
+                        attachments: List[Attachment] = None, file: bytes = None, filename: str=None, 
+                        allowed_mentions: Allowed_Mentions=None, flags: Message_Flags = None) -> Message:
+        '''Edits message
+
+        Params
+        ------
+        content:
+            Message to send
+        embeds:
+            List of embeds to send
+        components:
+            List of components to send
+        attachments:
+            List of attachments to keep
+        file:
+            Binary blob to send
+        filename:
+            Name of file to send
+        flags:
+            Flags message should be send with
+        allowed_mentions:
+            Allowed Mentions structure'''
+        raise NotImplementedError
+
+    async def delete(self, message_id: Snowflake = None, reason: str = None) -> None:
+        '''Deletes message'''
+        raise NotImplementedError
+
+    async def get(self, channel_id: Snowflake = None, message_id: Snowflake = None) -> Message:
+        '''Fetches message'''
+        raise NotImplementedError
+
+    async def publish(self) -> Message:
+        '''Publishes message if in announcement channel'''
+        raise NotImplementedError
+
+    async def send_followup(self, content: str = None, embeds: List[Embed] = None, 
+                        components: List[Component] = None,
+                        allowed_mentions: Allowed_Mentions = [], 
+                        tts: bool = None, 
+                        file: bytes = None, filename=None, 
+                        username: str = None, avatar_url: str = None, 
+                        flags: Message_Flags = None,
+                        wait: bool = False, thread_id: Snowflake = None) -> Union[Message, None]:
+        '''Creates followup message. (Replies to previous message)
+        Basically a wrapper around `send_webhook` method.
+
+        Params
+        ------
+        content:
+            Message to send
+        embeds:
+            List of embeds to send
+        components:
+            List of components to include
+        file:
+            Binary blob to send
+        filename:
+            Name of file to send
+        allowed_mentions:
+            Allowed Mentions structure
+        username:
+            Username message should be send with (Works only with interactions or webhooks)
+        avatar_url:
+            Avatar message should be send with (Works only with interactions or webhooks)
+        flags:
+            Flags message should be send with (Works only with interactions)
+        wait:
+            Whether should return Message (Not used with interactions)
+        thread_id:
+            Whether Message should be part of a thread (Not used with interactions)
+        '''
+        raise NotImplementedError
+
+    async def edit_followup(self, content: str = None, embeds: List[Embed] = None,  
+                        components: List[Component] = None,
+                        allowed_mentions: Allowed_Mentions = [], 
+                        attachments: List[Attachment] = None,
+                        flags: Message_Flags = None,
+                        file: bytes = None, filename: str = None) -> Union[Message, None]:
+        '''Edits last followup message. (Edits last reply)
+        Basically a wrapper around `edit_webhook` method.
+
+        Params
+        ------
+        content:
+            Message to send
+        embeds:
+            List of embeds to send
+        components:
+            List of components to include
+        allowed_mentions:
+            Allowed Mentions structure
+        attachments:
+            List of attachments to keep
+        flags:
+            Flags message should be send with
+        file:
+            Binary blob to send
+        filename:
+            Name of file to send
+        '''
+        raise NotImplementedError
+
+    async def delete_followup(self, message_id: Snowflake = None) -> None:
+        '''Deletes last followup message. (Deletes last reply)
+        Basically a wrapper around `delete_webhook` method.'''
+        raise NotImplementedError
+
 @dataclass
-class Message(Message):
+class Message(Message, Sendable):
     embeds: List[Embed] = list
     @property
     def is_private(self) -> bool:
@@ -173,31 +364,51 @@ class Message(Message):
     @property
     def is_bot(self) -> bool:
         return self.author and self.author.bot or self.webhook_id
+    
+    async def typing(self, channel_id: Snowflake = None, private: bool=False) -> None:
+        return await self._Client.trigger_typing_indicator(channel_id or self.channel_id)
 
-    async def reply(self, content="", embed=None, file: bytes = None, filename: str="file.txt", allowed_mentions: Allowed_Mentions = None) -> Message:
-        '''Creates replay message'''
-        return await self._Client.create_message(self.channel_id,
-        content=content if content != "" else self.content,
-        embed=embed if embed else self.embeds[0] if self.embeds != [] else None, 
-        filename=filename, file=file,
-        allowed_mentions=allowed_mentions,
-        message_reference=Message_Reference(message_id=self.id, channel_id=self.channel_id, guild_id=self.guild_id if self.guild_id != 0 else None))
+    async def reply(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, private: bool=None) -> Message:
+        return await self.send(
+            content=content, 
+            embeds=embeds, 
+            components=components, 
+            file=file, 
+            filename=filename, 
+            allowed_mentions=allowed_mentions, 
+            message_reference= Message_Reference(
+                message_id=self.id,
+                channel_id=self.channel_id,
+                guild_id=self.guild_id if self.guild_id != 0 else None
+            ),
+            reply=True,
+            private=private)
     
-    async def delete(self) -> None:
-        '''Deletes message'''
-        return await self._Client.delete_message(self.channel_id, self.id)
+    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=False, private: bool=False, channel_id: Snowflake=None) -> Message:
+        return await self._Client.create_message(channel_id or self.channel_id, 
+            content=content,# if content != "" else self.content, 
+            embeds=embeds,# if embeds else self.embeds,
+            components=components,# if components else self.components, 
+            filename=filename, file=file, 
+            allowed_mentions=allowed_mentions, 
+            message_reference=message_reference
+        )
     
-    async def edit(self) -> Message:
-        '''Edits message'''
-        return await self._Client.edit_message(self.channel_id, self.id, self.content, self.embeds[0], self.flags, self.allowed_mentions)
-    
-    async def send(self, content=None, embed=None, file: bytes = None, filename: str=None, allowed_mentions: Allowed_Mentions = None) -> Message:
-        '''Creates new message'''
-        return await self._Client.create_message(self.channel_id, 
-        content=content or self.content, 
-        embed=embed or (self.embeds[0] if self.embeds else None),
-        filename=filename, file=file,
-        allowed_mentions=allowed_mentions)
+    async def edit(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, flags: Message_Flags=None) -> Message:
+        return await self._Client.edit_message(
+            channel_id=self.channel_id, 
+            message_id=self.id, 
+            content=content or self.content, 
+            embeds=embeds or self.embeds, 
+            components=components or self.components,
+            attachments=attachments,
+            file=file,
+            filename=filename,
+            flags=flags or self.flags, 
+            allowed_mentions=allowed_mentions)
+
+    async def delete(self, message_id: Snowflake=None, reason: str=None) -> None:
+        return await self._Client.delete_message(channel_id=self.channel_id, message_id=message_id or self.id, reason=reason)
     
     async def webhook(self, webhook_id: Snowflake, webhook_token: int, username: str = None, avatar_url: str = None, file: bytes = None) -> Message:
         '''Sends message as a webhook'''
@@ -208,27 +419,25 @@ class Message(Message):
         return await self._Client.edit_webhook_message(webhook_id, webhook_token, self.id, content, embeds, allowed_mentions)
     
     async def get(self) -> Message:
-        '''Fetches message'''
         return await self._Client.get_channel_message(self.channel_id, self.id)
 
-    async def react(self, reaction) -> None:
+    async def react(self, reaction: str) -> None:
         '''Reacts to message'''
         return await self._Client.create_reaction(self.channel_id, self.id, reaction)
     
-    async def get_reactions(self, emoji, users=[], last_id=0, limit=100):
-        '''Retrieves all reactions from message'''
+    async def get_reactions(self, emoji: str, users: List[User]=[], last_id: Snowflake=0, limit: Snowflake=100) -> List[User]:
+        '''Retrieves all users that reacted to this message'''
         #for chunk in range(int(count / 100) + (count % 100 > 0)): #Alternative pagination method
         r = await self._Client.get_reactions(self.channel_id, self.id, emoji, after=last_id, limit=limit)
         if len(r) < limit or len(r) == 0:
             return [i for i in users+r if i.id != self._Client.user_id]
         return await self.get_reactions(emoji, users=users+r, last_id=r[-1].id)
 
-    async def delete_reaction(self, reaction) -> None:
+    async def delete_reaction(self, reaction: str) -> None:
         '''Deletes reaction'''
         return await self._Client.delete_own_reaction(self.channel_id, self.id, reaction)
     
     async def publish(self) -> Message:
-        '''Publishes Message'''
         return await self._Client.crosspost_message(self.channel_id, self.id)
     
     def attachments_as_embed(self, embed=None, title_attachments="Attachments", title_image="Image"):
@@ -268,61 +477,106 @@ class User(User):
 @dataclass
 class Interaction(Interaction):
     data: Application_Command_Interaction_Data = None
-    async def pong(self):
-        '''Pongs'''
-        response = Interaction_Response(
-            type=Interaction_Callback_Type.PONG,
-            data=None
-        )
-        return await self._Client.create_interaction_response(self.id, self.token, response)
-    async def ack(self):
-        '''Sends ACK message to Discord to prevent token from expiring.
-        Use it if processing takes more than 3 seconds'''
-        response = Interaction_Response(
-            type=Interaction_Callback_Type.ACKNOWLEDGE,
-            data=None
-        )
-        return await self._Client.create_interaction_response(self.id, self.token, response)
-    async def respond_private(self, content: str=None, embeds: List[Embed]=None, flags: int=64):
-        return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
-            type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(content=content, embeds=embeds, allowed_mentions=Allowed_Mentions(parse=[]), flags=flags)
-            )
-        )
-    async def deferred_message(self, private: bool=True):
+    _deferred = False
+    _replied = False
+    _followup_id = None
+    @property
+    def is_private(self) -> bool:
+        return self.guild_id == 0
+    
+    @property
+    def is_thread(self) -> bool:
+        return False
+    
+    @property
+    def is_reply(self) -> bool:
+        return False
+    
+    @property
+    def is_webhook(self) -> bool:
+        return False
+    
+    @property
+    def is_empty(self) -> bool:
+        return False
+    
+    @property
+    def is_bot(self) -> bool:
+        return False
+    
+    async def deferred(self, private:bool=False):
         '''Acknowledges Interaction with Source'''
+        if self._deferred:
+            return
+        self._deferred = True
+        self._replied = True
         return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
-            type=Interaction_Callback_Type.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE, data=Interaction_Application_Command_Callback_Data(flags=64 if private else None))
+            type=Interaction_Callback_Type.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE, 
+            data=Interaction_Application_Command_Callback_Data(flags=Message_Flags.EPHEMERAL if private else None))
         )
-    async def send(self, content: str=None, embeds: List[Embed]=None, allowed_mentions: Allowed_Mentions = Allowed_Mentions(parse=[])):
-        '''Responds to Channel with Source'''
-        return await self._Client.create_interaction_response(self.id, self.token, 
-            Interaction_Response(
-                type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE, 
-                data=Interaction_Application_Command_Callback_Data(
-                    content=content, 
-                    embeds=embeds, 
-                    allowed_mentions=allowed_mentions)
+    
+    async def reply(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, private: bool=None) -> Message:
+        if self._deferred:
+            _f = self.edit
+            kw = {}
+        else:
+            _f = self.send
+            kw = { "message_reference":None, "reply":True}
+        r = await _f(
+            content=content, 
+            embeds=embeds, 
+            components=components,
+            file=file,
+            filename=filename,
+            allowed_mentions=allowed_mentions,
+            private=private, **kw)
+        self._replied = True
+        return r
+    
+    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=None, private: bool=None, channel_id: Snowflake=None) -> Message:
+        flags=Message_Flags.EPHEMERAL if private else None
+        if channel_id:
+            return await self._Client.create_message(channel_id, content, embeds=embeds, components=components, file=file, filename=filename, allowed_mentions=allowed_mentions)
+        if self._replied:
+            return await self.send_followup(
+                content=content, embeds=embeds, components=components, allowed_mentions=allowed_mentions,
+                file=file, filename=filename, flags=flags
+            )
+        return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
+            type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE, 
+            data=Interaction_Application_Command_Callback_Data(
+                content=content, 
+                embeds=embeds, 
+                allowed_mentions=allowed_mentions,
+                flags=flags 
                 )
             )
-    async def respond(self, response: Interaction_Response):
-        '''Responds to a message'''
-        return await self._Client.create_interaction_response(self.id, self.token, response)
-    async def edit_response(self, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = None):
-        '''Edits response'''
-        return await self._Client.edit_original_interaction_response(self._Client.application.id, self.token, content, embeds, allowed_mentions)
-    async def delete_response(self):
-        '''Deletes response'''
-        return await self._Client.delete_original_interaction_response(self._Client.application.id, self.token)
-    async def reply(self, content: str = None, username: str = None, avatar_url: str = None, tts: bool = None, file: bytes = None, filename=None, embeds: List[Embed] = None, payload_json: str = None, allowed_mentions: Allowed_Mentions = [], wait: bool = False):
-        '''Creates followup message'''
-        return await self._Client.create_followup_message(self._Client.application.id, self.token, wait=wait, content=content, username=username, avatar_url=avatar_url, tts=tts, file=file, filename=filename, embeds=embeds, payload_json=payload_json, allowed_mentions=allowed_mentions)
-    async def edit(self, message_id, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = []):
-        '''Edits followup message'''
-        return await self._Client.edit_followup_message(self._Client.application.id, self.token, message_id, content, embeds, allowed_mentions)
-    async def delete(self, message_id):
-        '''Deletes followup message'''
-        return await self._Client.delete_followup_message(self._Client.application.id, self.token, message_id)
+        )
+    
+    async def send_followup(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, tts: bool=None, file: bytes=None, filename=None, username: str=None, avatar_url: str=None, flags: Message_Flags=None, wait: bool=None, thread_id: Snowflake=None) -> Union[Message, None]:
+        m = await self._Client.create_followup_message(self._Client.application.id, self.token, wait=wait, content=content, username=username, avatar_url=avatar_url, tts=tts, file=file, filename=filename, embeds=embeds, allowed_mentions=allowed_mentions)
+        self._followup_id = m.id
+        return m
 
+    async def edit(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, flags: Message_Flags=None, private:bool=False) -> Message:
+        return await self._Client.edit_original_interaction_response(self._Client.application.id, self.token, 
+            content=content, 
+            embeds=embeds, 
+            components=components,
+            allowed_mentions=allowed_mentions,
+            flags=Message_Flags.EPHEMERAL if private else None
+        )
+    
+    async def edit_followup(self, message_id: Snowflake=None, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, attachments: List[Attachment]=None, flags: Message_Flags=None, file: bytes=None, filename: str = None) -> Union[Message, None]:
+        return await self._Client.edit_followup_message(self._Client.application.id, self.token, message_id or self._followup_id, 
+        content=content, embeds=embeds, components=components, 
+        allowed_mentions=allowed_mentions)
+
+    async def delete(self, message_id: Snowflake=None) -> None:
+        return await self._Client.delete_original_interaction_response(self._Client.application.id, self.token)
+    
+    async def delete_followup(self, message_id: Snowflake=None) -> None:
+        return await self._Client.delete_followup_message(self._Client.application.id, self.token, message_id or self._followup_id)
 
 class Gateway_Events(Events):
     '''
