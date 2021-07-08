@@ -4193,7 +4193,7 @@ class Application_Command_Option(DiscordObject):
     options:
         if the option is a subcommand
     '''
-    type: int = 0
+    type: Application_Command_Option_Type = 0
     name: str = ''
     description: str = ''
     #default: bool = False
