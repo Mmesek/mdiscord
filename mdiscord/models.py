@@ -3936,8 +3936,7 @@ class IP_Discovery(DiscordObject):
     Port: c_ushort = None
 
 
-@dataclass
-class Snowflake_ID_Format(DiscordObject):
+class Snowflake_ID_Format(Enum):
     '''
     Params
     ------
@@ -3978,19 +3977,19 @@ class Timestamp_Styles(Enum):
     Atrributes
     ----------
     Short Time:
-        Short Time
+        16:20
     Long Time:
-        Long Time
+        16:20:30
     Short Date:
-        Short Date
+        20/04/2021
     Long Date:
-        Long Date
+        20 April 2021
     Short Date/Time:
-        Short Date/Time
+        20 April 2021 16:20
     Long Date/Time:
-        Long Date/Time
+        Tuesday, 20 April 2021 16:20
     Relative Time:
-        Relative Time
+        2 months ago
     '''
     Short_Time = "t"
     Long_Time = "T"
@@ -4051,8 +4050,8 @@ class Component(DiscordObject):
     components:
         a list of child components
     '''
-    type: int = 0
-    style: int = 0
+    type: Component_Types = 0
+    style: Button_Styles = 0
     label: str = ''
     emoji: Emoji = None
     custom_id: str = ''
@@ -4102,8 +4101,8 @@ class Button(DiscordObject):
     disabled:
         whether the button is disabled
     '''
-    type: int = 0
-    style: int = 0
+    type: Component_Types = Component_Types.BUTTON
+    style: Button_Styles = 1
     label: str = ''
     emoji: Emoji = None
     custom_id: str = ''
@@ -4111,17 +4110,29 @@ class Button(DiscordObject):
     disabled: bool = False
 
 
-@dataclass
-class Button_Styles(DiscordObject):
+class Button_Styles(Enum):
     '''
     ![An image showing the different button styles](button-styles.png)
     When a user clicks on a button, your app will receive an [interaction](https:#/discord.com/developers/docs/interactions/slash_commands#interaction-object) including the message the button was on:
+
+    Attributes
+    ----------
+    Primary:
+        Blurple, requires `custom_id`
+    Secondary:
+        Grey, requires `custom_id`
+    Success:
+        Green, requires `custom_id`
+    Danger:
+        Red, requires `custom_id`
+    Link:
+        Grey, requires `url`
     '''
-    PRIMARY: 1 = None
-    SECONDARY: 2 = None
-    SUCCESS: 3 = None
-    DANGER: 4 = None
-    LINK: 5 = None
+    PRIMARY = 1
+    SECONDARY = 2
+    SUCCESS = 3
+    DANGER = 4
+    LINK = 5
 
 
 @dataclass
