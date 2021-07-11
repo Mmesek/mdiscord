@@ -1,4 +1,6 @@
 # mDiscord
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/Mmesek/mdiscord)
+
 Simple statically typed (relatively) Discord API Wrapper
 
 `Models` & `Endpoints` are generated from documentation with a script therefore they should *in theory* provide 100% of coverage. 
@@ -17,6 +19,7 @@ Basic usage example:
 cfg = {
     "DiscordTokens": {
         "Bot": "TOKEN"
+    }
 }
 
 from mdiscord import onDispatch, Message, Client
