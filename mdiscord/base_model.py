@@ -30,9 +30,23 @@ class Snowflake(int):
 #    def __class_getitem__(cls, key='value'):
 #        return cls._value
     @property
+    def timestamp(self):
+        return (self._value >> 22)+DISCORD_EPOCH
+    @property
+    def internal_worker_id(self):
+        return (self._value & 0x3E0000) >> 17
+    @property
+    def internal_process_id(self):
+        return (self._value & 0x1F000) >> 12
+    @property
+    def increment(self):
+        return self._value & 0xFFF
+    @property
     def as_date(self):
         ms = ((self._value >> 22)+DISCORD_EPOCH)
         return datetime.utcfromtimestamp(ms//1000.0).replace(microsecond=ms % 1000*1000)
+    def styled_date(self, style: str=None) -> str:
+        return f"<t:{int(self.timestamp/1000.0)}{':'+style if style else ''}>"
 
 from mlib.types import Enum
 class Events(Enum):
