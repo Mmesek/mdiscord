@@ -74,6 +74,11 @@ class DiscordObject:
             if field == '_Client':
                 continue
             __type = self.__annotations__.get(field) or type(self).__bases__[0].__annotations__.get(field)
+            if not __type:
+                _annotations = {}
+                for i in [i.__annotations__ for i in type(self).mro()[:-2]]:
+                    _annotations.update(i)
+                __type = _annotations.get(field)
             value = getattr(self, field)
             if value is None or type(value) not in [int, str, bool, type, list, dict]:
                 continue
