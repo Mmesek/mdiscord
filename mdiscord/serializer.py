@@ -70,7 +70,7 @@ class Serializer:
             import aiohttp
             kwargs['data'] = aiohttp.FormData()
             import ujson as json
-            kwargs['data'].add_field("payload_json", json.dumps(kwargs["json"]))
+            kwargs['data'].add_field("payload_json", json.dumps(as_dict(kwargs["json"])))
             kwargs['data'].add_field("file", kwargs["file"],
                 filename=kwargs["filename"],
                 content_type="application/octet-stream"
