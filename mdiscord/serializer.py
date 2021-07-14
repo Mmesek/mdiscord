@@ -33,6 +33,7 @@ def as_dict(object):
     from datetime import datetime
     from dataclasses import is_dataclass
     from . import Enum
+    from enum import Flag
     if type(object) is dict:
         _object = {}
         for key in object:
@@ -49,7 +50,7 @@ def as_dict(object):
         return object.as_dict()
     elif isinstance(object, datetime):
         return object.isoformat()
-    elif isinstance(object, Enum):
+    elif isinstance(object, Enum) or isinstance(object, Flag):
         return object.value
     elif type(object) is type:
         return None
