@@ -12,7 +12,7 @@ Discord API Endpoint call functions.
 from typing import List, Union
 from .types import (Snowflake, Channel, Message, Audit_Log, Overwrite, Embed, Attachment, Component,
     Allowed_Mentions, Message_Reference, Followed_Channel, 
-    Audit_Log_Events, Thread_List, Thread_Member,
+    Audit_Log_Events, Thread_List, Thread_Member, Channel_Types,
     Gateway_Bot, Welcome_Screen_Channel,
     User, Invite, Emoji, Role, Guild, Ban, Webhook, 
     Guild_Preview, Guild_Member, Guild_Widget, Voice_Region, Connection, Guild_Features, 
@@ -454,7 +454,7 @@ class Endpoints:
         r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}/threads", method = "POST", json = {"name": name, "auto_archive_duration": auto_archive_duration}, reason=reason)
         return Channel(**r)
 
-    async def start_thread_without_message(self, channel_id: Snowflake, name: str=None, auto_archive_duration: int=None, type: int=0, reason: str=None) -> Channel:
+    async def start_thread_without_message(self, channel_id: Snowflake, name: str=None, auto_archive_duration: int=None, type: Channel_Types=None, reason: str=None) -> Channel:
         '''
         Creates a new thread that is not connected to an existing message. The created thread defaults to a GUILD_PRIVATE_THREAD\*. Returns a [channel](https://discord.com/developers/docs/resources/channel#channel_object) on success, and a 400 BAD REQUEST on invalid parameters. Fires a [Thread Create](https://discord.com/developers/docs/topics/gateway#thread_create) Gateway event.
         

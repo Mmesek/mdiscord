@@ -4471,7 +4471,7 @@ class Interaction_Application_Command_Callback_Data(DiscordObject):
     content: str = None
     embeds: List[Embed] = None
     allowed_mentions: Allowed_Mentions = None
-    flags: int = 0
+    flags: Message_Flags = None
     components: List[Component] = list
 
 
