@@ -37,7 +37,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
                 type=cfg[name].get('presence_type'), #Activity_Types.WATCHING.value
                 url=cfg[name].get('url')
                 )],
-            status= cfg[name].get('status', objects.Status_Types.ONLINE.value),
+            status= cfg[name].get('status', objects.Status_Types.ONLINE),
             afk= False)
 
         self.sub = cfg[name].get('subscription', False) #True
