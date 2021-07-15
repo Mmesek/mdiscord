@@ -9,7 +9,7 @@ Discord API.
 
 '''
 from .types import * # noqa: F401
-from .client import WebSocket_Client as Client # noqa: F401
+from .websocket import WebSocket_Client as Client # noqa: F401
 from .exceptions import * # noqa: F401
 
 def onDispatch(f=None, priority=100, event=None):
