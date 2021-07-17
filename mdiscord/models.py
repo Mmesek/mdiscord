@@ -4153,6 +4153,7 @@ class Select_Menu(DiscordObject):
     disabled:
         disable the select, default false
     '''
+    type: Component_Types = Component_Types.SELECT_MENU
     custom_id: str = ''
     options: List[Select_Option] = None
     placeholder: str = ''
