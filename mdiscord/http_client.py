@@ -64,9 +64,9 @@ class HTTP_Client(Endpoints, Serializer):
                 import ujson
                 error_message = ujson.loads(res.content._buffer.popleft())
                 if res.status == HTTP_Response_Codes.BAD_REQUEST.value:
-                    raise BadRequest(f"[{res.reason}] {error_message.get('message')}", f"[{method}] {path}")
+                    raise BadRequest(f"[{res.reason}] {error_message.get('message', error_message)}", f"[{method}] {path}")
                 elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
-                    raise NotFound(f"[{res.reason}] {error_message.get('message')}", f"[{method}] {path}")
+                    raise NotFound(f"[{res.reason}] {error_message.get('message', error_message)}", f"[{method}] {path}")
 
                 elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
                     is_global = res.headers.get('X-RateLimit-Global') is True
