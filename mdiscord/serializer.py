@@ -86,6 +86,9 @@ class Serializer:
         if kwargs.get('json'):
             kwargs['json'] = as_dict(kwargs['json'])
             kwargs['json'] = remove_None(kwargs.get('json',{}))
+            for key, value in kwargs['json'].items():
+                if key in {'embeds', 'components'} and type(value) is not list:
+                    kwargs['json'][key] = [value]
         if kwargs.get('params'):
             kwargs["params"] = remove_None(kwargs.get("params"))
             for param in kwargs["params"]:
