@@ -45,16 +45,9 @@ class HTTP_Client(Endpoints, Serializer):
         async with self._session.request(method, BASE_URL+"api"+path, **kwargs) as res:
             from mdiscord.models import HTTP_Response_Codes
             from mdiscord.exceptions import BadRequest, RequestError, JsonBadRequest, NotFound
-            error_message = {}
-
+            
             try:
                 res.raise_for_status()
-            except Exception as ex:
-                print(ex)
-                import ujson
-                error_message = ujson.loads(res.content._buffer.popleft())
-
-            if res.ok:
                 if res.status == HTTP_Response_Codes.NO_CONTENT.value:
                     return None
                 try:
@@ -67,31 +60,34 @@ class HTTP_Client(Endpoints, Serializer):
                 if type(r) is dict:
                     return dict({"_Client": self}, **r)
                 return list(dict({"_Client":self}, **i) for i in r)
-            elif res.status == HTTP_Response_Codes.BAD_REQUEST.value:
-                raise BadRequest(f"[{res.reason}] {await res.text()}", f"[{method}] {path}")
-            elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
-                raise NotFound(f"[{res.reason}] {error_message.get('message')}", f"[{method}] {path}")
+            except aiohttp.ClientResponseError as ex:
+                import ujson
+                error_message = ujson.loads(res.content._buffer.popleft())
+                if res.status == HTTP_Response_Codes.BAD_REQUEST.value:
+                    raise BadRequest(f"[{res.reason}] {error_message.get('message')}", f"[{method}] {path}")
+                elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
+                    raise NotFound(f"[{res.reason}] {error_message.get('message')}", f"[{method}] {path}")
 
-            elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
-                is_global = res.headers.get('X-RateLimit-Global') is True
-                #TODO: Actual ratelimiter, get reset and remaining from headers, put into local dict (as tuple of remaining, reset?)
-                if not is_global:
-                    self.lock[bucket] = True
-                else:
-                    self.lock['global'] = True
-                retry_after = float(res.headers.get('Retry-After', 1))
-                if 'reaction' in path:
-                    retry_after += 0.75
-                await asyncio.sleep(retry_after / 1000 if retry_after > 3 else retry_after)
-                if not is_global:
-                    self.lock[bucket] = False
-                else:
-                    self.lock['global'] = False
-                return await self._api_call(path, method, **kwargs)
-            
-            elif res.status >= 500:
-                await asyncio.sleep(1)
-                return await self._api_call(path, method, **kwargs)
+                elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
+                    is_global = res.headers.get('X-RateLimit-Global') is True
+                    #TODO: Actual ratelimiter, get reset and remaining from headers, put into local dict (as tuple of remaining, reset?)
+                    if not is_global:
+                        self.lock[bucket] = True
+                    else:
+                        self.lock['global'] = True
+                    retry_after = float(res.headers.get('Retry-After', 1))
+                    if 'reaction' in path:
+                        retry_after += 0.75
+                    await asyncio.sleep(retry_after / 1000 if retry_after > 3 else retry_after)
+                    if not is_global:
+                        self.lock[bucket] = False
+                    else:
+                        self.lock['global'] = False
+                    return await self._api_call(path, method, **kwargs)
+
+                elif res.status >= 500:
+                    await asyncio.sleep(1)
+                    return await self._api_call(path, method, **kwargs)
             res.raise_for_status()
 
     async def close(self):

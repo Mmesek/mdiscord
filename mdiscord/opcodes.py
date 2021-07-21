@@ -71,7 +71,6 @@ class Opcodes:
                 except Exception as ex:
                     t = traceback.extract_tb(sys.exc_info()[2], limit=-1)
                     log.exception("Dispatch Error %s: %s at %s", type(ex), ex, t, exc_info=ex)
-                    log.exception("Location: %s", t[-1])
         return
 
     async def reconnect(self, data: dict) -> None:
