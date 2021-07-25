@@ -44,7 +44,8 @@ class Opcodes(EventListener):
         if getattr(data.d, 'is_bot', False):
             return
         self.counters[data.t] += 1
-        self.check_listeners(data.t, data.d)
+        if self.check_listeners(data.t, data.d):
+            return
         for priority in sorted(Dispatch.get(data.t, {})):
             for function in Dispatch.get(data.t, [aInvalid])[priority]:
                 try:

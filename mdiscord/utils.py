@@ -74,7 +74,7 @@ log = logging.getLogger("mdiscord")
 log.setLevel(logger.log_level)
 
 import asyncio
-from typing import Optional, Callable, Dict, List
+from typing import Optional, Callable, Dict, List, Union
 from .base_model import DiscordObject
 from .types import Gateway_Events
 
@@ -85,7 +85,7 @@ def default_check(data: DiscordObject) -> bool:
 class EventListener:
     '''Event Listener mixin'''
     _listeners: Dict[str, List[tuple[asyncio.Future, Callable[[DiscordObject], bool]]]]
-    def wait_for(self, event: str, *, check: Optional[Callable[[DiscordObject], bool]] = default_check, timeout: Optional[float] = None) -> DiscordObject:
+    def wait_for(self, event: Union[str, Gateway_Events], *, check: Optional[Callable[[DiscordObject], bool]] = default_check, timeout: Optional[float] = None) -> DiscordObject:
         '''Wait for Dispatch event that meets predicate statement
 
         Params
@@ -103,7 +103,9 @@ class EventListener:
             Received Event object that matches criteria'''
         if not hasattr(self, '_listeners'):
             self._listeners = {}
-        if not hasattr(Gateway_Events, event.title()):
+        if type(event) is Gateway_Events:
+            event = event.name
+        elif not hasattr(Gateway_Events, event.title()):
             raise Exception("Event unrecognized")
         event = event.upper()
         if event not in self._listeners:
@@ -113,7 +115,7 @@ class EventListener:
         self._listeners[event].append((future, check))
         return asyncio.wait_for(future, timeout)
     
-    def check_listeners(self, event: str, data: DiscordObject):
+    def check_listeners(self, event: str, data: DiscordObject) -> bool:
         '''Method checking received data against predicates of current listeners
 
         Params
@@ -143,3 +145,5 @@ class EventListener:
         else:
             for id in reversed(removed):
                 del self._listeners[event][id]
+        if len(removed):
+            return True
