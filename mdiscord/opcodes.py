@@ -25,12 +25,12 @@ from .types import (
     Status_Types, Activity_Types,
     Bot_Activity
 )
-from .utils import log
+from .utils import log, EventListener
 from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound
 from mlib.types import Invalid, aInvalid
 Dispatch = {}
 
-class Opcodes:
+class Opcodes(EventListener):
     counters: Counter = Counter()
     keepConnection: bool = True
     latency: float = 0.0
@@ -44,6 +44,7 @@ class Opcodes:
         if getattr(data.d, 'is_bot', False):
             return
         self.counters[data.t] += 1
+        self.check_listeners(data.t, data.d)
         for priority in sorted(Dispatch.get(data.t, {})):
             for function in Dispatch.get(data.t, [aInvalid])[priority]:
                 try:

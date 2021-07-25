@@ -72,3 +72,74 @@ import logging
 from mlib import logger
 log = logging.getLogger("mdiscord")
 log.setLevel(logger.log_level)
+
+import asyncio
+from typing import Optional, Callable, Dict, List
+from .base_model import DiscordObject
+from .types import Gateway_Events
+
+def default_check(data: DiscordObject) -> bool:
+    '''Default check that returns True'''
+    return True
+
+class EventListener:
+    '''Event Listener mixin'''
+    _listeners: Dict[str, List[tuple[asyncio.Future, Callable[[DiscordObject], bool]]]]
+    def wait_for(self, event: str, *, check: Optional[Callable[[DiscordObject], bool]] = default_check, timeout: Optional[float] = None) -> DiscordObject:
+        '''Wait for Dispatch event that meets predicate statement
+
+        Params
+        ------
+        event:
+            Dispatch Event to wait for
+        check:
+            Callable function with predicate to meet
+        timeout:
+            Timeout after which it should stop waiting for event matching criteria and throw `TimeoutError`
+        
+        Returns
+        -------
+        Any:
+            Received Event object that matches criteria'''
+        if not hasattr(self, '_listeners'):
+            self._listeners = {}
+        if not hasattr(Gateway_Events, event.title()):
+            raise Exception("Event unrecognized")
+        event = event.upper()
+        if event not in self._listeners:
+            self._listeners[event] = []
+
+        future = asyncio.get_event_loop().create_future()
+        self._listeners[event].append((future, check))
+        return asyncio.wait_for(future, timeout)
+    
+    def check_listeners(self, event: str, data: DiscordObject):
+        '''Method checking received data against predicates of current listeners
+
+        Params
+        ------
+        event:
+            Dispatch Event of which listeners should be checked
+        data:
+            Received Event Payload to check predicates against as well as set result to'''
+        if not hasattr(self, '_listeners') or not self._listeners.get(event, None):
+            return
+        removed = []
+        for i, (future, check) in enumerate(self._listeners[event]):
+            if future.cancelled():
+                removed.append(i)
+                continue
+
+            try:
+                if check(data):
+                    future.set_result(data)
+                    removed.append(i)
+            except Exception as ex:
+                future.set_exception(ex)
+
+        # Inspired by Discord.py, Thanks.
+        if len(removed) == len(self._listeners):
+            self._listeners.pop(event)
+        else:
+            for id in reversed(removed):
+                del self._listeners[event][id]
