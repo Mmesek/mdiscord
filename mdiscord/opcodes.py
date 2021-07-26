@@ -13,6 +13,8 @@ import sys, traceback, platform
 from typing import List, Optional
 from collections import Counter
 
+from mlib.types import Invalid, aInvalid
+
 from .types import (
     Gateway_Events, 
     Gateway_Payload, 
@@ -27,7 +29,6 @@ from .types import (
 )
 from .utils import log, EventListener
 from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound
-from mlib.types import Invalid, aInvalid
 Dispatch = {}
 
 class Opcodes(EventListener):

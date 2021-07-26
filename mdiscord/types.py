@@ -10,6 +10,10 @@ Model overrides with additional convinience methods.
 '''
 
 from __future__ import annotations
+
+from typing import Union, Tuple
+from datetime import datetime
+
 from .models import * # noqa: F401
 
 class UserID(Snowflake):
@@ -41,9 +45,6 @@ class Discord_Paths(Enum):
     @property
     def link(self) -> str:
         return BASE_URL + self.value
-
-from typing import Union, Tuple
-from datetime import datetime
 
 @dataclass
 class Embed(Embed):

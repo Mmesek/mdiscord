@@ -10,16 +10,21 @@ Base Types.
 '''
 from __future__ import annotations
 
-from .serializer import as_dict
+from typing import Optional, TYPE_CHECKING
+from enum import Flag
 from dataclasses import dataclass, is_dataclass, asdict, fields
 from datetime import datetime
-from typing import Optional
+
+from mlib.types import Enum
+from .serializer import as_dict
+
+if TYPE_CHECKING:
+    from .websocket import WebSocket_Client as Bot
 
 DISCORD_EPOCH = 1420070400000
 BASE_URL = "https://discord.com/"
 CDN_URL = "https://cdn.discordapp.com/"
 
-from enum import Flag
 class Snowflake(int):
     '''Base ID Type for Discord objects'''
     _value: int = 0
@@ -48,18 +53,9 @@ class Snowflake(int):
     def styled_date(self, style: str=None) -> str:
         return f"<t:{int(self.timestamp/1000.0)}{':'+style if style else ''}>"
 
-from mlib.types import Enum
 class Events(Enum):
     def __call__(self, *args, **kwargs):
         return self.value(*args, **kwargs)
-
-try:
-    from .websocket import WebSocket_Client as Bot
-except:
-    #HACK
-    # The Above causes circular import *however* we only need it for 
-    # intellisense and typehints, not to actually use it. 
-    pass
 
 @dataclass
 class DiscordObject:

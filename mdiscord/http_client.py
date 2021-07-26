@@ -1,8 +1,9 @@
+import aiohttp
 from typing import Dict
+
 from mdiscord.base_model import Snowflake
 from mdiscord.endpoints import Endpoints
 from mdiscord.serializer import Serializer
-import aiohttp
 
 class HTTP_Client(Endpoints, Serializer):
     token: str

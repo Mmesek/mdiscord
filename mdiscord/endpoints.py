@@ -9,6 +9,7 @@ Discord API Endpoint call functions.
 
 '''
 
+from datetime import datetime
 from typing import List, Union
 from .types import (Snowflake, Channel, Message, Audit_Log, Overwrite, Embed, Attachment, Component,
     Allowed_Mentions, Message_Reference, Followed_Channel, 
@@ -22,7 +23,6 @@ from .types import (Snowflake, Channel, Message, Audit_Log, Overwrite, Embed, At
 from .utils import Permissions
 from .serializer import as_dict
 
-from datetime import datetime
 
 class Endpoints:
     async def api_call(self, path: str, method: str = "GET", reason: str = None, **kwargs):
