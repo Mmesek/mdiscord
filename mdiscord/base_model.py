@@ -10,7 +10,7 @@ Base Types.
 '''
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, List
 from enum import Flag
 from dataclasses import dataclass, is_dataclass, asdict, fields
 from datetime import datetime
@@ -56,6 +56,16 @@ class Snowflake(int):
 class Events(Enum):
     def __call__(self, *args, **kwargs):
         return self.value(*args, **kwargs)
+
+class Flag(Flag):
+    def check(cls, permissions: hex, *values: List[hex]):
+        return all([(permissions & permission) == permission for permission in values])
+    def current_permissions(cls, permissions: hex):
+        current = []
+        for permission in cls:
+            if (permissions & permission.value) == permission.value:
+                current.append(permission.name)
+        return current
 
 @dataclass
 class DiscordObject:

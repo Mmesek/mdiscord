@@ -3748,14 +3748,6 @@ class Bitwise_Permission_Flags(Flag):
     MANAGE_THREADS = 0X0400000000
     USE_PUBLIC_THREADS = 0X0800000000
     USE_PRIVATE_THREADS = 0X1000000000
-    def check(cls, permissions: hex, *values: List[hex]):
-        return all([(permissions & permission) == permission for permission in values])
-    def current_permissions(cls, permissions: hex):
-        current = []
-        for permission in cls:
-            if (permissions & permission.value) == permission.value:
-                current.append(permission.name)
-        return current
 
 
 @dataclass
