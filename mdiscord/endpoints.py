@@ -968,7 +968,7 @@ class Endpoints:
         position:
             sorting position of the role
         '''
-        r = await self.api_call(path = f"/guilds/{guild_id}/roles", method = "PATCH", json = {"id": id, "position": position})
+        r = await self.api_call(path = f"/guilds/{guild_id}/roles", method = "PATCH", json = [{"id": id, "position": position}], reason=reason)
         return [Role(**i) for i in r]
 
     @Permissions("MANAGE_ROLES")
