@@ -65,7 +65,7 @@ class HTTP_Client(Endpoints, Serializer):
                 import ujson
                 error_message = ujson.loads(res.content._buffer.popleft())
                 if res.status == HTTP_Response_Codes.BAD_REQUEST.value:
-                    raise BadRequest(f"[{res.reason}] {error_message.get('message', error_message)}", f"[{method}] {path}")
+                    raise BadRequest(reason=res.reason, msg=error_message.get('message', error_message), method=method, path=path, payload=kwargs.get("json"))
                 elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
                     raise NotFound(f"[{res.reason}] {error_message.get('message', error_message)}", f"[{method}] {path}")
 
