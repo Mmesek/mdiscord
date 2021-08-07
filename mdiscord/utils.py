@@ -103,7 +103,7 @@ class EventListener:
             Received Event object that matches criteria'''
         if not hasattr(self, '_listeners'):
             self._listeners = {}
-        if not hasattr(Gateway_Events, event.title()):
+        if not (hasattr(Gateway_Events, event.title()) or "direct_message" in event.lower()):
             raise Exception("Event unrecognized")
         event = event.upper()
         if event not in self._listeners:
