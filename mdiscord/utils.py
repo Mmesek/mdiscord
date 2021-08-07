@@ -74,7 +74,7 @@ log = logging.getLogger("mdiscord")
 log.setLevel(logger.log_level)
 
 import asyncio
-from typing import Optional, Callable, Dict, List
+from typing import Optional, Callable, Dict, List, Tuple
 from .base_model import DiscordObject
 from .types import Gateway_Events
 
@@ -84,7 +84,7 @@ def default_check(data: DiscordObject) -> bool:
 
 class EventListener:
     '''Event Listener mixin'''
-    _listeners: Dict[str, List[tuple[asyncio.Future, Callable[[DiscordObject], bool]]]]
+    _listeners: Dict[str, List[Tuple[asyncio.Future, Callable[[DiscordObject], bool]]]]
     def wait_for(self, event: str, *, check: Optional[Callable[[DiscordObject], bool]] = default_check, timeout: Optional[float] = None) -> DiscordObject:
         '''Wait for Dispatch event that meets predicate statement
 
