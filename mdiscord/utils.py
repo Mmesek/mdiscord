@@ -138,7 +138,7 @@ class EventListener:
                 future.set_exception(ex)
 
         # Inspired by Discord.py, Thanks.
-        if len(removed) == len(self._listeners):
+        if len(removed) == len(self._listeners[event]):
             self._listeners.pop(event)
         else:
             for id in reversed(removed):
