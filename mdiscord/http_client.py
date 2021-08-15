@@ -54,10 +54,10 @@ class HTTP_Client(Endpoints, Serializer):
                 try:
                     r = await res.json()
                 except Exception as ex:
-                    raise RequestError(f"Error sending request: [{res.reason}]: [{method}] {path}")
+                    raise RequestError(reason=res.reason, method=method, path=path, extra=" Error occured while sending request")
 
                 if 'message' in r:
-                    raise JsonBadRequest(f"[{res.reason}] [{r['code']}] - {r['message']}: [{method}] {path}", r.get('errors','') if 'errors' in r else None)
+                    raise JsonBadRequest(reason=res.reason, msg=f"[{r['code']}] - {r['message']}. Extra: {r.get('errors','') if 'errors' in r else None}", method=method, path=path)
                 if type(r) is dict:
                     return dict({"_Client": self}, **r)
                 return list(dict({"_Client":self}, **i) for i in r)
@@ -67,7 +67,7 @@ class HTTP_Client(Endpoints, Serializer):
                 if res.status == HTTP_Response_Codes.BAD_REQUEST.value:
                     raise BadRequest(reason=res.reason, msg=error_message.get('message', error_message), method=method, path=path, payload=kwargs.get("json"))
                 elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
-                    raise NotFound(f"[{res.reason}] {error_message.get('message', error_message)}", f"[{method}] {path}")
+                    raise NotFound(reason=res.reason, method=method, path=path)
 
                 elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
                     is_global = res.headers.get('X-RateLimit-Global') is True
