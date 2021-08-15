@@ -3263,6 +3263,7 @@ class Application_Command(DiscordObject):
         whether the command is enabled by default when the app is added to a guild
     '''
     id: Snowflake = None
+    type: Application_Command_Type = 1
     application_id: Snowflake = None
     guild_id: Snowflake = None
     name: str = ''
@@ -3270,6 +3271,10 @@ class Application_Command(DiscordObject):
     options: List[Application_Command_Option] = list
     default_permission: bool = False
 
+class Application_Command_Type(Enum):
+    CHAT_INPUT = 1
+    USER = 2
+    MESSAGE = 3
 
 @dataclass
 class Application_Command_Extra_Fields(Application_Command):
@@ -4379,6 +4384,7 @@ class Application_Command_Interaction_Data_Resolved(DiscordObject):
     members: Dict[Snowflake, Guild_Member] = dict
     roles: Dict[Snowflake, Role] = dict
     channels: Dict[Snowflake, Channel] = dict
+    messages: Dict[Snowflake, Message] = dict
 
 
 @dataclass

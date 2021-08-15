@@ -19,7 +19,8 @@ from .types import (Snowflake, Channel, Message, Audit_Log, Overwrite, Embed, At
     Guild_Preview, Guild_Member, Guild_Widget, Voice_Region, Connection, Guild_Features, 
     Guild_Application_Command_Permissions, Application_Command_Permissions,
     Welcome_Screen,
-    Integration, Application, Application_Command, Application_Command_Option, Interaction_Response)
+    Integration, Application, Application_Command, Application_Command_Option, Interaction_Response,
+    Application_Command_Type)
 from .utils import Permissions
 from .serializer import as_dict
 
@@ -1589,7 +1590,7 @@ class Endpoints:
         r = await self.api_call(path = f"/applications/{application_id}/commands", method = "GET")
         return [Application_Command(**i) for i in r]
 
-    async def create_global_application_command(self, application_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False) -> Application_Command:
+    async def create_global_application_command(self, application_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False, type:Application_Command_Type=Application_Command_Type.CHAT_INPUT) -> Application_Command:
         '''
         Create a new global command. New global commands will be available in all guilds after 1 hour. Returns 201 and an [application command](https://discord.com/developers/docs/interactions/slash_commands#application_command_object) object.
         
@@ -1604,7 +1605,7 @@ class Endpoints:
         default_permission:
             whether the command is enabled by default when the app is added to a guild
         '''
-        r = await self.api_call(path = f"/applications/{application_id}/commands", method = "POST", json = {"name": name, "description": description, "options": options, "default_permission": default_permission})
+        r = await self.api_call(path = f"/applications/{application_id}/commands", method = "POST", json = {"name": name, "description": description, "options": options, "default_permission": default_permission, "type":type})
         return Application_Command(**r)
 
     async def get_global_application_command(self, application_id: Snowflake, command_id: Snowflake) -> Application_Command:
@@ -1652,7 +1653,7 @@ class Endpoints:
         r = await self.api_call(path = f"/applications/{application_id}/commands", method = "PUT", json= application_commands)
         return [Application_Command(**i) for i in r]
 
-    async def create_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False) -> Application_Command:
+    async def create_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False, type:Application_Command_Type=Application_Command_Type.CHAT_INPUT) -> Application_Command:
         '''
         Create a new guild command. New guild commands will be available in the guild immediately. Returns 201 and an [application command](https://discord.com/developers/docs/interactions/slash_commands#application_command_object) object. If the command did not already exist, it will count toward daily application command create limits.
         
@@ -1667,7 +1668,7 @@ class Endpoints:
         default_permission:
             whether the command is enabled by default when the app is added to a guild
         '''
-        r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "POST", json = {"name": name, "description": description, "options": options, "default_permission": default_permission})
+        r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "POST", json = {"name": name, "description": description, "options": options, "default_permission": default_permission, "type": type})
         return Application_Command(**r)
 
     async def get_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, command_id: Snowflake) -> Application_Command:
