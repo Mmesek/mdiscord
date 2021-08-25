@@ -381,7 +381,7 @@ class Message(Message, Sendable):
                 message_id=self.id,
                 channel_id=self.channel_id,
                 guild_id=self.guild_id if self.guild_id != 0 else None
-            ),
+            ) if self.id else None,
             reply=True,
             private=private)
     
