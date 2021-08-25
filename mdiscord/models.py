@@ -4048,13 +4048,17 @@ class Component(DiscordObject):
         a list of child components
     '''
     type: Component_Types = 0
-    style: Button_Styles = 0
-    label: str = ''
+    style: Button_Styles = None
+    label: str = None
     emoji: Emoji = None
-    custom_id: str = ''
-    url: str = ''
+    custom_id: str = None
+    url: str = None
     disabled: bool = False
-    components: Component = None
+    components: List[Component] = None
+    options: List[Select_Option] = None
+    placeholder: str = None
+    min_values: int = None
+    max_values: int = None
 
 
 class Component_Types(Enum):
