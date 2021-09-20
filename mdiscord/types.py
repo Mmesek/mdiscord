@@ -404,7 +404,7 @@ class Message(Message, Sendable):
             components=components or self.components,
             attachments=attachments,
             file=file,
-            filename=filename,
+            #filename=filename,
             flags=flags or self.flags, 
             allowed_mentions=allowed_mentions)
 
@@ -505,7 +505,7 @@ class Interaction(Interaction):
     def is_bot(self) -> bool:
         return False
     
-    async def deferred(self, private:bool=False):
+    async def deferred(self, private:bool=False) -> None:
         '''Acknowledges Interaction with Source'''
         if self._deferred:
             return
