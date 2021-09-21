@@ -10,7 +10,7 @@ Base Types.
 '''
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING, List
+from typing import Optional, TYPE_CHECKING, List, Type, TypeVar
 from enum import Flag
 from dataclasses import dataclass, is_dataclass, asdict, fields
 from datetime import datetime
@@ -20,6 +20,9 @@ from .serializer import as_dict
 
 if TYPE_CHECKING:
     from .websocket import WebSocket_Client as Bot
+
+_T = TypeVar("_T")
+
 
 DISCORD_EPOCH = 1420070400000
 BASE_URL = "https://discord.com/"
@@ -55,7 +58,12 @@ class Snowflake(int):
 
 class Events(Enum):
     def __call__(self, *args, **kwargs):
-        return self.value(*args, **kwargs)
+        return self.func(*args, **kwargs)
+    def __new__(cls: Type[_T], value: object) -> _T:
+        obj = object.__new__(cls)
+        obj.func = value
+        obj._value_ = len(cls.__members__) + 1
+        return obj
 
 class Flag(Flag):
     def check(cls, permissions: hex, *values: List[hex]):
