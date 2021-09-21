@@ -580,95 +580,93 @@ class Interaction(Interaction):
         return await self._Client.delete_followup_message(self._Client.application.id, self.token, message_id or self._followup_id)
 
 class Gateway_Events(Events):
-    '''
-    Params:
-        :Hello: defines the heartbeat interval
-        :Ready: contains the initial state information
-        :Resumed: Resume
-        :Reconnect: server is going away, client should reconnect to gateway and resume
-        :Invalid_Session: Identify
-        :Channel_Create: new guild channel created
-        :Channel_Update: channel was updated
-        :Channel_Delete: channel was deleted
-        :Channel_Pins_Update: message was pinned
-        :Guild_Create: lazy-load for unavailable guild, guild became available,
-        :Guild_Update: guild was updated
-        :Guild_Delete: guild became unavailable,
-        :Guild_Ban_Add: user was banned from a guild
-        :Guild_Ban_Remove: user was unbanned from a guild
-        :Guild_Emojis_Update: guild emojis were updated
-        :Guild_Integrations_Update: guild integration was updated
-        :Guild_Member_Add: new user joined a guild
-        :Guild_Member_Remove: user was removed from a guild
-        :Guild_Member_Update: guild member was updated
-        :Guild_Members_Chunk: Request_Guild_Members
-        :Guild_Role_Create: guild role was created
-        :Guild_Role_Update: guild role was updated
-        :Guild_Role_Delete: guild role was deleted
-        :Invite_Create: invite to a channel was created
-        :Invite_Delete: invite to a channel was deleted
-        :Message_Create: message was created
-        :Message_Update: message was edited
-        :Message_Delete: message was deleted
-        :Message_Delete_Bulk: multiple messages were deleted at once
-        :Message_Reaction_Add: user reacted to a message
-        :Message_Reaction_Remove: user removed a reaction from a message
-        :Message_Reaction_Remove_All: all reactions were explicitly removed from a message
-        :Message_Reaction_Remove_Emoji: all reactions for a given emoji were explicitly removed from a message
-        :Presence_Update: user was updated
-        :Typing_Start: user started typing in a channel
-        :User_Update: properties about the user changed
-        :Voice_State_Update: someone joined, left,
-        :Voice_Server_Update: guild's voice server was updated
-        :Webhooks_Update: guild channel webhook was created, update,
-        :Interaction_Create: Slash_Command
-    '''
-    Hello = staticmethod(Hello)
-    Ready = staticmethod(Ready)
-    Resumed = staticmethod(Resume)
-    Reconnect = staticmethod(dict)
-    Invalid_Session = staticmethod(bool)
-    Application_Command_Create = staticmethod(Application_Command_Create)
-    Application_Command_Update = staticmethod(Application_Command_Update)
-    Application_Command_Delete = staticmethod(Application_Command_Delete)
-    Channel_Create = staticmethod(Channel)
-    Channel_Update = staticmethod(Channel)
-    Channel_Delete = staticmethod(Channel)
-    Channel_Pins_Update = staticmethod(Channel_Pins_Update)
-    Thread_Create = staticmethod(Channel)
-    Thread_Update = staticmethod(Channel)
-    Thread_Delete = staticmethod(Channel)
-    Thread_List_Sync = staticmethod(Thread_List_Sync)
-    Thread_Member_Update = staticmethod(Thread_Member)
-    Thread_Members_Update = staticmethod(Thread_Members_Update)
-    Guild_Create = staticmethod(Guild)
-    Guild_Update = staticmethod(Guild)
-    Guild_Delete = staticmethod(dict)
-    Guild_Ban_Add = staticmethod(Guild_Ban_Add)
-    Guild_Ban_Remove = staticmethod(Guild_Ban_Remove)
-    Guild_Emojis_Update = staticmethod(Guild_Emojis_Update)
-    Guild_Integrations_Update = staticmethod(Guild_Integrations_Update)
-    Guild_Member_Add = staticmethod(Guild_Member_Add)
-    Guild_Member_Remove = staticmethod(Guild_Member_Remove)
-    Guild_Member_Update = staticmethod(Guild_Member_Update)
-    Guild_Members_Chunk = staticmethod(Guild_Members_Chunk)
-    Guild_Role_Create = staticmethod(Guild_Role_Create)
-    Guild_Role_Update = staticmethod(Guild_Role_Update)
-    Guild_Role_Delete = staticmethod(Guild_Role_Delete)
-    Invite_Create = staticmethod(Invite_Create)
-    Invite_Delete = staticmethod(Invite_Delete)
-    Message_Create = staticmethod(Message)
-    Message_Update = staticmethod(Message)
-    Message_Delete = staticmethod(Message_Delete)
-    Message_Delete_Bulk = staticmethod(Message_Delete_Bulk)
-    Message_Reaction_Add = staticmethod(Message_Reaction_Add)
-    Message_Reaction_Remove = staticmethod(Message_Reaction_Remove)
-    Message_Reaction_Remove_All = staticmethod(Message_Reaction_Remove_All)
-    Message_Reaction_Remove_Emoji = staticmethod(Message_Reaction_Remove_Emoji)
-    Presence_Update = staticmethod(Presence_Update)
-    Typing_Start = staticmethod(Typing_Start)
-    User_Update = staticmethod(User)
-    Voice_State_Update = staticmethod(Voice_State)
-    Voice_Server_Update = staticmethod(Voice_Server_Update)
-    Webhooks_Update = staticmethod(Webhook_Update)
-    Interaction_Create = staticmethod(Interaction)
+    '''Mapping of received Event name from Gateway with coresponding Type and description'''
+    Hello = Hello
+    """Defines the heartbeat interval"""
+    Ready = Ready
+    """Contains the initial state information"""
+    Resumed = Resume
+    """Resume"""
+    Reconnect = dict
+    """Server is going away, client should reconnect to gateway and resume"""
+    Invalid_Session = bool
+    """Identify"""
+    Application_Command_Create = Application_Command_Create
+    Application_Command_Update = Application_Command_Update
+    Application_Command_Delete = Application_Command_Delete
+    Channel_Create = Channel
+    """New guild channel created"""
+    Channel_Update = Channel
+    """Channel was updated"""
+    Channel_Delete = Channel
+    """Channel was deleted"""
+    Channel_Pins_Update = Channel_Pins_Update
+    """Message was pinned"""
+    Thread_Create = Channel
+    Thread_Update = Channel
+    Thread_Delete = Channel
+    Thread_List_Sync = Thread_List_Sync
+    Thread_Member_Update = Thread_Member
+    Thread_Members_Update = Thread_Members_Update
+    Guild_Create = Guild
+    """Lazy-load for unavailable guild, guild became available,"""
+    Guild_Update = Guild
+    """Guild was updated"""
+    Guild_Delete = dict
+    """Guild became unavailable,"""
+    Guild_Ban_Add = Guild_Ban_Add
+    """User was banned from a guild"""
+    Guild_Ban_Remove = Guild_Ban_Remove
+    """User was unbanned from a guild"""
+    Guild_Emojis_Update = Guild_Emojis_Update
+    """Guild emojis were updated"""
+    Guild_Integrations_Update = Guild_Integrations_Update
+    """Guild integration was updated"""
+    Guild_Member_Add = Guild_Member_Add
+    """New user joined a guild"""
+    Guild_Member_Remove = Guild_Member_Remove
+    """User was removed from a guild"""
+    Guild_Member_Update = Guild_Member_Update
+    """Guild member was updated"""
+    Guild_Members_Chunk = Guild_Members_Chunk
+    """Request_Guild_Members"""
+    Guild_Role_Create = Guild_Role_Create
+    """Guild role was created"""
+    Guild_Role_Update = Guild_Role_Update
+    """Guild role was updated"""
+    Guild_Role_Delete = Guild_Role_Delete
+    """Guild role was deleted"""
+    Invite_Create = Invite_Create
+    """Invite to a channel was created"""
+    Invite_Delete = Invite_Delete
+    """Invite to a channel was deleted"""
+    Message_Create = Message
+    """Message was created"""
+    Message_Update = Message
+    """Message was edited"""
+    Message_Delete = Message_Delete
+    """Message was deleted"""
+    Message_Delete_Bulk = Message_Delete_Bulk
+    """Multiple messages were deleted at once"""
+    Message_Reaction_Add = Message_Reaction_Add
+    """User reacted to a message"""
+    Message_Reaction_Remove = Message_Reaction_Remove
+    """User removed a reaction from a message"""
+    Message_Reaction_Remove_All = Message_Reaction_Remove_All
+    """All reactions were explicitly removed from a message"""
+    Message_Reaction_Remove_Emoji = Message_Reaction_Remove_Emoji
+    """All reactions for a given emoji were explicitly removed from a message"""
+    Presence_Update = Presence_Update
+    """User was updated"""
+    Typing_Start = Typing_Start
+    """User started typing in a channel"""
+    User_Update = User
+    """Properties about the user changed"""
+    Voice_State_Update = Voice_State
+    """Someone joined, left,"""
+    Voice_Server_Update = Voice_Server_Update
+    """Guild's voice server was updated"""
+    Webhooks_Update = Webhook_Update
+    """Guild channel webhook was created, update,"""
+    Interaction_Create = Interaction
+    """Slash_Command"""
