@@ -8,11 +8,13 @@ Discord API.
 :copyright: (c) 2020 Mmesek
 
 '''
+from typing import Union
+
 from .types import * # noqa: F401
 from .websocket import WebSocket_Client as Client # noqa: F401
 from .exceptions import * # noqa: F401
 
-def onDispatch(f=None, priority: int=100, event: str=None, optional: bool = False):
+def onDispatch(f=None, priority: int=100, event: Union[str, Gateway_Events]=None, optional: bool = False):
     """
     Decorator to register function as a listener for Event from Dispatch
     Params
@@ -33,6 +35,8 @@ def onDispatch(f=None, priority: int=100, event: str=None, optional: bool = Fals
         from .opcodes import Dispatch
         name = f.__name__.upper()
         if event:
+            if type(event) is Gateway_Events:
+                name = event.name
             name = event.upper()
         if optional:
             f._optional = optional
