@@ -137,7 +137,11 @@ class EventListener:
                     future.set_result(data)
                     removed.append(i)
             except Exception as ex:
-                future.set_exception(ex)
+                try:
+                    future.set_exception(ex)
+                except asyncio.InvalidStateError:
+                    log.exception("InvalidStateError was raised by future waiting for event %s with data %s", event, data)
+                    removed.append(i)
 
         # Inspired by Discord.py, Thanks.
         if len(removed) == len(self._listeners[event]):
