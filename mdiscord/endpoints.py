@@ -936,7 +936,7 @@ class Endpoints:
         return [Role(**i) for i in r]
 
     @Permissions("MANAGE_ROLES")
-    async def create_guild_role(self, guild_id: Snowflake, name: str="new_role", permissions: str="@everyone_permissions_in_guild", color: int=None, hoist: bool=False, mentionable: bool=False, reason: str = None) -> Role:
+    async def create_guild_role(self, guild_id: Snowflake, name: str="new_role", permissions: str="@everyone_permissions_in_guild", color: int=None, hoist: bool=False, icon: str = None, unicode_emoji: str = None, mentionable: bool=False, reason: str = None) -> Role:
         '''
         Create a new [role](https://discord.com/developers/docs/topics/permissions#role-object) for the guild. Requires the `MANAGE_ROLES` permission. Returns the new [role](https://discord.com/developers/docs/topics/permissions#role-object) object on success. Fires a [Guild Role Create](https://discord.com/developers/docs/topics/gateway#guild-role-create) Gateway event. All JSON params are optional.
         
@@ -954,7 +954,7 @@ class Endpoints:
         mentionable:
             whether the role should be mentionable
         '''
-        r = await self.api_call(path = f"/guilds/{guild_id}/roles", method = "POST", json = {"name": name, "permissions": permissions, "color": color, "hoist": hoist, "mentionable": mentionable}, reason=reason)
+        r = await self.api_call(path = f"/guilds/{guild_id}/roles", method = "POST", json = {"name": name, "permissions": permissions, "color": color, "hoist": hoist, "icon":icon, "unicode_emoji": unicode_emoji, "mentionable": mentionable}, reason=reason)
         return Role(**r)
 
     @Permissions("MANAGE_ROLES")
@@ -973,7 +973,7 @@ class Endpoints:
         return [Role(**i) for i in r]
 
     @Permissions("MANAGE_ROLES")
-    async def modify_guild_role(self, guild_id: Snowflake, role_id: Snowflake, name: str=None, permissions: str=None, color: int=None, hoist: bool=False, mentionable: bool=False, reason: str = None) -> Role:
+    async def modify_guild_role(self, guild_id: Snowflake, role_id: Snowflake, name: str=None, permissions: str=None, color: int=None, hoist: bool=False, icon: str = None, unicode_emoji: str = None, mentionable: bool=False, reason: str = None) -> Role:
         '''
         Modify a guild role. Requires the MANAGE_ROLES permission. Returns the updated [role](https://discord.com/developers/docs/topics/permissions#role_object) on success. Fires a [Guild Role Update](https://discord.com/developers/docs/topics/gateway#guild_role_update) Gateway event.
         
@@ -990,7 +990,7 @@ class Endpoints:
         mentionable:
             whether the role should be mentionable
         '''
-        r = await self.api_call(path = f"/guilds/{guild_id}/roles/{role_id}", method = "PATCH", json = {"name": name, "permissions": permissions, "color": color, "hoist": hoist, "mentionable": mentionable}, reason=reason)
+        r = await self.api_call(path = f"/guilds/{guild_id}/roles/{role_id}", method = "PATCH", json = {"name": name, "permissions": permissions, "color": color, "hoist": hoist, "icon": icon, "unicode_emoji": unicode_emoji, "mentionable": mentionable}, reason=reason)
         return Role(**r)
 
     @Permissions("MANAGE_ROLES")

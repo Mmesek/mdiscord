@@ -3785,6 +3785,8 @@ class Role(DiscordObject):
     name: str = ''
     color: int = 0
     hoist: bool = False
+    icon: str = None
+    unicode_emoji: str = None
     position: int = 0
     permissions: str = ''
     managed: bool = False
@@ -4023,6 +4025,8 @@ class CDN_Endpoints(Enum):
     Application_Asset = "app-assets/{application_id}/{asset_id}.png"
     Achievement_Icon = "app-assets/{application_id}/achievements/{achievement_id}/icons/{icon_hash}.png"
     Team_Icon = "team-icons/{team_id}/{team_icon}.png"
+    Sticker = "stickers/{sticker_id}.png"
+    Role_Icon = "role-icons/{role_id}/{role_icon}.png"
 
 
 @dataclass
