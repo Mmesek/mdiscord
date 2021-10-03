@@ -63,14 +63,15 @@ class Opcodes(EventListener):
                     if 'missing' in str(ex):
                         error = str(ex).split(' ', 1)[1]
                         err = f'{sys.exc_info()}'
-                        print(error)
+                        log.debug("Missing argument:", exc_info=ex)
                         #await self.message(data['d']['channel_id'], error.capitalize())
                     else:
-                        print('Error occured:', ex)
-                        print(sys.exc_info())
-                        print(t)
+                        log.warn("Error occured:", exc_info=ex)
+                        #print('Error occured:', ex)
+                        #print(sys.exc_info())
+                        #print(t)
                 except JsonBadRequest as ex:
-                    print(ex)
+                    log.warn("JSON Bad Request", exc_info=ex)
                 except Exception as ex:
                     t = traceback.extract_tb(sys.exc_info()[2], limit=-1)
                     log.exception("Dispatch Error %s: %s at %s", type(ex), ex, t, exc_info=ex)
