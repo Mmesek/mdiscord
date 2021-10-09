@@ -44,12 +44,12 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         self.intents = cfg[name].get('intents', 0) #14271 # https://ziad87.net/intents/
         self.shards = [shard, total_shards]
 
-        super().__init__(token=cfg['DiscordTokens'][name], user_id=cfg[name].get('user_id'))
+        super().__init__(token=cfg['DiscordTokens'][name], user_id=cfg[name].get('user_id'), api_version=cfg.get("Discord", {}).get("api_version", None))
         log.debug("Initating Bot with token %s", self.token)
 
     async def __aenter__(self):
         self.decompress = Deserializer()
-        if self._session.closed:
+        if self._session and self._session.closed or not self._session:
             log.info("Restarting session")
             self._new_session()
         gate = await self.get_gateway_bot()

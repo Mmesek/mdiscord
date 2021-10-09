@@ -10,10 +10,12 @@ class HTTP_Client(Endpoints, Serializer):
     user_id: Snowflake
     _session: aiohttp.ClientSession
     lock: Dict[str, bool]
-    def __init__(self, token=None, user_id=None) -> None:
+    api_version: int
+    def __init__(self, token=None, user_id=None, *, api_version: int=None) -> None:
         self.token=token
         self.user_id = user_id
         self.lock = {"global": False}
+        self.api_version = api_version
         self._new_session()
         super().__init__()
     
@@ -43,7 +45,7 @@ class HTTP_Client(Endpoints, Serializer):
             return await self._api_call(path, method, **kwargs)
 
         from mdiscord.base_model import BASE_URL
-        async with self._session.request(method, BASE_URL+"api"+path, **kwargs) as res:
+        async with self._session.request(method, BASE_URL+"api"+(f"/v{self.api_version}" if self.api_version else "")+path, **kwargs) as res:
             from mdiscord.models import HTTP_Response_Codes
             from mdiscord.exceptions import BadRequest, RequestError, JsonBadRequest, NotFound
             
@@ -65,7 +67,7 @@ class HTTP_Client(Endpoints, Serializer):
                 import ujson
                 error_message = ujson.loads(res.content._buffer.popleft())
                 if res.status == HTTP_Response_Codes.BAD_REQUEST.value:
-                    raise BadRequest(reason=res.reason, msg=error_message.get('message', error_message), method=method, path=path, payload=kwargs.get("json"))
+                    raise BadRequest(reason=res.reason, msg=error_message.get('message', error_message), method=method, path=path, payload=kwargs.get("json"), errors=error_message.get('errors', {}))
                 elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
                     raise NotFound(reason=res.reason, method=method, path=path)
 
