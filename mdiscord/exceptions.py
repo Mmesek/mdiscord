@@ -21,6 +21,7 @@ def find_error(obj: Dict[str, Any], errors: Dict[str, Any], previous: Dict[str, 
             return find_error(obj.get(error), errors[error], obj)
         except:
             return previous, errors[error]
+    return None, None
 
 class DiscordError(Exception):
     '''Base Discord Error'''
@@ -62,4 +63,8 @@ class NotFound(RequestError):
 
 class JsonBadRequest(BadRequest):
     '''Error caused by malformated request with JSON response'''
+    pass
+
+class SoftError(Exception):
+    '''Non fatal exception to be raised by user code that is not important enough to log'''
     pass
