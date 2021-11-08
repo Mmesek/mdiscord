@@ -28,7 +28,7 @@ from .types import (
     Bot_Activity
 )
 from .utils import log, EventListener
-from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound
+from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError
 Dispatch = {}
 
 class Opcodes(EventListener):
@@ -72,6 +72,8 @@ class Opcodes(EventListener):
                         #print(t)
                 except JsonBadRequest as ex:
                     log.warn("JSON Bad Request", exc_info=ex)
+                except SoftError as ex:
+                    log.debug(ex)
                 except Exception as ex:
                     t = traceback.extract_tb(sys.exc_info()[2], limit=-1)
                     log.exception("Dispatch Error %s: %s at %s", type(ex), ex, t, exc_info=ex)
