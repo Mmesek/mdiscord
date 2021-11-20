@@ -14,7 +14,7 @@ which is adding `+ ["**kwargs"]` to a second argument for _create_fn in _init_fn
 
 ---
 
-Basic usage example:
+Basic (Websocket) usage example:
 ```python
 cfg = {
     "DiscordTokens": {
@@ -40,7 +40,7 @@ asyncio.run(main())
 
 ---
 
-HTTP only usage example:
+HTTP only (REST) usage example:
 ```python
 from mdiscord.http_client import HTTP_Client
 import asyncio
