@@ -4217,6 +4217,7 @@ class Application_Command_Option(DiscordObject):
     required: bool = False
     choices: List[Application_Command_Option_Choice] = list
     options: List[Application_Command_Option] = list
+    channel_types: List[Channel_Types] = None
 
 
 class Application_Command_Option_Type(Enum):
