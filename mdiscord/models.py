@@ -4369,6 +4369,8 @@ class Application_Command_Interaction_Data(DiscordObject):
     options: List[Application_Command_Interaction_Data_Option] = list
     custom_id: str = ''
     component_type: int = 0
+    values: List[str] = list
+    target_id: Snowflake = 0
 
 
 @dataclass
@@ -4482,6 +4484,7 @@ class Interaction_Application_Command_Callback_Data(DiscordObject):
     allowed_mentions: Allowed_Mentions = None
     flags: Message_Flags = None
     components: List[Component] = list
+    attachments: List[Attachment] = list
 
 
 class Interaction_Application_Command_Callback_Data_Flags(Flag):
