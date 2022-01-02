@@ -58,11 +58,12 @@ def as_dict(object):
 
 class Serializer:
     token: str = None
+    _auth_type: str = "Bot"
     def _prepare_payload(self, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = []
         if self.token:
-            kwargs['headers'].append(("Authorization", f"Bot {self.token}"))
+            kwargs['headers'].append(("Authorization", f"{self._auth_type} {self.token}"))
         if kwargs.get('reason'):
             kwargs['headers'].append(("X-Audit-Log-Reason", kwargs.pop('reason')))
         if not kwargs.get('file'):
