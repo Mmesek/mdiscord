@@ -116,7 +116,6 @@ class Opcodes(EventListener):
                     "$device": "MFramework"},
                 compress=True,
                 large_threshold=250,
-                guild_subscriptions=self.sub,
                 shard=self.shards,
                 presence= self.presence,
                 intents= self.intents

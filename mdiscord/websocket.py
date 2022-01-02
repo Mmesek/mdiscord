@@ -21,7 +21,6 @@ class WebSocket_Client(HTTP_Client, Opcodes):
     username: str = "[NOT CONNECTED]"
     latency: float = 0.0
     presence: objects.Gateway_Presence_Update = None
-    sub: bool = False
     intents: int = 0
     decompress: Deserializer = None
     def __init__(self, name: str, cfg: dict, shard: int = 0, total_shards: int = 1):
@@ -40,7 +39,6 @@ class WebSocket_Client(HTTP_Client, Opcodes):
             status= cfg[name].get('status', objects.Status_Types.ONLINE),
             afk= False)
 
-        self.sub = cfg[name].get('subscription', False) #True
         self.intents = cfg[name].get('intents', 0) #14271 # https://ziad87.net/intents/
         self.shards = [shard, total_shards]
 
