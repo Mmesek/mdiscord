@@ -4231,6 +4231,7 @@ class Application_Command_Option_Type(Enum):
     ROLE = 8
     MENTIONABLE = 9
     NUMBER = 10
+    ATTACHMENT = 11
 
 
 @dataclass
@@ -4337,6 +4338,8 @@ class Interaction(DiscordObject):
     token: str = ''
     version: int = 0
     message: Message = None
+    locale: str = None
+    guild_locale: str = None
 
 
 class Interaction_Type(Enum):
@@ -4396,6 +4399,7 @@ class Application_Command_Interaction_Data_Resolved(DiscordObject):
     roles: Dict[Snowflake, Role] = dict
     channels: Dict[Snowflake, Channel] = dict
     messages: Dict[Snowflake, Message] = dict
+    attachments: Dict[Snowflake, Attachment] = dict
 
 
 @dataclass
