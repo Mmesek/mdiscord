@@ -508,7 +508,7 @@ class Interaction(Interaction):
     async def deferred(self, private:bool=False) -> None:
         '''Acknowledges Interaction with Source'''
         if self._deferred:
-            return
+            return await self._Client.edit_original_interaction_response(self.application_id, self.token, content="Processing...", flags=Message_Flags.EPHEMERAL if private else None)
         self._deferred = True
         self._replied = True
         return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
