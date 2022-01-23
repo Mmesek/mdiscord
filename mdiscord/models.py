@@ -2668,6 +2668,7 @@ class Guild_Member_Update(DiscordObject):
     deaf: bool = None
     mute: bool = None
     pending: bool = False
+    communication_disabled_until: datetime = None
 
 
 @dataclass
