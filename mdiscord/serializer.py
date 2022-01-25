@@ -67,7 +67,10 @@ class Serializer:
         if kwargs.get('reason'):
             kwargs['headers'].append(("X-Audit-Log-Reason", kwargs.pop('reason')))
         if not kwargs.get('file'):
-            kwargs['headers'].append(("Content-Type", "application/json"))
+            if kwargs.get("json"):
+                kwargs['headers'].append(("Content-Type", "application/json"))
+            else:
+                kwargs['headers'].append(("Content-Type", "text/html"))
         else:
             import aiohttp
             kwargs['data'] = aiohttp.FormData()
