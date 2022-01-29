@@ -839,7 +839,7 @@ class Endpoints:
         if r:
             return Guild_Member(**r)
 
-    async def modify_guild_member(self, guild_id: Snowflake, user_id: Snowflake, nick: str=None, roles: List[Snowflake]=None, mute: bool=False, deaf: bool=False, channel_id: Snowflake=None, communication_disabled_until: datetime = None, reason: str = None) -> Guild_Member:
+    async def modify_guild_member(self, guild_id: Snowflake, user_id: Snowflake, nick: str=None, roles: List[Snowflake]=None, mute: bool=None, deaf: bool=None, channel_id: Snowflake=-1, communication_disabled_until: datetime = None, reason: str = None) -> Guild_Member:
         '''
         Modify attributes of a [guild member](https://discord.com/developers/docs/resources/guild#guild-member-object). Returns a 200 OK with the [guild member](https://discord.com/developers/docs/resources/guild#guild-member-object) as the body. Fires a [Guild Member Update](https://discord.com/developers/docs/topics/gateway#guild-member-update) Gateway event. If the channel_id is set to null, this will force the target user to be disconnected from voice.
         
@@ -857,13 +857,14 @@ class Endpoints:
             id of channel to move user to
         '''
         kwargs = {"nick": nick, "roles": roles, "communication_disabled_until": communication_disabled_until}
-        if channel_id is not None:
-            kwargs["channel_id"] = channel_id
+        nullable = {}
+        if channel_id != -1:
+            nullable["channel_id"] = channel_id
         if mute is not None:
-            kwargs["mute"] = mute 
+            kwargs["mute"] = mute
         if deaf is not None:
-            kwargs["deaf"] = deaf        
-        r = await self.api_call(path = f"/guilds/{guild_id}/members/{user_id}", method = "PATCH", json = kwargs, reason=reason)
+            kwargs["deaf"] = deaf
+        r = await self.api_call(path = f"/guilds/{guild_id}/members/{user_id}", method = "PATCH", json = kwargs, reason=reason, nullable=nullable)
         return Guild_Member(**r)
 
     async def modify_current_user_nick(self, guild_id: Snowflake, nick: str=None, reason: str = None) -> str:

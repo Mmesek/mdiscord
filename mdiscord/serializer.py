@@ -103,5 +103,8 @@ class Serializer:
                     kwargs.pop(i)
         kwargs.pop('filename', None)
         kwargs.pop('file', None)
+        nullable = kwargs.pop('nullable', {})
         kwargs = remove_None(kwargs)
+        if 'json' in kwargs and type(kwargs['json']) is dict:
+            kwargs['json'].update(nullable)
         return kwargs
