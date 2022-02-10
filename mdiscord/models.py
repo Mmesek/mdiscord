@@ -4064,6 +4064,10 @@ class Component(DiscordObject):
     placeholder: str = None
     min_values: int = None
     max_values: int = None
+    value: str = None
+    required: bool = None
+    min_length: int = None
+    max_length: int = None
 
 
 class Component_Types(Enum):
@@ -4080,6 +4084,11 @@ class Component_Types(Enum):
     ACTION_ROW = 1
     BUTTON = 2
     SELECT_MENU = 3
+    TEXT_INPUT = 4
+
+class Text_Input_Styles(Enum):
+    Short = 1
+    Paragraph = 2
 
 
 @dataclass
@@ -4347,6 +4356,8 @@ class Interaction_Type(Enum):
     PING = 1
     APPLICATION_COMMAND = 2
     MESSAGE_COMPONENT = 3
+    APPLICATION_COMMAND_AUTOCOMPLETE = 4
+    MODAL_SUBMIT = 5
 
 
 @dataclass
@@ -4461,6 +4472,8 @@ class Interaction_Callback_Type(Enum):
     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5
     DEFERRED_UPDATE_MESSAGE = 6
     UPDATE_MESSAGE = 7
+    APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8
+    MODAL = 9
 
 
 @dataclass
@@ -4483,13 +4496,16 @@ class Interaction_Application_Command_Callback_Data(DiscordObject):
     components:
         message components
     '''
-    tts: bool = False
+    tts: bool = None
     content: str = None
     embeds: List[Embed] = None
     allowed_mentions: Allowed_Mentions = None
     flags: Message_Flags = None
-    components: List[Component] = list
-    attachments: List[Attachment] = list
+    components: List[Component] = None
+    attachments: List[Attachment] = None
+    choices: List[Application_Command_Option_Choice] = None
+    custom_id: str = None
+    title: str = None
 
 
 class Interaction_Application_Command_Callback_Data_Flags(Flag):
