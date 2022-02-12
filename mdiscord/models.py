@@ -4380,12 +4380,14 @@ class Application_Command_Interaction_Data(DiscordObject):
     '''
     id: Snowflake = 0
     name: str = ''
+    type: Interaction_Type = None
     resolved: Application_Command_Interaction_Data_Resolved = None
     options: List[Application_Command_Interaction_Data_Option] = list
     custom_id: str = ''
-    component_type: int = 0
+    component_type: Component_Types = None
     values: List[str] = list
     target_id: Snowflake = 0
+    components: List[Component] = list
 
 
 @dataclass
