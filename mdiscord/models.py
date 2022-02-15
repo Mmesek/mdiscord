@@ -480,7 +480,7 @@ class Channel(DiscordObject):
     owner_id: Snowflake = 0
     application_id: Snowflake = 0
     parent_id: Snowflake = 0
-    last_pin_timestamp: datetime = datetime.now().isoformat()
+    last_pin_timestamp: datetime = None
     rtc_region: str = None
     video_quality_mode: int = None
     message_count: int = 0
@@ -626,8 +626,8 @@ class Message(DiscordObject):
     author: User = None
     member: Guild_Member = None
     content: str = ""
-    timestamp: datetime = datetime.now().isoformat()
-    edited_timestamp: datetime = datetime.now().isoformat()
+    timestamp: datetime = None
+    edited_timestamp: datetime = None
     tts: bool = False
     mention_everyone: bool = False
     mentions: List[User] = list
@@ -1692,8 +1692,8 @@ class Guild_Member(DiscordObject):
     user: User = None
     nick: str = None
     roles: List[Snowflake] = list
-    joined_at: datetime = datetime.now().isoformat()
-    premium_since: datetime = datetime.now().isoformat()
+    joined_at: datetime = None
+    premium_since: datetime = None
     deaf: bool = False
     mute: bool = False
     pending: bool = False
@@ -1749,7 +1749,7 @@ class Integration(DiscordObject):
     expire_grace_period: int = 0
     user: User = None
     account: Integration_Account = None
-    synced_at: datetime = datetime.now().isoformat()
+    synced_at: datetime = None
     subscriber_count: int = 0
     revoked: bool = False
     application: Integration_Application = None
@@ -2663,8 +2663,8 @@ class Guild_Member_Update(DiscordObject):
     roles: List[Snowflake] = list
     user: User = None
     nick: str = ''
-    joined_at: datetime = datetime.now().isoformat()
-    premium_since: datetime = datetime.now().isoformat()
+    joined_at: datetime = None
+    premium_since: datetime = None
     deaf: bool = None
     mute: bool = None
     pending: bool = False
@@ -2813,7 +2813,7 @@ class Invite_Create(DiscordObject):
     '''
     channel_id: Snowflake = 0
     code: str = ''
-    created_at: datetime = datetime.now().isoformat()
+    created_at: datetime = None
     guild_id: Snowflake = 0
     inviter: User = None
     max_age: int = 0
