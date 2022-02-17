@@ -3,16 +3,25 @@
 
 Simple typehinted (relatively) Discord API Wrapper with type casting.
 
-`Models` & `Endpoints` are generated from documentation with a script therefore they should *in theory* provide 100% of coverage. 
-Mapping is mostly 1:1 (With few additional convenience methods in `types.py`) between docs and code.
+[`Models`](mdiscord/models.py) & [`Endpoints`](mdiscord/endpoints.py) are generated from [documentation](https://github.com/discord/discord-api-docs) with a [script](https://github.com/Mmesek/DocParser) therefore they should *in theory* provide 100% of coverage. 
+
+Mapping is mostly 1:1 (With few additional convenience methods in [`types.py`](mdiscord/types.py)) between docs and code.
+
+Wrapper was made (and meant) to work with conjunction with [MFramework.py](https://github.com/Mmesek/MFramework.py) hence it's usage on it's own is rather limited (Read: It's mainly a REST wrapper with Gateway's Dispatch).
+
 
 ---
+## Dataclasses with optional keyword arguments
+
 At this moment, usage requires slight modification to dataclasses from standard library by allowing passing additional keyword arguments to auto generated constructor
-which is adding `+ ["**kwargs"]` to a second argument for _create_fn in _init_fn (Around line 532 [At least in version from January 2021])
+which is adding `+ ["**kwargs"]` to a second argument for _create_fn in _init_fn (Around line 532 [At least in version from January 2021]).
 
+This sed should do the trick (Just replace path to dataclasess with the one you want to edit):
+```sh
+sed -i -e 's/_init_params,/_init_params + ["**kwargs"],/g' /usr/local/lib/python3.10/dataclasses.py
+```
 
-
----
+# Examples
 
 Basic (Websocket) usage example:
 ```python
@@ -54,3 +63,7 @@ async def main():
 
 asyncio.run(main())
 ```
+
+# Contributing
+
+While PR's are welcome, for command-related capability contributions, visit [MFramework.py](https://github.com/Mmesek/MFramework.py) repo.
