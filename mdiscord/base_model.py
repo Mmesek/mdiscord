@@ -85,7 +85,7 @@ class DiscordObject:
                 setattr(self, k, v)
     def __post_init__(self):
         for field in self.__dict__:
-            if field == '_Client':
+            if field.startswith('_'):
                 continue
             __type = self.__annotations__.get(field) or type(self).__bases__[0].__annotations__.get(field)
             if not __type:
@@ -95,6 +95,8 @@ class DiscordObject:
                 __type = _annotations.get(field)
             value = getattr(self, field)
             if value is None or type(value) not in [int, str, bool, type, list, dict]:
+                continue
+            if type(value) is list and value and is_dataclass(value[0]):
                 continue
             _type = __type.replace('List[', '').replace(']', '').replace('Dict[','')
             if 'Dict' in __type:
