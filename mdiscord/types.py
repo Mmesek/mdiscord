@@ -455,6 +455,10 @@ class Message(Message, Sendable):
             embed.addField(title_image, self.attachments[0].filename, True)
         return embed
 
+    @property
+    def message_link(self):
+        return Discord_Paths.MessageLink.link.format(self.guild_id or "@me", self.channel_id, self.id)
+
 @dataclass
 class Guild(Guild):
     def get_icon(self) -> str:
