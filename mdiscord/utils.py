@@ -55,7 +55,7 @@ def Permissions(*permissions):
                         from .exceptions import Insufficient_Permissions
                         raise Insufficient_Permissions(*permissions)
             return f(Client, id, *args, **kwargs)
-        return wrapped #Why was it returning f instead of wrapped before?
+        return f#wrapped
     return inner
 
 def count(*intents):
@@ -114,7 +114,7 @@ class EventListener:
         future = asyncio.get_event_loop().create_future()
         self._listeners[event].append((future, check))
         return asyncio.wait_for(future, timeout)
-    
+
     def check_listeners(self, event: str, data: DiscordObject) -> bool:
         '''Method checking received data against predicates of current listeners
 
