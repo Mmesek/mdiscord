@@ -32,11 +32,11 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         self.presence = objects.Gateway_Presence_Update(
             since= time.time(),
             activities=[objects.Bot_Activity(
-                name=cfg[name].get('presence'), #"How the world burns"
-                type=cfg[name].get('presence_type'), #Activity_Types.WATCHING.value
-                url=cfg[name].get('url')
+                name=cfg.get(name, {}).get('presence', None), #"How the world burns"
+                type=cfg.get(name, {}).get('presence_type', None), #Activity_Types.WATCHING.value
+                url=cfg.get(name, {}).get('url', None)
                 )],
-            status= cfg[name].get('status', objects.Status_Types.ONLINE),
+            status= cfg.get(name, {}).get('status', objects.Status_Types.ONLINE),
             afk= False)
 
         self.intents = cfg[name].get('intents', 0) #14271 # https://ziad87.net/intents/
@@ -51,7 +51,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
             log.info("Restarting session")
             self._new_session()
         gate = await self.get_gateway_bot()
-        self._ws = await self._session.ws_connect(f"{gate['url']}?v={self.cfg['Discord']['api_version']}&encoding=json&compress=zlib-stream")
+        self._ws = await self._session.ws_connect(f"{gate['url']}?" + (f"v={self.api_version}&" if self.api_version else "") + "encoding=json&compress=zlib-stream")
         return self
 
     async def receive(self):
