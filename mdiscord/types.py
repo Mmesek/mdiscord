@@ -534,7 +534,7 @@ class Interaction(Interaction):
         self._replied = True
         return r
     
-    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=None, private: bool=None, channel_id: Snowflake=None) -> Message:
+    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=None, private: bool=None, channel_id: Snowflake=None, custom_id: str = None, title: str = None) -> Message:
         flags=Message_Flags.EPHEMERAL if private else None
         if channel_id:
             return await self._Client.create_message(channel_id, content, embeds=embeds, components=components, file=file, filename=filename, allowed_mentions=allowed_mentions)
@@ -544,12 +544,14 @@ class Interaction(Interaction):
                 file=file, filename=filename, flags=flags
             )
         return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
-            type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE, 
+            type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE if not custom_id else Interaction_Callback_Type.MODAL, 
             data=Interaction_Application_Command_Callback_Data(
                 content=content, 
                 embeds=embeds, 
+                components=components,
                 allowed_mentions=allowed_mentions,
-                flags=flags 
+                flags=flags,
+                custom_id=custom_id, title=title
                 )
             )
         )
