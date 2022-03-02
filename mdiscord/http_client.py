@@ -4,6 +4,8 @@ from typing import Dict
 from mdiscord.base_model import Snowflake
 from mdiscord.endpoints import Endpoints
 from mdiscord.serializer import Serializer
+from mdiscord.utils import log
+
 
 class HTTP_Client(Endpoints, Serializer):
     token: str
@@ -33,16 +35,22 @@ class HTTP_Client(Endpoints, Serializer):
         return await self._api_call(path, method, **kwargs)
     
     async def _api_call(self, path: str, method: str="GET", **kwargs):
-        import asyncio
+        import asyncio, time
         try:
             bucket = path.split('/', 3)[2]
         except:
             bucket = None
-        if not (self.lock.get(bucket, False) is False and self.lock.get('global') is False):
+        limit = self.lock.get(bucket, (0, 0))
+        if limit is True or self.lock.get('global', False):
+        #if not (self.lock.get(bucket, False) is False and self.lock.get('global') is False):
             if 'reaction' in path:
                 await asyncio.sleep(0.5)
             await asyncio.sleep(0.75)
             return await self._api_call(path, method, **kwargs)
+        elif time.time() < limit[1] and not limit[0]:
+            log.debug("Rate Limit exhausted. Sleeping for %s", limit[1] - time.time())
+            await asyncio.sleep(limit[1] - time.time())
+
 
         from mdiscord.base_model import BASE_URL
         async with self._session.request(method, BASE_URL+"api"+(f"/v{self.api_version}" if self.api_version else "")+path, **kwargs) as res:
@@ -51,6 +59,7 @@ class HTTP_Client(Endpoints, Serializer):
             
             try:
                 res.raise_for_status()
+                self.lock[bucket] = (int(res.headers.get("X-RateLimit-Remaining", 1)), float(res.headers.get("X-RateLimit-Reset", 0)))
                 if res.status == HTTP_Response_Codes.NO_CONTENT.value:
                     return None
                 try:
@@ -81,9 +90,9 @@ class HTTP_Client(Endpoints, Serializer):
                     retry_after = float(res.headers.get('Retry-After', 1))
                     if 'reaction' in path:
                         retry_after += 0.75
-                    await asyncio.sleep(retry_after / 1000 if retry_after > 3 else retry_after)
+                    await asyncio.sleep(retry_after)
                     if not is_global:
-                        self.lock[bucket] = False
+                        self.lock[bucket] = (0, 0)
                     else:
                         self.lock['global'] = False
                     return await self._api_call(path, method, **kwargs)
