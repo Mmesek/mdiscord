@@ -1591,11 +1591,11 @@ class Endpoints:
         '''
         return await self.api_call(path = f"/oauth2/@me", method = "GET")
 
-    async def get_global_application_commands(self, application_id: Snowflake) -> List[Application_Command]:
+    async def get_global_application_commands(self, application_id: Snowflake, with_localizations: bool = False) -> List[Application_Command]:
         '''
         Fetch all of the global commands for your application. Returns an array of [ApplicationCommand](https://discord.com/developers/docs/interactions/slash_commands#applicationcommand) objects.
         '''
-        r = await self.api_call(path = f"/applications/{application_id}/commands", method = "GET")
+        r = await self.api_call(path = f"/applications/{application_id}/commands", method = "GET", params = {"with_localizations": with_localizations})
         return [Application_Command(**i) for i in r]
 
     async def create_global_application_command(self, application_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False, type:Application_Command_Type=Application_Command_Type.CHAT_INPUT) -> Application_Command:
@@ -1647,11 +1647,11 @@ class Endpoints:
         '''
         await self.api_call(path = f"/applications/{application_id}/commands/{command_id}", method = "DELETE")
 
-    async def get_guild_application_commands(self, application_id: Snowflake, guild_id: Snowflake) -> List[Application_Command]:
+    async def get_guild_application_commands(self, application_id: Snowflake, guild_id: Snowflake, with_localizations: bool = False) -> List[Application_Command]:
         '''
         Fetch all of the guild commands for your application for a specific guild. Returns an array of [application command](https://discord.com/developers/docs/interactions/slash_commands#application_command_object) objects.
         '''
-        r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "GET")
+        r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "GET", params = {"with_localizations": with_localizations})
         return [Application_Command(**i) for i in r]
 
     async def bulk_overwrite_global_application_commands(self, application_id: Snowflake, application_commands: List[Application_Command]) -> List[Application_Command]:

@@ -3268,7 +3268,9 @@ class Application_Command(DiscordObject):
     application_id: Snowflake = None
     guild_id: Snowflake = None
     name: str = ''
+    name_localizations: Dict[str, str] = dict
     description: str = ''
+    description_localizations: Dict[str, str] = dict
     options: List[Application_Command_Option] = list
     default_permission: bool = False
 
@@ -4222,7 +4224,9 @@ class Application_Command_Option(DiscordObject):
     '''
     type: Application_Command_Option_Type = 0
     name: str = ''
+    name_localizations: Dict[str, str] = dict
     description: str = ''
+    name_localizations: Dict[str, str] = dict
     #default: bool = False
     required: bool = False
     choices: List[Application_Command_Option_Choice] = list
@@ -4257,6 +4261,7 @@ class Application_Command_Option_Choice(DiscordObject):
         value of the choice, up to 100 characters if string
     '''
     name: str = ''
+    name_localizations: Dict[str, str] = dict
     value: str = ''
 
 
