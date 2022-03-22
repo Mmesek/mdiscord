@@ -4551,18 +4551,18 @@ class Gateway_Commands(Events):
     
     Parameters
     ----------
-        Identify: 
-            triggers the initial handshake with the gateway
-        Resume: 
-            resumes a dropped gateway connection
-        Heartbeat: 
-            maintains an active gateway connection
-        Request_Guild_Members: 
-            requests members for a guild
-        Update_Voice_State: 
-            joins, moves,
-        Update_Status: 
-            updates a client's presence
+    Identify: 
+        triggers the initial handshake with the gateway
+    Resume: 
+        resumes a dropped gateway connection
+    Heartbeat: 
+        maintains an active gateway connection
+    Request_Guild_Members: 
+        requests members for a guild
+    Update_Voice_State: 
+        joins, moves,
+    Update_Status: 
+        updates a client's presence
     '''
     Identify = staticmethod(Identify)
     Resume = staticmethod(Resume)
