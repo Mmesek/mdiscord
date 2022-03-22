@@ -17,8 +17,8 @@ from .exceptions import * # noqa: F401
 def onDispatch(f=None, priority: int=100, event: Union[str, Gateway_Events]=None, optional: bool = False):
     """
     Decorator to register function as a listener for Event from Dispatch
-    Params
-    ------
+    Parameters
+    ----------
     f:
         Decorated Function to be registered
     priorty:

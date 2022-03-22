@@ -88,8 +88,8 @@ class EventListener:
     def wait_for(self, event: Union[str, Gateway_Events], *, check: Optional[Callable[[DiscordObject], bool]] = default_check, timeout: Optional[float] = None) -> DiscordObject:
         '''Wait for Dispatch event that meets predicate statement
 
-        Params
-        ------
+        Parameters
+        ----------
         event:
             Dispatch Event to wait for
         check:
@@ -118,8 +118,8 @@ class EventListener:
     def check_listeners(self, event: str, data: DiscordObject) -> bool:
         '''Method checking received data against predicates of current listeners
 
-        Params
-        ------
+        Parameters
+        ----------
         event:
             Dispatch Event of which listeners should be checked
         data:

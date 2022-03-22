@@ -65,8 +65,8 @@ class Embed(Embed):
     def setColor(self, color: Union[str, Tuple[int, int, int], int]) -> Embed:
         '''Set's Embed's Color. 
 
-        Params
-        -------
+        Parameters
+        ----------
         color:
             Accepts HEX string, RGB Tuple or final Integer'''
         if type(color) == str and '#' in color:
@@ -101,8 +101,8 @@ class Embed(Embed):
     def setTimestamp(self, timestamp: datetime) -> Embed:
         '''Sets Timestamp.
         
-        Params
-        ------
+        Parameters
+        ----------
         timestamp:
             Accepts direct ISO string, datetime object or POSIX float'''
         if type(timestamp) is datetime:
@@ -180,8 +180,8 @@ class Sendable:
         '''Creates reply message.
         Basically a wrapper around `send` method.
 
-        Params
-        ------
+        Parameters
+        ----------
         content:
             Message to send
         embeds:
@@ -207,8 +207,8 @@ class Sendable:
                     reply: bool=False, private: bool=False, channel_id: Snowflake=None) -> Message:
         '''Sends message
 
-        Params
-        ------
+        Parameters
+        ----------
         content:
             Message to send
         embeds:
@@ -234,8 +234,8 @@ class Sendable:
                         allowed_mentions: Allowed_Mentions=None, flags: Message_Flags = None) -> Message:
         '''Edits message
 
-        Params
-        ------
+        Parameters
+        ----------
         content:
             Message to send
         embeds:
@@ -277,8 +277,8 @@ class Sendable:
         '''Creates followup message. (Replies to previous message)
         Basically a wrapper around `send_webhook` method.
 
-        Params
-        ------
+        Parameters
+        ----------
         content:
             Message to send
         embeds:
@@ -313,8 +313,8 @@ class Sendable:
         '''Edits last followup message. (Edits last reply)
         Basically a wrapper around `edit_webhook` method.
 
-        Params
-        ------
+        Parameters
+        ----------
         content:
             Message to send
         embeds:
