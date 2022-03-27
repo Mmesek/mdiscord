@@ -4226,7 +4226,7 @@ class Application_Command_Option(DiscordObject):
     name: str = ''
     name_localizations: Dict[str, str] = dict
     description: str = ''
-    name_localizations: Dict[str, str] = dict
+    description_localizations: Dict[str, str] = dict
     #default: bool = False
     required: bool = False
     choices: List[Application_Command_Option_Choice] = list
