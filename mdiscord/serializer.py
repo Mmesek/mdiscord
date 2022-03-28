@@ -8,6 +8,10 @@ Serializer & Deserializer
 :copyright: (c) 2021 Mmesek
 
 '''
+try:
+    import orjson as json
+except ModuleNotFoundError:
+    import json
 
 class Deserializer:
     def __init__(self):
@@ -15,7 +19,6 @@ class Deserializer:
         self._buffer = bytearray()
         self._zlib = zlib.decompressobj()
     def __call__(self, msg: bytes):
-        import ujson as json
         if type(msg) is bytes:
             self._buffer.extend(msg)
             if len(msg) >= 4:
@@ -74,7 +77,6 @@ class Serializer:
         else:
             import aiohttp
             kwargs['data'] = aiohttp.FormData()
-            import ujson as json
             kwargs['data'].add_field("payload_json", json.dumps(as_dict(kwargs["json"])))
             kwargs['data'].add_field("file", kwargs["file"],
                 filename=kwargs["filename"],

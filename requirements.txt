@@ -1,4 +1,4 @@
 aiohttp
 aiodns
 Brotli
-ujson
+orjson

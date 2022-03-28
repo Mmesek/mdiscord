@@ -48,7 +48,7 @@ class HTTP_Client(Endpoints, Serializer):
             await asyncio.sleep(0.75)
             return await self._api_call(path, method, **kwargs)
         elif time.time() < limit[1] and not limit[0]:
-            log.debug("Rate Limit exhausted. Sleeping for %s", limit[1] - time.time())
+            log.debug("Rate Limit exhausted on bucket %s. Sleeping for %s", bucket or "GLOBAL", limit[1] - time.time())
             await asyncio.sleep(limit[1] - time.time())
 
 
@@ -73,8 +73,8 @@ class HTTP_Client(Endpoints, Serializer):
                     return dict({"_Client": self}, **r)
                 return list(dict({"_Client":self}, **i) for i in r)
             except aiohttp.ClientResponseError as ex:
-                import ujson
-                error_message = ujson.loads(res.content._buffer.popleft())
+                import orjson
+                error_message = orjson.loads(res.content._buffer.popleft())
                 if res.status == HTTP_Response_Codes.BAD_REQUEST.value:
                     raise BadRequest(reason=res.reason, msg=error_message.get('message', error_message), method=method, path=path, payload=kwargs.get("json"), errors=error_message.get('errors', {}))
                 elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
