@@ -58,7 +58,7 @@ class Snowflake(int):
 
 class Events(Enum):
     def __call__(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+        return self.func.from_dict(*args, **kwargs)
     def __new__(cls: Type[_T], value: object) -> _T:
         obj = object.__new__(cls)
         obj.func = value
@@ -122,17 +122,20 @@ class DiscordObject:
                     if issubclass(_type, Enum):
                         self.__setattr__(field, [getattr(_type, i, i) for i in value if i])
                     else:
-                        self.__setattr__(field, [_type(**i if not is_basic and not is_dataclass(i) else i or None) for i in value or []])
+                        self.__setattr__(field, [_type.from_dict(**i if not is_basic and not is_dataclass(i) else i or None) for i in value or []])
                 except:
-                    self.__setattr__(field, [_type(i) if type(i) is not _type else i for i in value or []])            
+                    try:
+                        self.__setattr__(field, [_type.from_dict(**i) if type(i) is not _type else i for i in value or []])            
+                    except Exception as ex:
+                        self.__setattr__(field, [_type(i) if type(i) is not _type else i for i in value or []])            
             elif _type is datetime:
                 self.__setattr__(field, _type.fromisoformat(value) if value else _type.now())
             elif 'Dict' in __type:
                 #k = types.get(k, vars(FINAL_TYPES).get(k))
-                self.__setattr__(field, {str(_key):_type(**_val) for _key, _val in value.items() or {}})
+                self.__setattr__(field, {str(_key):_type.from_dict(**_val) for _key, _val in value.items() or {}})
             else:
                 if type(value) is dict:
-                    self.__setattr__(field, _type(**value if value is not None else value or None))
+                    self.__setattr__(field, _type.from_dict(**value if value is not None else value or None))
                 elif issubclass(_type, Flag):
                     _flags = []
                     for _flag in _type:
@@ -155,3 +158,7 @@ class DiscordObject:
                 _dict[field] = as_dict(_dict.get(field))
         _dict.pop("_Client")
         return _dict
+    
+    @classmethod
+    def from_dict(cls, **kwargs):
+        return cls(**{k: v for k,v in kwargs.items() if k in list(dir(cls))})

@@ -47,14 +47,14 @@ class Endpoints:
             how many entries are returned
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/audit-logs", method = "GET", params = {"user_id": user_id, "action_type": action_type, "before": before, "limit": limit})
-        return Audit_Log(**r)
+        return Audit_Log.from_dict(**r)
 
     async def get_channel(self, channel_id: Snowflake) -> Channel:
         '''
         Get a channel by ID. Returns a [channel](https://discord.com/developers/docs/resources/channel#channel_object) object.  If the channel is a thread, a [thread member](https://discord.com/developers/docs/resources/channel#thread_member_object) object is included in the returned result.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}", method = "GET")
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     async def modify_channel_dm(self, channel_id: Snowflake, name: str=None, icon: bytearray=None) -> Channel:
         '''
@@ -68,7 +68,7 @@ class Endpoints:
             base64 encoded icon
         '''
         r = await self.api_call(path = f"/channels/{channel_id}", method = "PATCH", json = {"name": name, "icon": icon})
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     @Permissions("MANAGE_CHANNELS")
     async def modify_channel(self, channel_id: Snowflake, name: str=None, type: int=None, position: int=None, topic: str=None, nsfw: bool=None, rate_limit_per_user: int=None, bitrate: int=None, user_limit: int=None, permission_overwrites: List[Overwrite]=None, parent_id: Snowflake=None, rtc_region: str=None, video_quality_mode: int=None, reason: str=None) -> Channel:
@@ -103,7 +103,7 @@ class Endpoints:
             Video_Quality_Mode
         '''
         r = await self.api_call(path = f"/channels/{channel_id}", method = "PATCH", json = {"name": name, "type": type, "position": position, "topic": topic, "nsfw": nsfw, "rate_limit_per_user": rate_limit_per_user, "bitrate": bitrate, "user_limit": user_limit, "permission_overwrites": permission_overwrites, "parent_id": parent_id, "rtc_region": rtc_region, "video_quality_mode": video_quality_mode}, reason=reason)
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     @Permissions("MANAGE_CHANNELS")
     async def modify_channel_thread(self, channel_id: Snowflake, name: str=None, archived: bool=False, default_auto_archive_duration: int=None, auto_archive_duration: int=None, locked: bool=False, rate_limit_per_user: int=None, reason: str=None) -> Channel:
@@ -126,7 +126,7 @@ class Endpoints:
             amount of seconds a user has to wait before sending another message
         '''
         r = await self.api_call(path = f"/channels/{channel_id}", method = "PATCH", json = {"name": name, "archived": archived, "default_auto_archive_duration": default_auto_archive_duration, "auto_archive_duration": auto_archive_duration, "locked": locked, "rate_limit_per_user": rate_limit_per_user}, reason=reason)
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     @Permissions("MANAGE_CHANNELS")
     async def delete_close_channel(self, channel_id: Snowflake, reason: str=None) -> Channel:
@@ -134,7 +134,7 @@ class Endpoints:
         Delete a channel, or close a private message. Requires the MANAGE_CHANNELS permission for the guild, or MANAGE_THREADS if the channel is a thread. Deleting a category does not delete its child channels; they will have their parent_id removed and a [Channel Update](https://discord.com/developers/docs/topics/gateway#channel_update) Gateway event will fire for each of them. Returns a [channel](https://discord.com/developers/docs/resources/channel#channel_object) object on success. Fires a [Channel Delete](https://discord.com/developers/docs/topics/gateway#channel_delete) Gateway event (or [Thread Delete](https://discord.com/developers/docs/topics/gateway#thread_delete) if the channel was a thread).
         '''
         r = await self.api_call(path = f"/channels/{channel_id}", method = "DELETE", reason=reason)
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     @Permissions("VIEW_CHANNEL")
     async def get_channel_messages(self, channel_id: Snowflake, around: Snowflake=None, before: Snowflake=None, after: Snowflake=None, limit: int=50) -> List[Message]:
@@ -154,7 +154,7 @@ class Endpoints:
             max number of messages to return
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/messages", method = "GET", params = {"around": around, "before": before, "after": after, "limit": limit})
-        return [Message(**i) for i in r]
+        return [Message.from_dict(**i) for i in r]
 
     @Permissions("READ_MESSAGE_HISTORY")
     async def get_channel_message(self, channel_id: Snowflake, message_id: Snowflake) -> Message:
@@ -162,7 +162,7 @@ class Endpoints:
         Returns a specific message in the channel. If operating on a guild channel, this endpoint requires the 'READ_MESSAGE_HISTORY' permission to be present on the current user. Returns a [message](https://discord.com/developers/docs/resources/channel#message_object) object on success.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}", method = "GET")
-        return Message(**r)
+        return Message.from_dict(**r)
 
     @Permissions("SEND_MESSAGES", "READ_MESSAGE_HISTORY")
     async def create_message(self, channel_id: Snowflake, content: str=None, nonce: int=None, tts: bool=None, file: bytes=None, filename: str="file.txt", embeds: List[Embed]=None, payload_json: str=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), message_reference: Message_Reference=None, components: List[Component]=None) -> Message:
@@ -212,7 +212,7 @@ class Endpoints:
             the components to include with the message
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/messages", method = "POST", json = {"content": content, "nonce": nonce, "tts": tts, "embeds": embeds, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "message_reference": message_reference, "components": components}, file=file, filename=filename)
-        return Message(**r)
+        return Message.from_dict(**r)
 
     @Permissions("SEND_MESSAGES")
     async def crosspost_message(self, channel_id: Snowflake, message_id: Snowflake, reason: str=None) -> Message:
@@ -221,7 +221,7 @@ class Endpoints:
         Crosspost a message in a News Channel to following channels. This endpoint requires the 'SEND_MESSAGES' permission, if the current user sent the message, or additionally the 'MANAGE_MESSAGES' permission, for all other messages, to be present for the current user.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}/crosspost", method = "POST", reason=reason)
-        return Message(**r)
+        return Message.from_dict(**r)
 
     @Permissions("READ_MESSAGE_HISTORY", "ADD_REACTIONS")
     async def create_reaction(self, channel_id: Snowflake, message_id: Snowflake, emoji: str) -> None:
@@ -259,7 +259,7 @@ class Endpoints:
             max number of users to return
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}", method = "GET", params = {"after": after, "limit": limit})
-        return [User(**i) for i in r]
+        return [User.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_MESSAGES")
     async def delete_all_reactions(self, channel_id: Snowflake, message_id: Snowflake, reason: str=None) -> None:
@@ -303,7 +303,7 @@ class Endpoints:
             the components to include with the message
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}", method = "PATCH", json = {"content": content, "embeds": embeds, "flags": flags, "file": file, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "attachments": attachments, "components": components})
-        return Message(**r)
+        return Message.from_dict(**r)
 
     @Permissions("MANAGE_MESSAGES")
     async def delete_message(self, channel_id: Snowflake, message_id: Snowflake, reason: str=None) -> None:
@@ -349,7 +349,7 @@ class Endpoints:
         Returns a list of [invite](https://discord.com/developers/docs/resources/invite#invite-object) objects (with [invite metadata](https://discord.com/developers/docs/resources/invite#invite-metadata-object)) for the channel. Only usable for guild channels. Requires the `MANAGE_CHANNELS` permission.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/invites", method = "GET")
-        return [Invite(**i) for i in r]
+        return [Invite.from_dict(**i) for i in r]
 
     @Permissions("CREATE_INSTANT_INVITE")
     async def create_channel_invite(self, channel_id: Snowflake, max_age: int=86400, max_uses: int=None, temporary: bool=False, unique: bool=False, target_type: int=None, target_user_id: Snowflake=None, target_application_id: Snowflake=None, reason: str=None) -> Invite:
@@ -374,7 +374,7 @@ class Endpoints:
             the id of the embedded application to open for this invite, required if `target_type` is 2, the application must have the `EMBEDDED` flag
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/invites", method = "POST", json = {"max_age": max_age, "max_uses": max_uses, "temporary": temporary, "unique": unique, "target_type": target_type, "target_user_id": target_user_id, "target_application_id": target_application_id}, reason=reason)
-        return Invite(**r)
+        return Invite.from_dict(**r)
 
     @Permissions("MANAGE_ROLES")
     async def delete_channel_permission(self, channel_id: Snowflake, overwrite_id: Snowflake, reason: str=None) -> None:
@@ -394,7 +394,7 @@ class Endpoints:
             id of target channel
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/followers", method = "POST", json = {"webhook_channel_id": webhook_channel_id}, reason=reason)
-        return Followed_Channel(**r)
+        return Followed_Channel.from_dict(**r)
 
     async def trigger_typing_indicator(self, channel_id: Snowflake) -> None:
         '''
@@ -407,7 +407,7 @@ class Endpoints:
         Returns all pinned messages in the channel as an array of [message](https://discord.com/developers/docs/resources/channel#message-object) objects.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/pins", method = "GET")
-        return Message(**r)
+        return Message.from_dict(**r)
 
     @Permissions("MANAGE_MESSAGES")
     async def add_pinned_channel_message(self, channel_id: Snowflake, message_id: Snowflake, reason: str=None) -> None:
@@ -453,7 +453,7 @@ class Endpoints:
             duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}/threads", method = "POST", json = {"name": name, "auto_archive_duration": auto_archive_duration}, reason=reason)
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     async def start_thread_without_message(self, channel_id: Snowflake, name: str=None, auto_archive_duration: int=None, type: Channel_Types=None, reason: str=None) -> Channel:
         '''
@@ -469,7 +469,7 @@ class Endpoints:
             Type_Of_Thread
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/threads", method = "POST", json = {"name": name, "auto_archive_duration": auto_archive_duration, "type": type}, reason=reason)
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     async def join_thread(self, channel_id: Snowflake, reason: str=None) -> None:
         '''
@@ -501,7 +501,7 @@ class Endpoints:
         > This endpoint is restricted according to whether the GUILD_MEMBERS [Privileged Intent](https://discord.com/developers/docs/topics/gateway#privileged_intents) is enabled for your application.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/thread-members", method = "GET")
-        return [Thread_Member(**i) for i in r]
+        return [Thread_Member.from_dict(**i) for i in r]
 
     @Permissions("READ_MESSAGE_HISTORY")
     async def list_active_threads(self, channel_id: Snowflake) -> List[Thread_List]:
@@ -509,7 +509,7 @@ class Endpoints:
         Returns all active threads in the channel, including public and private threads. Threads are ordered by their `id`, in descending order.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/threads/active", method = "GET")
-        return Thread_List(**r)
+        return Thread_List.from_dict(**r)
 
     @Permissions("READ_MESSAGE_HISTORY")
     async def list_public_archived_threads(self, channel_id: Snowflake, before: datetime=None, limit: int=None) -> List[Thread_List]:
@@ -524,7 +524,7 @@ class Endpoints:
             optional maximum number of threads to return
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/threads/archived/public", method = "GET", params = {"before": before, "limit": limit})
-        return Thread_List(**r)
+        return Thread_List.from_dict(**r)
 
     async def list_private_archived_threads(self, channel_id: Snowflake, before: datetime=None, limit: int=None) -> List[Thread_List]:
         '''
@@ -538,7 +538,7 @@ class Endpoints:
             optional maximum number of threads to return
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/threads/archived/private", method = "GET", params = {"before": before, "limit": limit})
-        return Thread_List(**r)
+        return Thread_List.from_dict(**r)
 
     @Permissions("READ_MESSAGE_HISTORY")
     async def list_joined_private_archived_threads(self, channel_id: Snowflake, before: Snowflake=None, limit: int=None) ->  List[Thread_List]:
@@ -553,21 +553,21 @@ class Endpoints:
             optional maximum number of threads to return
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/users/@me/threads/archived/private", method = "GET", params = {"before": before, "limit": limit})
-        return Thread_List(**r)
+        return Thread_List.from_dict(**r)
 
     async def list_guild_emojis(self, guild_id: Snowflake) -> List[Emoji]:
         '''
         Returns a list of [emoji](https://discord.com/developers/docs/resources/emoji#emoji-object) objects for the given guild.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/emojis", method = "GET")
-        return [Emoji(**i) for i in r]
+        return [Emoji.from_dict(**i) for i in r]
 
     async def get_guild_emoji(self, guild_id: Snowflake, emoji_id: Snowflake) -> Emoji:
         '''
         Returns an [emoji](https://discord.com/developers/docs/resources/emoji#emoji-object) object for the given guild and emoji IDs.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/emojis/{emoji_id}", method = "GET")
-        return Emoji(**r)
+        return Emoji.from_dict(**r)
 
     @Permissions("MANAGE_EMOJIS")
     async def create_guild_emoji(self, guild_id: Snowflake, name: str=None, image: str=None, roles: Snowflake=None, reason: str=None) -> Emoji:
@@ -585,7 +585,7 @@ class Endpoints:
             roles allowed to use this emoji
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/emojis", method = "POST", json = {"name": name, "image": image, "roles": roles}, reason=reason)
-        return Emoji(**r)
+        return Emoji.from_dict(**r)
 
     @Permissions("MANAGE_EMOJIS")
     async def modify_guild_emoji(self, guild_id: Snowflake, emoji_id: Snowflake, name: str=None, roles: Snowflake=None, reason: str=None) -> Emoji:
@@ -601,7 +601,7 @@ class Endpoints:
             roles allowed to use this emoji
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/emojis/{emoji_id}", method = "PATCH", json = {"name": name, "roles": roles}, reason=reason)
-        return Emoji(**r)
+        return Emoji.from_dict(**r)
 
     @Permissions("MANAGE_EMOJIS")
     async def delete_guild_emoji(self, guild_id: Snowflake, emoji_id: Snowflake, reason: str=None) -> None:
@@ -642,7 +642,7 @@ class Endpoints:
             System_Channel_Flags
         '''
         r = await self.api_call(path = f"/guilds", method = "POST", json = {"name": name, "region": region, "icon": icon, "verification_level": verification_level, "default_message_notifications": default_message_notifications, "explicit_content_filter": explicit_content_filter, "roles": roles, "channels": channels, "afk_channel_id": afk_channel_id, "afk_timeout": afk_timeout, "system_channel_id": system_channel_id, "system_channel_flags": system_channel_flags})
-        return Guild(**r)
+        return Guild.from_dict(**r)
 
     async def get_guild(self, guild_id: Snowflake, with_counts: bool=False) -> Guild:
         '''
@@ -655,14 +655,14 @@ class Endpoints:
             when `true`, will return approximate member and presence counts for the guild
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}", method = "GET", params = {"with_counts": with_counts})
-        return Guild(**r)
+        return Guild.from_dict(**r)
 
     async def get_guild_preview(self, guild_id: Snowflake) -> Guild_Preview:
         '''
         Returns the [guild preview](https://discord.com/developers/docs/resources/guild#guild-preview-object) object for the given id. If the user is not in the guild, then the guild must be Discoverable.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/preview", method = "GET")
-        return Guild_Preview(**r)
+        return Guild_Preview.from_dict(**r)
 
     @Permissions("MANAGE_GUILD")
     async def modify_guild(self, guild_id: Snowflake, name: str=None, region: str=None, verification_level: int=None, default_message_notifications: int=None, explicit_content_filter: int=None, afk_channel_id: Snowflake=None, afk_timeout: int=None, icon: str=None, owner_id: Snowflake=None, splash: str=None, discovery_splash: str=None, banner: str=None, system_channel_id: Snowflake=None, system_channel_flags: int=None, rules_channel_id: Snowflake=None, public_updates_channel_id: Snowflake=None, preferred_locale: str=None, features: List[Guild_Features]=None, description: str=None, reason: str=None) -> Guild:
@@ -711,7 +711,7 @@ class Endpoints:
             the description for the guild, if the guild is discoverable
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}", method = "PATCH", json = {"name": name, "region": region, "verification_level": verification_level, "default_message_notifications": default_message_notifications, "explicit_content_filter": explicit_content_filter, "afk_channel_id": afk_channel_id, "afk_timeout": afk_timeout, "icon": icon, "owner_id": owner_id, "splash": splash, "discovery_splash": discovery_splash, "banner": banner, "system_channel_id": system_channel_id, "system_channel_flags": system_channel_flags, "rules_channel_id": rules_channel_id, "public_updates_channel_id": public_updates_channel_id, "preferred_locale": preferred_locale, "features": features, "description": description}, reason=reason)
-        return Guild(**r)
+        return Guild.from_dict(**r)
 
     async def delete_guild(self, guild_id: Snowflake) -> None:
         '''
@@ -724,7 +724,7 @@ class Endpoints:
         Returns a list of guild [channel](https://discord.com/developers/docs/resources/channel#channel-object) objects.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/channels", method = "GET")
-        return [Channel(**i) for i in r]
+        return [Channel.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_CHANNELS")
     async def create_guild_channel(self, guild_id: Snowflake, name: str=None, type: int=None, topic: str=None, bitrate: int=None, user_limit: int=None, rate_limit_per_user: int=None, position: int=None, permission_overwrites: List[Overwrite]=None, parent_id: Snowflake=None, nsfw: bool=False, reason: str=None) -> Channel:
@@ -755,7 +755,7 @@ class Endpoints:
             whether the channel is nsfw
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/channels", method = "POST", json = {"name": name, "type": type, "topic": topic, "bitrate": bitrate, "user_limit": user_limit, "rate_limit_per_user": rate_limit_per_user, "position": position, "permission_overwrites": permission_overwrites, "parent_id": parent_id, "nsfw": nsfw}, reason=reason)
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     async def modify_guild_channel_positions(self, guild_id: Snowflake, id: Snowflake=None, position: int=None, lock_permissions: bool=False, parent_id: Snowflake=None, reason: str=None) -> None:
         '''
@@ -779,7 +779,7 @@ class Endpoints:
         Returns a [guild member](https://discord.com/developers/docs/resources/guild#guild-member-object) object for the specified user.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/members/{user_id}", method = "GET")
-        return Guild_Member(**r)
+        return Guild_Member.from_dict(**r)
 
     async def list_guild_members(self, guild_id: Snowflake, limit: int=1, after: Snowflake=0) -> List[Guild_Member]:
         '''
@@ -797,7 +797,7 @@ class Endpoints:
             the highest user id in the previous page
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/members", method = "GET", params = {"limit": limit, "after": after})
-        return [Guild_Member(**i) for i in r]
+        return [Guild_Member.from_dict(**i) for i in r]
 
     async def search_guild_members(self, guild_id: Snowflake, query: str=None, limit: int=1) -> List[Guild_Member]:
         '''
@@ -811,7 +811,7 @@ class Endpoints:
             max number of members to return
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/members/search", method = "GET", params = {"query": query, "limit": limit})
-        return [Guild_Member(**i) for i in r]
+        return [Guild_Member.from_dict(**i) for i in r]
 
     async def add_guild_member(self, guild_id: Snowflake, user_id: Snowflake, access_token: str=None, nick: str=None, roles: Snowflake=None, mute: bool=False, deaf: bool=False) -> Union[Guild_Member, None]:
         '''
@@ -837,7 +837,7 @@ class Endpoints:
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/members/{user_id}", method = "PUT", json = {"access_token": access_token, "nick": nick, "roles": roles, "mute": mute, "deaf": deaf})
         if r:
-            return Guild_Member(**r)
+            return Guild_Member.from_dict(**r)
 
     async def modify_guild_member(self, guild_id: Snowflake, user_id: Snowflake, nick: str=None, roles: List[Snowflake]=None, mute: bool=None, deaf: bool=None, channel_id: Snowflake=-1, communication_disabled_until: datetime = None, reason: str = None) -> Guild_Member:
         '''
@@ -865,7 +865,7 @@ class Endpoints:
         if deaf is not None:
             kwargs["deaf"] = deaf
         r = await self.api_call(path = f"/guilds/{guild_id}/members/{user_id}", method = "PATCH", json = kwargs, reason=reason, nullable=nullable)
-        return Guild_Member(**r)
+        return Guild_Member.from_dict(**r)
 
     async def modify_current_user_nick(self, guild_id: Snowflake, nick: str=None, reason: str = None) -> str:
         '''
@@ -905,7 +905,7 @@ class Endpoints:
         Returns a list of [ban](https://discord.com/developers/docs/resources/guild#ban-object) objects for the users banned from this guild. Requires the `BAN_MEMBERS` permission.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/bans", method = "GET")
-        return [Ban(**i) for i in r]
+        return [Ban.from_dict(**i) for i in r]
 
     @Permissions("BAN_MEMBERS")
     async def get_guild_ban(self, guild_id: Snowflake, user_id: Snowflake) -> Ban:
@@ -913,7 +913,7 @@ class Endpoints:
         Returns a [ban](https://discord.com/developers/docs/resources/guild#ban-object) object for the given user or a 404 not found if the ban cannot be found. Requires the `BAN_MEMBERS` permission.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/bans/{user_id}", method = "GET")
-        return Ban(**r)
+        return Ban.from_dict(**r)
 
     @Permissions("BAN_MEMBERS")
     async def create_guild_ban(self, guild_id: Snowflake, user_id: Snowflake, delete_message_days: int=None, reason: str=None) -> None:
@@ -941,7 +941,7 @@ class Endpoints:
         Returns a list of [role](https://discord.com/developers/docs/topics/permissions#role-object) objects for the guild.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/roles", method = "GET")
-        return [Role(**i) for i in r]
+        return [Role.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_ROLES")
     async def create_guild_role(self, guild_id: Snowflake, name: str="new_role", permissions: str="@everyone_permissions_in_guild", color: int=None, hoist: bool=False, icon: str = None, unicode_emoji: str = None, mentionable: bool=False, reason: str = None) -> Role:
@@ -963,7 +963,7 @@ class Endpoints:
             whether the role should be mentionable
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/roles", method = "POST", json = {"name": name, "permissions": permissions, "color": color, "hoist": hoist, "icon":icon, "unicode_emoji": unicode_emoji, "mentionable": mentionable}, reason=reason)
-        return Role(**r)
+        return Role.from_dict(**r)
 
     @Permissions("MANAGE_ROLES")
     async def modify_guild_role_positions(self, guild_id: Snowflake, id: Snowflake=None, position: int=None, reason: str = None) -> List[Role]:
@@ -978,7 +978,7 @@ class Endpoints:
             sorting position of the role
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/roles", method = "PATCH", json = [{"id": id, "position": position}], reason=reason)
-        return [Role(**i) for i in r]
+        return [Role.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_ROLES")
     async def modify_guild_role(self, guild_id: Snowflake, role_id: Snowflake, name: str=None, permissions: str=None, color: int=None, hoist: bool=False, icon: str = None, unicode_emoji: str = None, mentionable: bool=False, reason: str = None) -> Role:
@@ -999,7 +999,7 @@ class Endpoints:
             whether the role should be mentionable
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/roles/{role_id}", method = "PATCH", json = {"name": name, "permissions": permissions, "color": color, "hoist": hoist, "icon": icon, "unicode_emoji": unicode_emoji, "mentionable": mentionable}, reason=reason)
-        return Role(**r)
+        return Role.from_dict(**r)
 
     @Permissions("MANAGE_ROLES")
     async def delete_guild_role(self, guild_id: Snowflake, role_id: Snowflake, reason: str = None) -> None:
@@ -1046,7 +1046,7 @@ class Endpoints:
         Returns a list of [voice region](https://discord.com/developers/docs/resources/voice#voice-region-object) objects for the guild. Unlike the similar `/voice` route, this returns VIP servers when the guild is VIP-enabled.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/regions", method = "GET")
-        return [Voice_Region(**i) for i in r]
+        return [Voice_Region.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_GUILD")
     async def get_guild_invites(self, guild_id: Snowflake) -> List[Invite]:
@@ -1054,7 +1054,7 @@ class Endpoints:
         Returns a list of [invite](https://discord.com/developers/docs/resources/invite#invite-object) objects (with [invite metadata](https://discord.com/developers/docs/resources/invite#invite-metadata-object)) for the guild. Requires the `MANAGE_GUILD` permission.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/invites", method = "GET")
-        return [Invite(**i) for i in r]
+        return [Invite.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_GUILD")
     async def get_guild_integrations(self, guild_id: Snowflake) -> List[Integration]:
@@ -1062,7 +1062,7 @@ class Endpoints:
         Returns a list of [integration](https://discord.com/developers/docs/resources/guild#integration-object) objects for the guild. Requires the `MANAGE_GUILD` permission.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/integrations", method = "GET")
-        return [Integration(**i) for i in r]
+        return [Integration.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_GUILD")
     async def create_guild_integration(self, guild_id: Snowflake, type: str, id: Snowflake) -> None:
@@ -1109,7 +1109,7 @@ class Endpoints:
         Returns a [guild widget](https://discord.com/developers/docs/resources/guild#guild_widget_object) object. Requires the MANAGE_GUILD permission.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/widget", method = "GET")
-        return Guild_Widget(**r)
+        return Guild_Widget.from_dict(**r)
 
     @Permissions("MANAGE_GUILD")
     async def modify_guild_widget(self, guild_id: Snowflake, guild_widget: Guild_Widget=None, reason: str = None) -> Guild_Widget:
@@ -1117,14 +1117,14 @@ class Endpoints:
         Modify a [guild widget](https://discord.com/developers/docs/resources/guild#guild-widget-object) object for the guild. All attributes may be passed in with JSON and modified. Requires the `MANAGE_GUILD` permission. Returns the updated [guild widget](https://discord.com/developers/docs/resources/guild#guild-widget-object) object.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/widget", method = "PATCH", json=guild_widget, reason=reason)
-        return Guild_Widget(**r)
+        return Guild_Widget.from_dict(**r)
 
     async def get_guild_widget(self, guild_id: Snowflake) -> Guild_Widget:
         '''
         Returns the widget for the guild.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/widget.json", method = "GET")
-        return Guild_Widget(**r)
+        return Guild_Widget.from_dict(**r)
 
     @Permissions("MANAGE_GUILD")
     async def get_guild_vanity_url(self, guild_id: Snowflake) -> Invite:
@@ -1132,7 +1132,7 @@ class Endpoints:
         Returns a partial [invite](https://discord.com/developers/docs/resources/invite#invite-object) object for guilds with that feature enabled. Requires the `MANAGE_GUILD` permission. `code` will be null if a vanity url for the guild is not set.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/vanity-url", method = "GET")
-        return Invite(**r)
+        return Invite.from_dict(**r)
 
     async def get_guild_widget_image(self, guild_id: Snowflake, style: str="shield") -> bytes:
         '''
@@ -1158,7 +1158,7 @@ class Endpoints:
         Returns the [Welcome Screen](https://discord.com/developers/docs/resources/guild#welcome-screen-object) object for the guild.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/welcome-screen", method = "GET")
-        return Welcome_Screen(**r)
+        return Welcome_Screen.from_dict(**r)
 
     async def modify_guild_welcome_screen(self, guild_id: Snowflake, enabled: bool=False, welcome_channels: List[Welcome_Screen_Channel]=None, description: str=None) -> Welcome_Screen:
         '''
@@ -1175,7 +1175,7 @@ class Endpoints:
             the server description to show in the welcome screen
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/welcome-screen", method = "PATCH", json = {"enabled": enabled, "welcome_channels": welcome_channels, "description": description})
-        return Welcome_Screen(**r)
+        return Welcome_Screen.from_dict(**r)
 
     async def modify_current_user_voice_state(self, guild_id: Snowflake, channel_id: Snowflake=None, suppress: bool=False, request_to_speak_timestamp: datetime=None, reason: str = None) -> None:
         '''
@@ -1231,7 +1231,7 @@ class Endpoints:
             whether the invite should contain the expiration date
         '''
         r = await self.api_call(path = f"/invites/{invite_code}", method = "GET", params = {"with_counts": with_counts, "with_expiration": with_expiration})
-        return Invite(**r)
+        return Invite.from_dict(**r)
 
     @Permissions("MANAGE_CHANNELS")
     async def delete_invite(self, invite_code: int, reason: str = None) -> Invite:
@@ -1239,7 +1239,7 @@ class Endpoints:
         Delete an invite. Requires the `MANAGE_CHANNELS` permission on the channel this invite belongs to, or `MANAGE_GUILD` to remove any invite across the guild. Returns an [invite](https://discord.com/developers/docs/resources/invite#invite-object) object on success. Fires a [Invite Delete](https://discord.com/developers/docs/topics/gateway#invite-delete) Gateway event.
         '''
         r = await self.api_call(path = f"/invites/{invite_code}", method = "DELETE", reason=reason)
-        return Invite(**r)
+        return Invite.from_dict(**r)
 
     async def create_stage_instance(self, channel_id: Snowflake=0, topic: str='', privacy_level: int=0) -> None:
         '''
@@ -1287,14 +1287,14 @@ class Endpoints:
         Returns the [user](https://discord.com/developers/docs/resources/user#user_object) object of the requester's account. For OAuth2, this requires the identify scope, which will return the object _without_ an email, and optionally the email scope, which returns the object _with_ an email.
         '''
         r = await self.api_call(path = f"/users/@me", method = "GET")
-        return User(**r)
+        return User.from_dict(**r)
 
     async def get_user(self, user_id: Snowflake) -> User:
         '''
         Returns a [user](https://discord.com/developers/docs/resources/user#user-object) object for a given user ID.
         '''
         r = await self.api_call(path = f"/users/{user_id}", method = "GET")
-        return User(**r)
+        return User.from_dict(**r)
 
     async def modify_current_user(self, username: str=None, avatar: str=None) -> User:
         '''
@@ -1308,7 +1308,7 @@ class Endpoints:
             if passed, modifies the user's avatar
         '''
         r = await self.api_call(path = f"/users/@me", method = "PATCH", json = {"username": username, "avatar": avatar})
-        return User(**r)
+        return User.from_dict(**r)
 
     async def get_current_user_guilds(self, before: Snowflake=None, after: Snowflake=None, limit: int=200) -> List[Guild]:
         '''
@@ -1327,7 +1327,7 @@ class Endpoints:
             max number of guilds to return
         '''
         r = await self.api_call(path = f"/users/@me/guilds", method = "GET", params = {"before": before, "after": after, "limit": limit})
-        return [Guild(**i) for i in r]
+        return [Guild.from_dict(**i) for i in r]
 
     async def leave_guild(self, guild_id: Snowflake) -> None:
         '''
@@ -1345,7 +1345,7 @@ class Endpoints:
             the recipient to open a DM channel with
         '''
         r = await self.api_call(path = f"/users/@me/channels", method = "POST", json = {"recipient_id": recipient_id})
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     async def create_group_dm(self, access_tokens: List[str]=None, nicks: dict=dict) -> Channel:
         '''
@@ -1359,21 +1359,21 @@ class Endpoints:
             a dictionary of user ids to their respective nicknames
         '''
         r = await self.api_call(path = f"/users/@me/channels", method = "POST", json = {"access_tokens": access_tokens, "nicks": nicks})
-        return Channel(**r)
+        return Channel.from_dict(**r)
 
     async def get_user_connections(self) -> List[Connection]:
         '''
         Returns a list of [connection](https://discord.com/developers/docs/resources/user#connection-object) objects. Requires the `connections` OAuth2 scope.
         '''
         r = await self.api_call(path = f"/users/@me/connections", method = "GET")
-        return [Connection(**i) for i in r]
+        return [Connection.from_dict(**i) for i in r]
 
     async def list_voice_regions(self) -> List[Voice_Region]:
         '''
         Returns an array of [voice region](https://discord.com/developers/docs/resources/voice#voice-region-object) objects that can be used when creating servers.
         '''
         r = await self.api_call(path = f"/voice/regions", method = "GET")
-        return [Voice_Region(**i) for i in r]
+        return [Voice_Region.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_WEBHOOKS")
     async def create_webhook(self, channel_id: Snowflake, name: str=None, avatar: str=None, reason: str = None) -> Webhook:
@@ -1389,7 +1389,7 @@ class Endpoints:
             image for the default webhook avatar
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/webhooks", method = "POST", json = {"name": name, "avatar": avatar}, reason=reason)
-        return Webhook(**r)
+        return Webhook.from_dict(**r)
 
     @Permissions("MANAGE_WEBHOOKS")
     async def get_channel_webhooks(self, channel_id: Snowflake) -> List[Webhook]:
@@ -1397,7 +1397,7 @@ class Endpoints:
         Returns a list of channel [webhook](https://discord.com/developers/docs/resources/webhook#webhook-object) objects. Requires the `MANAGE_WEBHOOKS` permission.
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/webhooks", method = "GET")
-        return [Webhook(**i) for i in r]
+        return [Webhook.from_dict(**i) for i in r]
 
     @Permissions("MANAGE_WEBHOOKS")
     async def get_guild_webhooks(self, guild_id: Snowflake) -> List[Webhook]:
@@ -1405,21 +1405,21 @@ class Endpoints:
         Returns a list of guild [webhook](https://discord.com/developers/docs/resources/webhook#webhook-object) objects. Requires the `MANAGE_WEBHOOKS` permission.
         '''
         r = await self.api_call(path = f"/guilds/{guild_id}/webhooks", method = "GET")
-        return [Webhook(**i) for i in r]
+        return [Webhook.from_dict(**i) for i in r]
 
     async def get_webhook(self, webhook_id: Snowflake) -> Webhook:
         '''
         Returns the new [webhook](https://discord.com/developers/docs/resources/webhook#webhook-object) object for the given id.
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}", method = "GET")
-        return Webhook(**r)
+        return Webhook.from_dict(**r)
 
     async def get_webhook_with_token(self, webhook_id: Snowflake, webhook_token: int) -> Webhook:
         '''
         Same as above, except this call does not require authentication and returns no user in the webhook object.
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}", method = "GET")
-        return Webhook(**r)
+        return Webhook.from_dict(**r)
 
     @Permissions("MANAGE_WEBHOOKS")
     async def modify_webhook(self, webhook_id: Snowflake, name: str=None, avatar: str=None, channel_id: Snowflake=None, reason: str = None) -> Webhook:
@@ -1438,14 +1438,14 @@ class Endpoints:
             the new channel id this webhook should be moved to
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}", method = "PATCH", json = {"name": name, "avatar": avatar, "channel_id": channel_id}, reason=reason)
-        return Webhook(**r)
+        return Webhook.from_dict(**r)
 
     async def modify_webhook_with_token(self, webhook_id: Snowflake, webhook_token: int) -> Webhook:
         '''
         Same as above, except this call does not require authentication, does not accept a `channel_id` parameter in the body, and does not return a user in the webhook object.
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}", method = "PATCH")
-        return Webhook(**r)
+        return Webhook.from_dict(**r)
 
     @Permissions("MANAGE_WEBHOOKS")
     async def delete_webhook(self, webhook_id: Snowflake) -> None:
@@ -1491,7 +1491,7 @@ class Endpoints:
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}", method = "POST", params = {"wait": wait, "thread_id": thread_id}, json = {"content": content, "username": username, "avatar_url": avatar_url, "tts": tts, "file": file, "embeds": embeds, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "components": components})
         if wait:
-            return Message(**r)
+            return Message.from_dict(**r)
 
     async def execute_slack_compatible_webhook(self, webhook_id: Snowflake, webhook_token: int, wait: bool=False, json: dict = None) -> Union[Message, None]:
         '''
@@ -1504,7 +1504,7 @@ class Endpoints:
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}/slack", method = "POST", params = {"wait": wait}, json=json)
         if r:
-            return Message(**r)
+            return Message.from_dict(**r)
 
     async def execute_github_compatible_webhook(self, webhook_id: Snowflake, webhook_token: int, wait: bool=False, json: dict = None) -> Union[Message, None]:
         '''
@@ -1517,14 +1517,14 @@ class Endpoints:
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}/github", method = "POST", params = {"wait": wait}, json=json)
         if r:
-            return Message(**r)
+            return Message.from_dict(**r)
 
     async def get_webhook_message(self, webhook_id: Snowflake, webhook_token: int, message_id: Snowflake) -> Message:
         '''
         Returns a previously-sent webhook message from the same token. Returns a [message](https://discord.com/developers/docs/resources/channel#message-object) object on success.
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}", method = "GET")
-        return Message(**r)
+        return Message.from_dict(**r)
 
     async def edit_webhook_message(self, webhook_id: Snowflake, webhook_token: int, message_id: Snowflake, content: str=None, embeds: List[Embed]=None, file: bytes=None, payload_json: str=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), attachments: List[Attachment]=None, components: List[Component]=None) -> Message:
         '''
@@ -1548,7 +1548,7 @@ class Endpoints:
             the components to include with the message
         '''
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}", method = "PATCH", json = {"content": content, "embeds": embeds, "file": file, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "attachments": attachments, "components": components})
-        return Message(**r)
+        return Message.from_dict(**r)
 
     async def delete_webhook_message(self, webhook_id: Snowflake, webhook_token: Snowflake, message_id: Snowflake, reason: str = None) -> None:
         '''Deletes a message that was created by the webhook. Returns a 204 NO CONTENT response on success.'''
@@ -1583,7 +1583,7 @@ class Endpoints:
         Returns the bot's [application](https://discord.com/developers/docs/resources/application#application_object) object without flags.
         '''
         r = await self.api_call(path = f"/oauth2/applications/@me", method = "GET")
-        return Application(**r)
+        return Application.from_dict(**r)
 
     async def get_current_authorization_information(self) -> dict:
         '''
@@ -1596,7 +1596,7 @@ class Endpoints:
         Fetch all of the global commands for your application. Returns an array of [ApplicationCommand](https://discord.com/developers/docs/interactions/slash_commands#applicationcommand) objects.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/commands", method = "GET", params = {"with_localizations": with_localizations})
-        return [Application_Command(**i) for i in r]
+        return [Application_Command.from_dict(**i) for i in r]
 
     async def create_global_application_command(self, application_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False, type:Application_Command_Type=Application_Command_Type.CHAT_INPUT) -> Application_Command:
         '''
@@ -1614,14 +1614,14 @@ class Endpoints:
             whether the command is enabled by default when the app is added to a guild
         '''
         r = await self.api_call(path = f"/applications/{application_id}/commands", method = "POST", json = {"name": name, "description": description, "options": options, "default_permission": default_permission, "type":type})
-        return Application_Command(**r)
+        return Application_Command.from_dict(**r)
 
     async def get_global_application_command(self, application_id: Snowflake, command_id: Snowflake) -> Application_Command:
         '''
         Fetch a global command for your application. Returns an [application command](https://discord.com/developers/docs/interactions/slash_commands#application_command_object) object.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/commands/{command_id}", method = "GET")
-        return Application_Command(**r)
+        return Application_Command.from_dict(**r)
 
     async def edit_global_application_command(self, application_id: Snowflake, command_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False) -> Application_Command:
         '''
@@ -1639,7 +1639,7 @@ class Endpoints:
             whether the command is enabled by default when the app is added to a guild
         '''
         r = await self.api_call(path = f"/applications/{application_id}/commands/{command_id}", method = "PATCH", json = {"name": name, "description": description, "options": options, "default_permission": default_permission})
-        return Application_Command(**r)
+        return Application_Command.from_dict(**r)
 
     async def delete_global_application_command(self, application_id: Snowflake, command_id: Snowflake) -> None:
         '''
@@ -1652,14 +1652,14 @@ class Endpoints:
         Fetch all of the guild commands for your application for a specific guild. Returns an array of [application command](https://discord.com/developers/docs/interactions/slash_commands#application_command_object) objects.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "GET", params = {"with_localizations": with_localizations})
-        return [Application_Command(**i) for i in r]
+        return [Application_Command.from_dict(**i) for i in r]
 
     async def bulk_overwrite_global_application_commands(self, application_id: Snowflake, application_commands: List[Application_Command]) -> List[Application_Command]:
         '''
         Takes a list of application commands, overwriting existing commands that are registered globally for this application. Updates will be available in all guilds after 1 hour. Returns 200 and a list of [application command](https://discord.com/developers/docs/interactions/slash_commands#application_command_object) objects. Commands that do not already exist will count toward daily application command create limits.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/commands", method = "PUT", json= application_commands)
-        return [Application_Command(**i) for i in r]
+        return [Application_Command.from_dict(**i) for i in r]
 
     async def create_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False, type:Application_Command_Type=Application_Command_Type.CHAT_INPUT) -> Application_Command:
         '''
@@ -1677,14 +1677,14 @@ class Endpoints:
             whether the command is enabled by default when the app is added to a guild
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "POST", json = {"name": name, "description": description, "options": options, "default_permission": default_permission, "type": type})
-        return Application_Command(**r)
+        return Application_Command.from_dict(**r)
 
     async def get_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, command_id: Snowflake) -> Application_Command:
         '''
         Fetch a guild command for your application. Returns an [application command](https://discord.com/developers/docs/interactions/slash_commands#application_command_object) object.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}", method = "GET")
-        return Application_Command(**r)
+        return Application_Command.from_dict(**r)
 
     async def edit_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, command_id: Snowflake, name: str=None, description: str=None, options: List[Application_Command_Option]=None, default_permission: bool=False) -> Application_Command:
         '''
@@ -1702,7 +1702,7 @@ class Endpoints:
             whether the command is enabled by default when the app is added to a guild
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}", method = "PATCH", json = {"name": name, "description": description, "options": options, "default_permission": default_permission})
-        return Application_Command(**r)
+        return Application_Command.from_dict(**r)
 
     async def delete_guild_application_command(self, application_id: Snowflake, guild_id: Snowflake, command_id: Snowflake) -> None:
         '''
@@ -1715,7 +1715,7 @@ class Endpoints:
         Takes a list of application commands, overwriting existing commands for the guild. Returns `200` and a list of [ApplicationCommand](https://discord.com/developers/docs/interactions/slash_commands#applicationcommand) objects.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands", method = "PUT", json = application_commands)
-        return [Application_Command(**i) for i in r]
+        return [Application_Command.from_dict(**i) for i in r]
 
     async def create_interaction_response(self, interaction_id: Snowflake, interaction_token: int, response: Interaction_Response) -> None:
         '''
@@ -1728,14 +1728,14 @@ class Endpoints:
         Returns the initial Interaction response. Functions the same as [Get Webhook Message](https://discord.com/developers/docs/resources/webhook#get_webhook_message).
         '''
         r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "GET")
-        return Message(**r)
+        return Message.from_dict(**r)
 
     async def edit_original_interaction_response(self, application_id: Snowflake, interaction_token: int, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = Allowed_Mentions(parse=[]), components: List[Component]= None, flags: int = None) -> Message:
         '''
         Edits the initial Interaction response. Functions the same as [Edit Webhook Message](https://discord.com/developers/docs/resources/webhook#edit_webhook_message).
         '''
         r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "PATCH", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "flags": flags})
-        return Message(**r)
+        return Message.from_dict(**r)
 
     async def delete_original_interaction_response(self, application_id: Snowflake, interaction_token: int) -> None:
         '''
@@ -1748,14 +1748,14 @@ class Endpoints:
         Create a followup message for an Interaction. Functions the same as [Execute Webhook](https://discord.com/developers/docs/resources/webhook#execute_webhook), but wait is always true, and flags can be set to 64 in the body to send an ephemeral message. The thread_id query parameter is not required (and is furthermore ignored) when using this endpoint for interaction followups.
         '''
         r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}", method = "POST", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components})
-        return Message(**r)
+        return Message.from_dict(**r)
 
     async def edit_followup_message(self, application_id: Snowflake, interaction_token: int, message_id: Snowflake, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None) -> Message:
         '''
         Edits a followup message for an Interaction. Functions the same as [Edit Webhook Message](https://discord.com/developers/docs/resources/webhook#edit-webhook-message).
         '''
         r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}", method = "PATCH", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components})
-        return Message(**r)
+        return Message.from_dict(**r)
 
     async def delete_followup_message(self, application_id: Snowflake, interaction_token: int, message_id: Snowflake) -> None:
         '''
@@ -1768,14 +1768,14 @@ class Endpoints:
         Fetches command permissions for all commands for your application in a guild. Returns an array of [guild application command permissions](https://discord.com/developers/docs/interactions/slash_commands#application_command_permissions_object_guild_application_command_permissions_structure) objects.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands/permissions", method = "GET")
-        return [Guild_Application_Command_Permissions(**i) for i in r]
+        return [Guild_Application_Command_Permissions.from_dict(**i) for i in r]
 
     async def get_application_command_permissions(self, application_id: Snowflake, guild_id: Snowflake, command_id: Snowflake) -> Guild_Application_Command_Permissions:
         '''
         Fetches command permissions for a specific command for your application in a guild. Returns a [guild application command permissions](https://discord.com/developers/docs/interactions/slash_commands#application_command_permissions_object_guild_application_command_permissions_structure) object.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions", method = "GET")
-        return Guild_Application_Command_Permissions(**r)
+        return Guild_Application_Command_Permissions.from_dict(**r)
 
     async def edit_application_command_permissions(self, application_id: Snowflake, guild_id: Snowflake, command_id: Snowflake, permissions: List[Application_Command_Permissions]=None) -> Guild_Application_Command_Permissions:
         '''
@@ -1788,11 +1788,11 @@ class Endpoints:
             the permissions for the command in the guild
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions", method = "PUT", json = {"permissions": permissions})
-        return Guild_Application_Command_Permissions(**r)
+        return Guild_Application_Command_Permissions.from_dict(**r)
 
     async def batch_edit_application_command_permissions(self, application_id: Snowflake, guild_id: Snowflake, command_permissions: List[Guild_Application_Command_Permissions], reason: str = None) -> List[Guild_Application_Command_Permissions]:
         '''
         Returns an array of [GuildApplicationCommandPermissions](https://discord.com/developers/docs/interactions/slash_commands#application_command_permissions_object_guild_application_command_permissions_structure) objects.
         '''
         r = await self.api_call(path = f"/applications/{application_id}/guilds/{guild_id}/commands/permissions", method = "PUT", json = [{"id":i.id, "permissions": i.permissions} for i in command_permissions], reason=reason)
-        return [Guild_Application_Command_Permissions(**i) for i in r]
+        return [Guild_Application_Command_Permissions.from_dict(**i) for i in r]

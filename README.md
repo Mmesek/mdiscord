@@ -10,16 +10,6 @@ Mapping is mostly 1:1 (With few additional convenience methods in [`types.py`](m
 Wrapper was made (and meant) to work with conjunction with [MFramework.py](https://github.com/Mmesek/MFramework.py) hence it's usage on it's own is rather limited (Read: It's mainly a REST wrapper with Gateway's Dispatch).
 
 
----
-## Dataclasses with optional keyword arguments
-
-At this moment, usage requires slight modification to dataclasses from standard library by allowing passing additional keyword arguments to auto generated constructor
-which is adding `+ ["**kwargs"]` to a second argument for _create_fn in _init_fn (Around line 532 [At least in version from January 2021]).
-
-This sed should do the trick (Just replace path to dataclasess with the one you want to edit):
-```sh
-sed -i -e 's/_init_params,/_init_params + ["**kwargs"],/g' /usr/local/lib/python3.10/dataclasses.py
-```
 
 # Examples
 
