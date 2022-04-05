@@ -165,7 +165,7 @@ class Endpoints:
         return Message.from_dict(**r)
 
     @Permissions("SEND_MESSAGES", "READ_MESSAGE_HISTORY")
-    async def create_message(self, channel_id: Snowflake, content: str=None, nonce: int=None, tts: bool=None, file: bytes=None, filename: str="file.txt", embeds: List[Embed]=None, payload_json: str=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), message_reference: Message_Reference=None, components: List[Component]=None) -> Message:
+    async def create_message(self, channel_id: Snowflake, content: str=None, nonce: int=None, tts: bool=None, embeds: List[Embed]=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), message_reference: Message_Reference=None, components: List[Component]=None, attachments: List[Attachment] = None) -> Message:
         '''
         Post a message to a guild text or DM channel. Returns a [message](https://discord.com/developers/docs/resources/channel#message_object) object. Fires a [Message Create](https://discord.com/developers/docs/topics/gateway#message_create) Gateway event. See [message formatting](https://discord.com/developers/docs/reference#message_formatting) for more information on how to properly format messages.
         > warn
@@ -176,7 +176,7 @@ class Endpoints:
         - The referenced message must exist and cannot be a system message.
         - The maximum request size when sending a message is **8MB**
         - For the embed object, you can set every field except `type` (it will be `rich` regardless of if you try to set it), `provider`, `video`, and any `height`, `width`, or `proxy_url` values for images.
-        - **Files can only be uploaded when using the `multipart/form-data` content type.**
+
         You may create a message as a reply to another message. To do so, include a [`message_reference`](https://discord.com/developers/docs/resources/channel#message-reference-object-message-reference-structure) with a `message_id`. The `channel_id` and `guild_id` in the `message_reference` are optional, but will be validated if provided.
         > info
         > Note that when sending a message, you must provide a value for at **least one of** `content`, `embeds`, or `file`.
@@ -196,8 +196,6 @@ class Endpoints:
             the message contents
         tts:
             true if this is a TTS message
-        file:
-            the contents of the file being sent
         embeds:
             embedded `rich` content
         embed:
@@ -210,8 +208,10 @@ class Endpoints:
             include to make your message a reply
         components:
             the components to include with the message
+        attachments:
+            attachment objects with filename, content of file and description
         '''
-        r = await self.api_call(path = f"/channels/{channel_id}/messages", method = "POST", json = {"content": content, "nonce": nonce, "tts": tts, "embeds": embeds, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "message_reference": message_reference, "components": components}, file=file, filename=filename)
+        r = await self.api_call(path = f"/channels/{channel_id}/messages", method = "POST", json = {"content": content, "nonce": nonce, "tts": tts, "embeds": embeds, "allowed_mentions": allowed_mentions, "message_reference": message_reference, "components": components, "attachments": attachments})
         return Message.from_dict(**r)
 
     @Permissions("SEND_MESSAGES")
@@ -276,7 +276,7 @@ class Endpoints:
         '''
         await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}", method = "DELETE", reason=reason)
 
-    async def edit_message(self, channel_id: Snowflake, message_id: Snowflake, content: str=None, embeds: List[Embed]=None, flags: int=None, file: bytes=None, payload_json: str=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), attachments: List[Attachment]=None, components: List[Component] = None) -> Message:
+    async def edit_message(self, channel_id: Snowflake, message_id: Snowflake, content: str=None, embeds: List[Embed]=None, flags: int=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), attachments: List[Attachment]=None, components: List[Component] = None) -> Message:
         '''
         Returns a [message](https://discord.com/developers/docs/resources/channel#message_object) object. Fires a [Message Update](https://discord.com/developers/docs/topics/gateway#message_update) Gateway event.
         Edit a previously sent message. The fields `content`, `embeds`, and `flags` can be edited by the original message author. Other users can only edit `flags` and only if they have the `MANAGE_MESSAGES` permission in the corresponding channel. When specifying flags, ensure to include all previously set flags/bits in addition to ones that you are modifying. Only `flags` documented in the table below may be modified by users (unsupported flag changes are currently ignored without error).
@@ -291,18 +291,16 @@ class Endpoints:
             embedded `rich` content, deprecated in favor of `embeds`
         flags:
             Flags
-        file:
-            the contents of the file being sent/edited
         payload_json:
             JSON encoded body of non-file params
         allowed_mentions:
             allowed mentions for the message
         attachments:
-            attached files to keep
+            attached files to keep/add
         components:
             the components to include with the message
         '''
-        r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}", method = "PATCH", json = {"content": content, "embeds": embeds, "flags": flags, "file": file, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "attachments": attachments, "components": components})
+        r = await self.api_call(path = f"/channels/{channel_id}/messages/{message_id}", method = "PATCH", json = {"content": content, "embeds": embeds, "flags": flags, "allowed_mentions": allowed_mentions, "attachments": attachments, "components": components})
         return Message.from_dict(**r)
 
     @Permissions("MANAGE_MESSAGES")
@@ -1460,7 +1458,7 @@ class Endpoints:
         '''
         await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}", method = "DELETE")
 
-    async def execute_webhook(self, webhook_id: Snowflake, webhook_token: int, wait: bool=False, thread_id: Snowflake = None, content: str=None, username: str=None, avatar_url: str=None, tts: bool=False, file: bytes=None, embeds: List[Embed]=None, payload_json: str=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), components: List[Component]=None) -> Message:
+    async def execute_webhook(self, webhook_id: Snowflake, webhook_token: int, wait: bool=False, thread_id: Snowflake = None, content: str=None, username: str=None, avatar_url: str=None, tts: bool=False, embeds: List[Embed]=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), components: List[Component]=None, attachments: List[Attachment] = None) -> Message:
         '''
         > info
         
@@ -1478,18 +1476,16 @@ class Endpoints:
             override the default avatar of the webhook
         tts:
             true if this is a TTS message
-        file:
-            the contents of the file being sent
         embeds:
             embedded `rich` content
-        payload_json:
-            JSON encoded body of non-file params
         allowed_mentions:
             allowed mentions for the message
         components:
             the components to include with the message
+        attachments:
+            attachment objects with filename, content of file and description
         '''
-        r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}", method = "POST", params = {"wait": wait, "thread_id": thread_id}, json = {"content": content, "username": username, "avatar_url": avatar_url, "tts": tts, "file": file, "embeds": embeds, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "components": components})
+        r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}", method = "POST", params = {"wait": wait, "thread_id": thread_id}, json = {"content": content, "username": username, "avatar_url": avatar_url, "tts": tts, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "attachments": attachments})
         if wait:
             return Message.from_dict(**r)
 
@@ -1526,7 +1522,7 @@ class Endpoints:
         r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}", method = "GET")
         return Message.from_dict(**r)
 
-    async def edit_webhook_message(self, webhook_id: Snowflake, webhook_token: int, message_id: Snowflake, content: str=None, embeds: List[Embed]=None, file: bytes=None, payload_json: str=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), attachments: List[Attachment]=None, components: List[Component]=None) -> Message:
+    async def edit_webhook_message(self, webhook_id: Snowflake, webhook_token: int, message_id: Snowflake, content: str=None, embeds: List[Embed]=None, allowed_mentions: Allowed_Mentions=Allowed_Mentions(parse=[]), attachments: List[Attachment]=None, components: List[Component]=None) -> Message:
         '''
         Edits a previously_sent webhook message from the same token. Returns a [message](https://discord.com/developers/docs/resources/channel#message_object) object on success.        
         
@@ -1536,18 +1532,16 @@ class Endpoints:
             the message contents
         embeds:
             embedded `rich` content
-        file:
-            the contents of the file being sent/edited
         payload_json:
             JSON encoded body of non-file params
         allowed_mentions:
             allowed mentions for the message
         attachments:
-            attached files to keep
+            attached files to keep/add
         components:
             the components to include with the message
         '''
-        r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}", method = "PATCH", json = {"content": content, "embeds": embeds, "file": file, "payload_json": payload_json, "allowed_mentions": allowed_mentions, "attachments": attachments, "components": components})
+        r = await self.api_call(path = f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}", method = "PATCH", json = {"content": content, "embeds": embeds, "allowed_mentions": allowed_mentions, "attachments": attachments, "components": components})
         return Message.from_dict(**r)
 
     async def delete_webhook_message(self, webhook_id: Snowflake, webhook_token: Snowflake, message_id: Snowflake, reason: str = None) -> None:
@@ -1730,11 +1724,11 @@ class Endpoints:
         r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "GET")
         return Message.from_dict(**r)
 
-    async def edit_original_interaction_response(self, application_id: Snowflake, interaction_token: int, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = Allowed_Mentions(parse=[]), components: List[Component]= None, flags: int = None) -> Message:
+    async def edit_original_interaction_response(self, application_id: Snowflake, interaction_token: int, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = Allowed_Mentions(parse=[]), components: List[Component]= None, attachments: List[Attachment]=None, flags: int = None) -> Message:
         '''
         Edits the initial Interaction response. Functions the same as [Edit Webhook Message](https://discord.com/developers/docs/resources/webhook#edit_webhook_message).
         '''
-        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "PATCH", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "flags": flags})
+        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "PATCH", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "flags": flags, "attachments": attachments})
         return Message.from_dict(**r)
 
     async def delete_original_interaction_response(self, application_id: Snowflake, interaction_token: int) -> None:
@@ -1743,18 +1737,18 @@ class Endpoints:
         '''
         await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "DELETE")
 
-    async def create_followup_message(self, application_id: Snowflake, interaction_token: int, wait: bool = False, content: str = None, username: str = None, avatar_url: str = None, tts: bool = None, file: bytes = None, filename: str="file.txt", embeds: List[Embed] = None, payload_json: str = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None) -> Message:
+    async def create_followup_message(self, application_id: Snowflake, interaction_token: int, wait: bool = False, content: str = None, username: str = None, avatar_url: str = None, tts: bool = None, embeds: List[Embed] = None, payload_json: str = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None, attachments: List[Attachment] = None) -> Message:
         '''
         Create a followup message for an Interaction. Functions the same as [Execute Webhook](https://discord.com/developers/docs/resources/webhook#execute_webhook), but wait is always true, and flags can be set to 64 in the body to send an ephemeral message. The thread_id query parameter is not required (and is furthermore ignored) when using this endpoint for interaction followups.
         '''
-        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}", method = "POST", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components})
+        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}", method = "POST", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "attachments": attachments})
         return Message.from_dict(**r)
 
-    async def edit_followup_message(self, application_id: Snowflake, interaction_token: int, message_id: Snowflake, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None) -> Message:
+    async def edit_followup_message(self, application_id: Snowflake, interaction_token: int, message_id: Snowflake, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None, attachments: List[Attachment] = None) -> Message:
         '''
         Edits a followup message for an Interaction. Functions the same as [Edit Webhook Message](https://discord.com/developers/docs/resources/webhook#edit-webhook-message).
         '''
-        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}", method = "PATCH", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components})
+        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}", method = "PATCH", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "attachments": attachments})
         return Message.from_dict(**r)
 
     async def delete_followup_message(self, application_id: Snowflake, interaction_token: int, message_id: Snowflake) -> None:

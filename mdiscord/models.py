@@ -1141,13 +1141,14 @@ class Attachment(DiscordObject):
         width of file
     '''
     id: Snowflake = None
-    filename: str = ''
-    content_type: str = ''
-    size: int = 0
-    url: str = ''
-    proxy_url: str = ''
-    height: int = 0
-    width: int = 0
+    filename: str = None
+    description: str = None
+    content_type: str = None
+    size: int = None
+    url: str = None
+    proxy_url: str = None
+    height: int = None
+    width: int = None
 
 
 @dataclass

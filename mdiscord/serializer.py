@@ -55,6 +55,8 @@ def as_dict(object):
         return object.isoformat()
     elif isinstance(object, Enum) or isinstance(object, Flag):
         return object.value
+    elif type(object) is bytes:
+        return bytearray(object)
     elif type(object) is type:
         return None
     return object
@@ -69,19 +71,27 @@ class Serializer:
             kwargs['headers'].append(("Authorization", f"{self._auth_type} {self.token}"))
         if kwargs.get('reason'):
             kwargs['headers'].append(("X-Audit-Log-Reason", kwargs.pop('reason')))
-        if not kwargs.get('file'):
+        if not (
+            type(kwargs.get("json", None)) is dict 
+            and kwargs.get("json", {}).get("attachments", None) 
+            and len(kwargs.get("json", {}).get("attachments", [])) 
+            and all(i.file for i in kwargs.get("json", {}).get("attachments", []))
+        ):
             if kwargs.get("json"):
                 kwargs['headers'].append(("Content-Type", "application/json"))
             else:
                 kwargs['headers'].append(("Content-Type", "text/html"))
         else:
             import aiohttp
-            kwargs['data'] = aiohttp.FormData()
-            kwargs['data'].add_field("payload_json", json.dumps(as_dict(kwargs["json"])))
-            kwargs['data'].add_field("file", kwargs["file"],
-                filename=kwargs["filename"],
-                content_type="application/octet-stream"
-            )
+            kwargs['data'] = aiohttp.FormData(quote_fields=False)
+            files = kwargs.get("json", {}).get("attachments", [])
+            _index = iter(range(len(files)))
+            for file in files:
+                if not file.id:
+                    file.id = next(_index)
+                kwargs['data'].add_field(f"files[{file.id}]", file.file, filename=file.filename or "file")
+            from mlib.utils import remove_None
+            kwargs['data'].add_field("payload_json", json.dumps(remove_None(as_dict(kwargs["json"]))).decode(), content_type="application/json")
             kwargs.pop('json')
 
         kwargs = self._serialize(**kwargs)
@@ -103,8 +113,6 @@ class Serializer:
             for i in ["before", "after", "between"]:
                 if kwargs["params"].get(i, False) is None:
                     kwargs.pop(i)
-        kwargs.pop('filename', None)
-        kwargs.pop('file', None)
         nullable = kwargs.pop('nullable', {})
         kwargs = remove_None(kwargs)
         if 'json' in kwargs and type(kwargs['json']) is dict:

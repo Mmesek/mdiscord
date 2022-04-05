@@ -16,6 +16,28 @@ from datetime import datetime
 
 from .models import * # noqa: F401
 
+class Attachment(Attachment):
+    file: bytes = None
+    def __init__(self, 
+        id: Snowflake = None, 
+        filename: str = "file", 
+        description: str = None,
+        content_type: str = None, 
+        size: int = None,
+        url: str = None, 
+        proxy_url: str = None, 
+        height: int = None,
+        width: int = None,
+        *, 
+        spoiler: bool = False,
+        file: bytes = None,
+        _Client = None
+    ):
+        if spoiler and not filename.startswith("SPOILER_"):
+            filename = "SPOILER_"+filename
+        super().__init__(_Client=_Client, id=id, filename=filename, description=description, content_type=content_type, size=size, url=url, proxy_url=proxy_url, height=height, width=width)
+        self.file = file
+
 class UserID(Snowflake):
     '''Snowflake representing UserID'''
     def __str__(self):
@@ -174,7 +196,7 @@ class Sendable:
         raise NotImplementedError
 
     async def reply(self, content: str=None, embeds: List[Embed] = None, components: List[Component] = None, 
-                    file: bytes = None, filename: str=None, 
+                    attachments: List[Attachment] = None,
                     allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, 
                     private: bool=False) -> Message:
         '''Creates reply message.
@@ -188,10 +210,8 @@ class Sendable:
             List of embeds to send
         components:
             List of components to send
-        file:
-            Binary blob to send
-        filename:
-            Name of file to send
+        attachments:
+            List of attachments to send
         allowed_mentions:
             Allowed Mentions structure
         message_reference:
@@ -202,7 +222,7 @@ class Sendable:
         raise NotImplementedError
 
     async def send(self, content: str=None, embeds: List[Embed] = None, components: List[Component] = None, 
-                    file: bytes = None, filename: str=None, 
+                    attachments: List[Attachment] = None,
                     allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, 
                     reply: bool=False, private: bool=False, channel_id: Snowflake=None) -> Message:
         '''Sends message
@@ -215,10 +235,8 @@ class Sendable:
             List of embeds to send
         components:
             List of components to send
-        file:
-            Binary blob to send
-        filename:
-            Name of file to send
+        attachments:
+            List of attachments to send
         allowed_mentions:
             Allowed Mentions structure
         message_reference:
@@ -230,7 +248,7 @@ class Sendable:
         raise NotImplementedError
 
     async def edit(self, content: str=None, embeds: List[Embed] = None, components: List[Component] = None, 
-                        attachments: List[Attachment] = None, file: bytes = None, filename: str=None, 
+                        attachments: List[Attachment] = None, 
                         allowed_mentions: Allowed_Mentions=None, flags: Message_Flags = None) -> Message:
         '''Edits message
 
@@ -244,10 +262,6 @@ class Sendable:
             List of components to send
         attachments:
             List of attachments to keep
-        file:
-            Binary blob to send
-        filename:
-            Name of file to send
         flags:
             Flags message should be send with
         allowed_mentions:
@@ -270,7 +284,7 @@ class Sendable:
                         components: List[Component] = None,
                         allowed_mentions: Allowed_Mentions = [], 
                         tts: bool = None, 
-                        file: bytes = None, filename=None, 
+                        attachments: List[Attachment] = None,
                         username: str = None, avatar_url: str = None, 
                         flags: Message_Flags = None,
                         wait: bool = False, thread_id: Snowflake = None) -> Union[Message, None]:
@@ -285,10 +299,8 @@ class Sendable:
             List of embeds to send
         components:
             List of components to include
-        file:
-            Binary blob to send
-        filename:
-            Name of file to send
+        attachments:
+            List of attachments to send
         allowed_mentions:
             Allowed Mentions structure
         username:
@@ -306,10 +318,9 @@ class Sendable:
 
     async def edit_followup(self, content: str = None, embeds: List[Embed] = None,  
                         components: List[Component] = None,
-                        allowed_mentions: Allowed_Mentions = [], 
                         attachments: List[Attachment] = None,
-                        flags: Message_Flags = None,
-                        file: bytes = None, filename: str = None) -> Union[Message, None]:
+                        allowed_mentions: Allowed_Mentions = [], 
+                        flags: Message_Flags = None) -> Union[Message, None]:
         '''Edits last followup message. (Edits last reply)
         Basically a wrapper around `edit_webhook` method.
 
@@ -327,10 +338,6 @@ class Sendable:
             List of attachments to keep
         flags:
             Flags message should be send with
-        file:
-            Binary blob to send
-        filename:
-            Name of file to send
         '''
         raise NotImplementedError
 
@@ -369,15 +376,14 @@ class Message(Message, Sendable):
     async def typing(self, channel_id: Snowflake = None, private: bool=False) -> None:
         return await self._Client.trigger_typing_indicator(channel_id or self.channel_id)
 
-    async def reply(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, private: bool=None) -> Message:
+    async def reply(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment] = None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, private: bool=None) -> Message:
         return await self.send(
             content=content, 
             embeds=embeds, 
             components=components, 
-            file=file, 
-            filename=filename, 
+            attachments=attachments,
             allowed_mentions=allowed_mentions, 
-            message_reference= Message_Reference(
+            message_reference=message_reference or Message_Reference(
                 message_id=self.id,
                 channel_id=self.channel_id,
                 guild_id=self.guild_id if self.guild_id != 0 else None
@@ -385,35 +391,33 @@ class Message(Message, Sendable):
             reply=True,
             private=private)
     
-    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=False, private: bool=False, channel_id: Snowflake=None) -> Message:
+    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment] = None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=False, private: bool=False, channel_id: Snowflake=None) -> Message:
         return await self._Client.create_message(channel_id or self.channel_id, 
             content=content,# if content != "" else self.content, 
             embeds=embeds,# if embeds else self.embeds,
             components=components,# if components else self.components, 
-            filename=filename, file=file, 
+            attachments=attachments,
             allowed_mentions=allowed_mentions, 
             message_reference=message_reference
         )
     
-    async def edit(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, flags: Message_Flags=None) -> Message:
+    async def edit(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment]=None, allowed_mentions: Allowed_Mentions=None, flags: Message_Flags=None) -> Message:
         return await self._Client.edit_message(
             channel_id=self.channel_id, 
             message_id=self.id, 
             content=content or self.content, 
             embeds=embeds or self.embeds, 
             components=components or self.components,
-            attachments=attachments,
-            file=file,
-            #filename=filename,
+            attachments=attachments or self.attachments,
             flags=flags or self.flags, 
             allowed_mentions=allowed_mentions)
 
     async def delete(self, message_id: Snowflake=None, reason: str=None) -> None:
         return await self._Client.delete_message(channel_id=self.channel_id, message_id=message_id or self.id, reason=reason)
     
-    async def webhook(self, webhook_id: Snowflake, webhook_token: int, username: str = None, avatar_url: str = None, file: bytes = None) -> Message:
+    async def webhook(self, webhook_id: Snowflake, webhook_token: int, username: str = None, avatar_url: str = None) -> Message:
         '''Sends message as a webhook'''
-        return await self._Client.execute_webhook(webhook_id, webhook_token, content=self.content, username=username, avatar_url=avatar_url, file=file, embeds=self.embeds, allowed_mentions=self.allowed_mentions)
+        return await self._Client.execute_webhook(webhook_id, webhook_token, content=self.content, username=username, avatar_url=avatar_url, embeds=self.embeds, allowed_mentions=self.allowed_mentions, attachments=self.attachments)
     
     async def webhook_edit(self, webhook_id, webhook_token, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = None) -> None:
         '''Edits webhook message'''
@@ -520,7 +524,7 @@ class Interaction(Interaction):
             data=Interaction_Application_Command_Callback_Data(flags=Message_Flags.EPHEMERAL if private else None))
         )
     
-    async def reply(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, private: bool=None) -> Message:
+    async def reply(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment] = None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, private: bool=None) -> Message:
         if self._deferred:
             _f = self.edit
             kw = {}
@@ -531,21 +535,20 @@ class Interaction(Interaction):
             content=content, 
             embeds=embeds, 
             components=components,
-            file=file,
-            filename=filename,
+            attachments=attachments,
             allowed_mentions=allowed_mentions,
             private=private, **kw)
         self._replied = True
         return r
     
-    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=None, private: bool=None, channel_id: Snowflake=None, custom_id: str = None, title: str = None) -> Message:
+    async def send(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment] = None, allowed_mentions: Allowed_Mentions=None, message_reference: Message_Reference=None, reply: bool=None, private: bool=None, channel_id: Snowflake=None, custom_id: str = None, title: str = None) -> Message:
         flags=Message_Flags.EPHEMERAL if private else None
         if channel_id:
-            return await self._Client.create_message(channel_id, content, embeds=embeds, components=components, file=file, filename=filename, allowed_mentions=allowed_mentions)
+            return await self._Client.create_message(channel_id, content, embeds=embeds, components=components, attachments=attachments, allowed_mentions=allowed_mentions)
         if self._replied:
             return await self.send_followup(
                 content=content, embeds=embeds, components=components, allowed_mentions=allowed_mentions,
-                file=file, filename=filename, flags=flags
+                attachments=attachments, flags=flags
             )
         return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
             type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE if not custom_id else Interaction_Callback_Type.MODAL, 
@@ -560,23 +563,24 @@ class Interaction(Interaction):
             )
         )
     
-    async def send_followup(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, tts: bool=None, file: bytes=None, filename=None, username: str=None, avatar_url: str=None, flags: Message_Flags=None, wait: bool=None, thread_id: Snowflake=None) -> Union[Message, None]:
-        m = await self._Client.create_followup_message(self._Client.application.id, self.token, wait=wait, content=content, username=username, avatar_url=avatar_url, tts=tts, file=file, filename=filename, embeds=embeds, allowed_mentions=allowed_mentions)
+    async def send_followup(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, tts: bool=None, attachments: List[Attachment] = None, username: str=None, avatar_url: str=None, flags: Message_Flags=None, wait: bool=None, thread_id: Snowflake=None) -> Union[Message, None]:
+        m = await self._Client.create_followup_message(self._Client.application.id, self.token, wait=wait, content=content, username=username, avatar_url=avatar_url, tts=tts, attachments=attachments, embeds=embeds, allowed_mentions=allowed_mentions, components=components)
         self._followup_id = m.id
         return m
 
-    async def edit(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment]=None, file: bytes=None, filename: str=None, allowed_mentions: Allowed_Mentions=None, flags: Message_Flags=None, private:bool=False) -> Message:
+    async def edit(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment]=None, allowed_mentions: Allowed_Mentions=None, flags: Message_Flags=None, private:bool=False) -> Message:
         return await self._Client.edit_original_interaction_response(self._Client.application.id, self.token, 
             content=content, 
             embeds=embeds, 
             components=components,
+            attachments=attachments,
             allowed_mentions=allowed_mentions,
             flags=Message_Flags.EPHEMERAL if private else None
         )
     
-    async def edit_followup(self, message_id: Snowflake=None, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, attachments: List[Attachment]=None, flags: Message_Flags=None, file: bytes=None, filename: str = None) -> Union[Message, None]:
+    async def edit_followup(self, message_id: Snowflake=None, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, attachments: List[Attachment]=None, flags: Message_Flags=None) -> Union[Message, None]:
         return await self._Client.edit_followup_message(self._Client.application.id, self.token, message_id or self._followup_id, 
-        content=content, embeds=embeds, components=components, 
+        content=content, embeds=embeds, components=components, attachments=attachments,
         allowed_mentions=allowed_mentions)
 
     async def delete(self, message_id: Snowflake=None) -> None:
