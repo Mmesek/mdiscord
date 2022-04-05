@@ -1,6 +1,11 @@
 # mDiscord
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/Mmesek/mdiscord)
 
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/Mmesek/mdiscord)](https://www.codefactor.io/repository/github/mmesek/mdiscord)
+![Lines of code](https://img.shields.io/tokei/lines/github/Mmesek/mdiscord?style=plastic)
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Mmesek/mdiscord)]()
+[![GitHub repo size](https://img.shields.io/github/repo-size/Mmesek/mdiscord)]()
+
 Simple typehinted (relatively) Discord API Wrapper with type casting.
 
 [`Models`](mdiscord/models.py) & [`Endpoints`](mdiscord/endpoints.py) are generated from [documentation](https://github.com/discord/discord-api-docs) with a [script](https://github.com/Mmesek/DocParser) therefore they should *in theory* provide 100% of coverage. 
