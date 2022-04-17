@@ -70,21 +70,23 @@ class Discord_Paths(Enum):
 
 @dataclass
 class Embed(Embed):
-    def setTitle(self, title: str) -> Embed:
+    def set_title(self, title: str) -> Embed:
         '''Sets Embed's Title respecting title limit if it's not above total limit'''
         title = str(title)[:Limits.TITLE]
         if self.total_characters + len(str(title)) <= Limits.TOTAL:
             self.title = title
         return self
+    setTitle = set_title
 
-    def setDescription(self, description:str) -> Embed:
+    def set_description(self, description:str) -> Embed:
         '''Sets Embed's Description respecting description limit if it's not above total limit'''
         description = str(description)[:Limits.DESCRIPTION]
         if self.total_characters + len(str(description)) <= Limits.TOTAL:
             self.description = description
         return self
+    setDescription = set_description
 
-    def setColor(self, color: Union[str, Tuple[int, int, int], int]) -> Embed:
+    def set_color(self, color: Union[str, Tuple[int, int, int], int]) -> Embed:
         '''Set's Embed's Color. 
 
         Parameters
@@ -97,30 +99,35 @@ class Embed(Embed):
             color = (color[0]<<16) + (color[1]<<8) + color[2]
         self.color = color
         return self
+    setColor = set_color
 
-    def setUrl(self, url:str) -> Embed:
+    def set_url(self, url:str) -> Embed:
         '''Sets URL.'''
         self.url = url
         return self
+    setUrl = set_url
 
-    def setImage(self, url:str, proxy_url:str=None, height:int=None, width:int=None) -> Embed:
+    def set_image(self, url:str, proxy_url:str=None, height:int=None, width:int=None) -> Embed:
         '''Sets Embed's Image'''
         self.image = Embed_Image(url=url, proxy_url=proxy_url, height=height, width=width)
         return self
+    setImage = set_image
 
-    def setThumbnail(self, url:str, proxy_url:str=None, height:int=None, width:int=None) -> Embed:
+    def set_thumbnail(self, url:str, proxy_url:str=None, height:int=None, width:int=None) -> Embed:
         '''Sets Embed's Thumbnail'''
         self.thumbnail = Embed_Thumbnail(url=url, proxy_url=proxy_url, height=height, width=width)
         return self
+    setThumbnail = set_thumbnail
 
-    def setFooter(self, text:str='', icon_url:str=None, proxy_icon_url:str=None) -> Embed:
+    def set_footer(self, text:str='', icon_url:str=None, proxy_icon_url:str=None) -> Embed:
         '''Sets Embed's Footer respecting footer's text limit'''
         text = str(text)[:Limits.FOOTER_TEXT]
         if self.total_characters + len(str(text)) <= Limits.TOTAL:
             self.footer = Embed_Footer(text=text, icon_url=icon_url, proxy_icon_url=proxy_icon_url)
         return self
+    setFooter = set_footer
 
-    def setTimestamp(self, timestamp: datetime) -> Embed:
+    def set_timestamp(self, timestamp: datetime) -> Embed:
         '''Sets Timestamp.
         
         Parameters
@@ -133,15 +140,17 @@ class Embed(Embed):
             timestamp = datetime.fromtimestamp(timestamp).isoformat()
         self.timestamp = timestamp
         return self
+    setTimestamp = set_timestamp
 
-    def setAuthor(self, name:str='', url:str=None, icon_url:str=None, proxy_icon_url:str=None) -> Embed:
+    def set_author(self, name:str='', url:str=None, icon_url:str=None, proxy_icon_url:str=None) -> Embed:
         '''Sets Embed's Author respecting author's name limit if it's not above total limit'''
         name = str(name)[:Limits.AUTHOR_NAME]
         if self.total_characters + len(str(name)) <= Limits.TOTAL:
             self.author = Embed_Author(name=name, url=url, icon_url=icon_url, proxy_icon_url=proxy_icon_url)
         return self
+    setAuthor = set_author
 
-    def addField(self, name:str, value:str, inline:bool=False) -> Embed:
+    def add_field(self, name:str, value:str, inline:bool=False) -> Embed:
         '''Adds single field respecting limits if it's not above total limit'''
         name = str(name)[:Limits.FIELD_NAME]
         value = str(value)[:Limits.FIELD_VALUE]
@@ -150,8 +159,9 @@ class Embed(Embed):
         if self.total_characters + len(str(name)) + len(str(value)) <= Limits.TOTAL:
             self.fields.append(Embed_Field(name=name, value=value, inline=inline))
         return self
+    addField = add_field
     
-    def addFields(self, title: str, text: str, inline:bool=False) -> Embed:
+    def add_fields(self, title: str, text: str, inline:bool=False) -> Embed:
         '''
         Adds as many fields as neccessary to store whole text 
         while respecting limits and as long as it's not above total Embed's limit'''
@@ -164,6 +174,7 @@ class Embed(Embed):
             else:
                 self.addField('\u200b', chunk, inline)
         return self
+    addFields = add_fields
 
     @property
     def total_characters(self) -> int:
