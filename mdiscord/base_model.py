@@ -132,7 +132,10 @@ class DiscordObject:
                 self.__setattr__(field, _type.fromisoformat(value) if value else _type.now())
             elif 'Dict' in __type:
                 #k = types.get(k, vars(FINAL_TYPES).get(k))
-                self.__setattr__(field, {str(_key):_type.from_dict(**_val) for _key, _val in value.items() or {}})
+                try:
+                    self.__setattr__(field, {str(_key):_type.from_dict(**_val) for _key, _val in value.items() or {}})
+                except Exception as ex:
+                    self.__setattr__(field, {str(_key):_val for _key, _val in value.items() or {}})
             else:
                 if type(value) is dict:
                     self.__setattr__(field, _type.from_dict(**value if value is not None else value or None))
