@@ -48,11 +48,11 @@ class BadRequest(RequestError):
     def __init__(self, reason: str, msg: str, method: str, path: str, *args: object, payload: Dict[str, Any] = None, errors: Dict[str, Any] = None) -> None:
         self.msg = msg
         payload, errors = find_error(payload, errors)
-        import ujson
+        import orjson
         if isinstance(payload, dict):
-            payload = ujson.dumps(payload, indent=2)
+            payload = orjson.dumps(payload, indent=2)
         try:
-            errors = ujson.dumps(errors, indent=2)
+            errors = orjson.dumps(errors, indent=2)
         except:
             pass
         super().__init__(reason, method, path, f" {self.msg}\nPayload: {payload}\nError: {errors}")
