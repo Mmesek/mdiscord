@@ -13,7 +13,7 @@ Discord raw API types.
 #Generated source code at 16:34 2021/07/07
 from __future__ import annotations
 from enum import IntEnum
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Union
 from datetime import datetime
 from ctypes import c_byte, c_uint, c_ushort
 from dataclasses import dataclass
@@ -3273,7 +3273,10 @@ class Application_Command(DiscordObject):
     description: str = ''
     description_localizations: Dict[str, str] = dict
     options: List[Application_Command_Option] = list
+    default_member_permissions: str = None
+    dm_permissions: bool = True
     default_permission: bool = False
+    version: int = None
 
 class Application_Command_Type(Enum):
     CHAT_INPUT = 1
@@ -4233,6 +4236,9 @@ class Application_Command_Option(DiscordObject):
     choices: List[Application_Command_Option_Choice] = list
     options: List[Application_Command_Option] = list
     channel_types: List[Channel_Types] = list
+    min_value: Union[int, float] = None
+    max_value: Union[int, float] = None
+    autocomplete: bool = False
 
 
 class Application_Command_Option_Type(Enum):
@@ -4310,6 +4316,7 @@ class Application_Command_Permissions(DiscordObject):
 class Application_Command_Permission_Type(Enum):
     ROLE = 1
     USER = 2
+    CHANNEL = 3
 
 
 @dataclass
@@ -4442,6 +4449,7 @@ class Application_Command_Interaction_Data_Option(DiscordObject):
     type: Application_Command_Option_Type = 0
     value: dict = dict
     options: List[Application_Command_Interaction_Data_Option] = list
+    focused: bool = None
 
 
 @dataclass
