@@ -3,7 +3,7 @@ from typing import Dict
 
 from mdiscord.base_model import Snowflake
 from mdiscord.endpoints import Endpoints
-from mdiscord.serializer import Serializer
+from mdiscord.serializer import Serializer, _loads
 from mdiscord.utils import log
 
 
@@ -27,7 +27,7 @@ class HTTP_Client(Endpoints, Serializer):
             from aiohttp.resolver import AsyncResolver
             resolver = AsyncResolver(nameservers=['8.8.8.8', '8.8.4.4'])
         else:
-            resolver = None        
+            resolver = None
         self._session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False, resolver=resolver))#, json_serialize=Encoder().encode)
 
     async def api_call(self, path: str, method: str, **kwargs):
@@ -55,52 +55,52 @@ class HTTP_Client(Endpoints, Serializer):
         from mdiscord.base_model import BASE_URL
         async with self._session.request(method, BASE_URL+"api"+(f"/v{self.api_version}" if self.api_version else "")+path, **kwargs) as res:
             from mdiscord.models import HTTP_Response_Codes
-            from mdiscord.exceptions import BadRequest, RequestError, JsonBadRequest, NotFound
-            
-            try:
-                res.raise_for_status()
-                self.lock[bucket] = (int(res.headers.get("X-RateLimit-Remaining", 1)), float(res.headers.get("X-RateLimit-Reset", 0)))
-                if res.status == HTTP_Response_Codes.NO_CONTENT.value:
-                    return None
-                try:
-                    r = await res.json()
-                except Exception as ex:
-                    raise RequestError(reason=res.reason, method=method, path=path, extra=" Error occured while sending request")
+            from mdiscord.exceptions import BadRequest, NotFound
+            r = await res.text(encoding='utf-8')
+            if res.headers.get('content-type', None) == 'application/json':
+                r = _loads(r)
 
-                if 'message' in r:
-                    raise JsonBadRequest(reason=res.reason, msg=f"[{r['code']}] - {r['message']}. Extra: {r.get('errors','') if 'errors' in r else None}", method=method, path=path)
-                if type(r) is dict:
-                    return dict({"_Client": self}, **r)
-                return list(dict({"_Client":self}, **i) for i in r)
-            except aiohttp.ClientResponseError as ex:
-                import orjson
-                error_message = orjson.loads(res.content._buffer.popleft())
-                if res.status == HTTP_Response_Codes.BAD_REQUEST.value:
-                    raise BadRequest(reason=res.reason, msg=error_message.get('message', error_message), method=method, path=path, payload=kwargs.get("json"), errors=error_message.get('errors', {}))
-                elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
-                    raise NotFound(reason=res.reason, method=method, path=path)
+            self.lock[bucket] = (int(res.headers.get("X-RateLimit-Remaining", 1)), float(res.headers.get("X-RateLimit-Reset", 0)))
 
-                elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
-                    is_global = res.headers.get('X-RateLimit-Global') is True
-                    #TODO: Actual ratelimiter, get reset and remaining from headers, put into local dict (as tuple of remaining, reset?)
-                    if not is_global:
-                        self.lock[bucket] = True
-                    else:
-                        self.lock['global'] = True
-                    retry_after = float(res.headers.get('Retry-After', 1))
-                    if 'reaction' in path:
-                        retry_after += 0.75
-                    await asyncio.sleep(retry_after)
-                    if not is_global:
-                        self.lock[bucket] = (0, 0)
-                    else:
-                        self.lock['global'] = False
-                    return await self._api_call(path, method, **kwargs)
+            if res.status == HTTP_Response_Codes.NO_CONTENT.value:
+                return None
 
-                elif res.status >= 500:
-                    await asyncio.sleep(1)
-                    return await self._api_call(path, method, **kwargs)
-            res.raise_for_status()
+            elif res.status == HTTP_Response_Codes.BAD_REQUEST.value:
+                raise BadRequest(reason=res.reason, msg=r.get('message', r), method=method, path=path, payload=kwargs.get("json"), errors=r.get('errors', {}))
+
+            elif res.status == HTTP_Response_Codes.NOT_FOUND.value:
+                raise NotFound(reason=res.reason, method=method, path=path)
+
+            elif res.status == HTTP_Response_Codes.TOO_MANY_REQUESTS.value:
+                is_global = res.headers.get('X-RateLimit-Global') is True
+                #TODO: Actual ratelimiter, get reset and remaining from headers, put into local dict (as tuple of remaining, reset?)
+
+                if not is_global:
+                    self.lock[bucket] = True
+                else:
+                    self.lock['global'] = True
+
+                retry_after = float(res.headers.get('Retry-After', 1))
+
+                if 'reaction' in path:
+                    retry_after += 0.75
+
+                await asyncio.sleep(retry_after)
+
+                if not is_global:
+                    self.lock[bucket] = (0, 0)
+                else:
+                    self.lock['global'] = False
+
+                return await self._api_call(path, method, **kwargs)
+
+            elif res.status >= 500:
+                await asyncio.sleep(1)
+                return await self._api_call(path, method, **kwargs)
+
+            if type(r) is dict:
+                return dict({"_Client": self}, **r)
+            return list(dict({"_Client":self}, **i) for i in r)                
 
     async def close(self):
         await self._session.close()

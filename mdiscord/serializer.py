@@ -8,10 +8,17 @@ Serializer & Deserializer
 :copyright: (c) 2021 Mmesek
 
 '''
+from typing import Any
+
 try:
     import orjson as json
+    def _dumps(obj: Any, **kwargs):
+        return json.dumps(obj, **kwargs).decode(encoding='utf-8')
+    _loads = json.loads
 except ModuleNotFoundError:
     import json
+    _dumps = json.dumps
+    _loads = json.loads
 
 class Deserializer:
     def __init__(self):
