@@ -30,6 +30,7 @@ from .types import (
 from .utils import log, EventListener
 from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError
 Dispatch = {}
+Predicates = {}
 
 class Opcodes(EventListener):
     counters: Counter = Counter()
@@ -47,11 +48,17 @@ class Opcodes(EventListener):
         self.counters[data.t] += 1
         if self.check_listeners(data.t, data.d):
             return
+        _completed = {} # Cached result so we don't check same predicate for one payload multiple times
         for priority in sorted(Dispatch.get(data.t, {})):
             for function in Dispatch.get(data.t, [aInvalid])[priority]:
                 try:
-                    if await function(self, data.d):
-                        return
+                    for predicate in Predicates.get(data.t, {}).get(function, []):
+                        if not _completed.get(predicate, predicate(data.d)):
+                            _completed[predicate] = False
+                            break
+                    else:
+                        if await function(self, data.d):
+                            return
                 except BadRequest as ex:
                     log.warn("Bad Request", exc_info=ex)
                 except NotFound as ex:
