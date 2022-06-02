@@ -1,20 +1,28 @@
 # mDiscord
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/Mmesek/mdiscord)
 
+[![GitHub](https://img.shields.io/github/license/Mmesek/mdiscord)](../../LICENSE.md)
+
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/Mmesek/mdiscord)](https://www.codefactor.io/repository/github/mmesek/mdiscord)
 ![Lines of code](https://img.shields.io/tokei/lines/github/Mmesek/mdiscord?style=plastic)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Mmesek/mdiscord)]()
 [![GitHub repo size](https://img.shields.io/github/repo-size/Mmesek/mdiscord)]()
 
-Simple typehinted (relatively) Discord API Wrapper with type casting.
+[![Discord](https://img.shields.io/discord/517445947446525952)](https://discord.gg/z8HkfsGmrr)
 
-[`Models`](mdiscord/models.py) & [`Endpoints`](mdiscord/endpoints.py) are generated from [documentation](https://github.com/discord/discord-api-docs) with a [script](https://github.com/Mmesek/DocParser) therefore they should *in theory* provide 100% of coverage. 
+Simple (relatively) typehinted Discord API Wrapper with type casting.
 
-Mapping is mostly 1:1 (With few additional convenience methods in [`types.py`](mdiscord/types.py)) between docs and code.
+Made (and meant) to work in conjunction with [MFramework.py](https://github.com/Mmesek/MFramework.py) hence it's usage on it's own is rather limited (Read: It's mainly a REST wrapper with Gateway's Dispatch)
 
-Wrapper was made (and meant) to work with conjunction with [MFramework.py](https://github.com/Mmesek/MFramework.py) hence it's usage on it's own is rather limited (Read: It's mainly a REST wrapper with Gateway's Dispatch).
-
-
+# Features
+- [Generated](https://github.com/Mmesek/DocParser) 1:1 Mapping of [models](mdiscord/models.py) & [endpoints](mdiscord/endpoints.py) based on Discord [documentation](https://github.com/discord/discord-api-docs). All endpoints are available as methods of `Client`.
+- *In theory* 100% of API coverage. 
+- Iterating prioritizable event [listeners](mdiscord/__init__.py) supporting predicates without blocking them.
+- [Differentiating](mdiscord/opcodes.py) direct messages from guild messages by prependeding them with `DIRECT_`.
+- Automatic [skipping](mdiscord/opcodes.py) of events sent by bots (Those containing `is_bot` attribute set to `True`)
+- [Embed](mdiscord/types.py) builder respecting message limits without throwing.
+- Convenience methods for models in [`types.py`](mdiscord/types.py).
+- Just a simple API wrapper with Gateway client without anything fancy, really.
 
 # Examples
 
