@@ -25,7 +25,7 @@ from .types import (
     Guild_Request_Members,
     Snowflake,
     Status_Types, Activity_Types,
-    Bot_Activity
+    Bot_Activity, Identify_Connection_Properties
 )
 from .utils import log, EventListener
 from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError
@@ -117,10 +117,11 @@ class Opcodes(EventListener):
             op= Gateway_Opcodes.IDENTIFY,
             d= Identify(
                 token=self.token,
-                properties={
-                    "$os": platform.system(),
-                    "$browser": "MFramework",
-                    "$device": "MFramework"},
+                properties=Identify_Connection_Properties(
+                    os= platform.system(), 
+                    browser= "mdiscord", 
+                    device= "mdiscord"
+                ),
                 compress=True,
                 large_threshold=250,
                 shard=self.shards,
