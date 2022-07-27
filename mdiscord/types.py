@@ -483,7 +483,16 @@ class Guild(Guild):
         return CDN_URL+CDN_Endpoints.Guild_Splash.value.format(guild_id=self.id, guild_splash=self.splash)
     def get_discovery_splash(self) -> str:
         return CDN_URL+CDN_Endpoints.Guild_Discovery_Splash.value.format(guild_id=self.id, guild_discovery_splash=self.discovery_splash)
-        
+
+
+@dataclass
+class Channel(Channel):
+    async def get_messages(self, before_id: Snowflake = None, messages: List[Message] = [], limit: int = 100):
+        if limit < 1:
+            return messages
+        r = await self._Client.get_channel_messages(self.id, before=before_id, limit=min(limit, 100))
+        return await self.get_messages(r[-1].id, messages=messages+r, limit=limit - len(r))
+
 
 @dataclass
 class User(User):
