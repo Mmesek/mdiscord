@@ -473,6 +473,7 @@ class Message(Message, Sendable):
     @property
     def message_link(self):
         return Discord_Paths.MessageLink.link.format(self.guild_id or "@me", self.channel_id, self.id)
+    deferred = typing
 
 @dataclass
 class Guild(Guild):
