@@ -90,7 +90,7 @@ class Opcodes(EventListener):
 
     async def reconnect(self, data: Gateway_Payload) -> None:
         log.info("Reconnecting %s", self.username)
-        await self.resume(data)
+        await self.resume()
 
     async def invalid_session(self, data: Gateway_Payload) -> None:
         log.info("Invalid Session")
