@@ -38,6 +38,8 @@ class Opcodes(EventListener):
     latency: float = 0.0
     heartbeat_sent: float = 0.0
     heartbeating: asyncio.Task
+    session_id: str = None
+    resume_url: str = None
 
     async def dispatch(self, data: Gateway_Payload) -> None:
         data.d = getattr(Gateway_Events, data.t.title(), Invalid)(_Client=self, **data.d)
@@ -86,23 +88,26 @@ class Opcodes(EventListener):
                     log.exception("Dispatch Error %s: %s at %s", type(ex), ex, t, exc_info=ex)
         return
 
-    async def reconnect(self, data: dict) -> None:
+    async def reconnect(self, data: Gateway_Payload) -> None:
         log.info("Reconnecting %s", self.username)
         await self.resume(data)
 
-    async def invalid_session(self, data: dict) -> None:
+    async def invalid_session(self, data: Gateway_Payload) -> None:
         log.info("Invalid Session")
         print(data)
         if data.d:
-            log.info("Resuming")
-            await self.resume(data)
+            log.info("Resuming after Invalid Session")
+            await self.resume()
         else:
-            log.info("Reidentifying")
+            log.info("Reidentifying after Invalid Session")
             await self.identify()
 
-    async def hello(self, data: dict) -> None:
+    async def hello(self, data: Gateway_Payload) -> None:
         self.heartbeating = asyncio.create_task(self.heartbeat(data.d["heartbeat_interval"]))#, name="Heartbeat")
-        await self.identify()
+        if self.resume_url and self.session_id:
+            await self.resume()
+        else:
+            await self.identify()
 
     async def heartbeat_ack(self, data: dict) -> None:
         self.latency = time.perf_counter() - self.heartbeat_sent
@@ -138,8 +143,8 @@ class Opcodes(EventListener):
             self.heartbeat_sent = time.perf_counter()
             await self._ws.send_json({"op": 1, "d": self.last_sequence})
 
-    async def resume(self, data: dict) -> None:
-        log.info("Resuming, yes?")
+    async def resume(self) -> None:
+        log.info("Resuming")
         await self.send(Gateway_Payload(
             op = Gateway_Opcodes.RESUME,
             d = Resume(

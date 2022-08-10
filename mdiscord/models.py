@@ -2494,6 +2494,7 @@ class Ready(DiscordObject):
     user: User = None
     guilds: List[Guild] = list
     session_id: str = ''
+    resume_gateway_url: str = ''
     shard: Tuple[int, int] = list
     application: Application = None
 

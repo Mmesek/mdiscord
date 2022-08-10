@@ -58,9 +58,13 @@ def onDispatch(f=None, priority: int=100, event: Union[str, Gateway_Events]=None
         return inner(f)
     return inner
 
+
 @onDispatch
 async def ready(self: Client, ready: Ready):
     self.user_id = ready.user.id
     self.username = ready.user.username
+    self.resume_url = ready.resume_gateway_url
+    self.session_id = ready.session_id
     from .utils import log
+
     log.info("Connected as %s", ready.user.username)
