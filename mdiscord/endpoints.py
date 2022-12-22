@@ -468,6 +468,10 @@ class Endpoints:
         '''
         r = await self.api_call(path = f"/channels/{channel_id}/threads", method = "POST", json = {"name": name, "auto_archive_duration": auto_archive_duration, "type": type}, reason=reason)
         return Channel.from_dict(**r)
+    
+    async def start_thread_in_forum_channel(self, channel_id: Snowflake, name: str=None, auto_archive_duration: int=None, rate_limit_per_user: int=None, message: Message = None, applied_tags: list[Snowflake] = None, reason: str=None):
+        r = await self.api_call(path = f"/channels/{channel_id}/threads", method = "POST", json = {"name": name, "auto_archive_duration": auto_archive_duration, "rate_limit_per_user":rate_limit_per_user, "message":message, "applied_tags": applied_tags, "type": type}, reason=reason)
+        return Channel.from_dict(**r)
 
     async def join_thread(self, channel_id: Snowflake, reason: str=None) -> None:
         '''
