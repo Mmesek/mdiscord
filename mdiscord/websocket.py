@@ -50,8 +50,12 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         if self._session and self._session.closed or not self._session:
             log.info("Restarting session")
             self._new_session()
-        gate = await self.get_gateway_bot()
-        self._ws = await self._session.ws_connect(f"{gate['url']}?" + (f"v={self.api_version}&" if self.api_version else "") + "encoding=json&compress=zlib-stream")
+        if not self.resume_url:
+            gate = await self.get_gateway_bot()
+            url = gate['url']
+        else:
+            url = self.resume_url
+        self._ws = await self._session.ws_connect(f"{url}?" + (f"v={self.api_version}&" if self.api_version else "") + "encoding=json&compress=zlib-stream")
         return self
 
     async def receive(self):
