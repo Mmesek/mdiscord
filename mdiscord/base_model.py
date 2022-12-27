@@ -165,3 +165,60 @@ class DiscordObject:
     @classmethod
     def from_dict(cls, **kwargs):
         return cls(**{k: v for k,v in kwargs.items() if k in list(dir(cls))})
+
+import re
+
+PATH_PARAM = re.compile(r"/\{(.*)\}")
+MAJOR_PARAMS = ["guild_id", "channel_id", "webhook_id", "webhook_token"]
+
+
+def route(method: str, path: str):
+    """
+    Route decorator, creates an endpoint call based on parameters.
+
+    Regular parameters are interpreted as JSON body arguments unless they are present in `path`.
+    Keyword-only parameters are interpreted as Query arguments (?k=v&k2=v2).
+
+    Return type is used for autocasting. Supports casting to an array.
+
+    Parameters
+    ----------
+    method: `str`
+        HTTP Method used when sending Request.
+    path: `str`
+        Path to which send Request. Supports `/{path}/` params.
+
+    Returns
+    -------
+    `Any`, depends on decorated function.
+    """
+
+    def init(f):
+        # Init here
+        PATH = PATH_PARAM.findall(path)
+        ARGUMENTS = []  # NOTE: Don't include path params (named args in function below)
+        QUERY = {}  # TODO: Retrieve ALL query params from func definition (keyword-only arguments)
+        JSON = {}  # TODO: Retrieve ALL json params from func definition ("Regular" params)
+        IS_LIST = False  # TODO: Check if return type is a list
+        RESULT = f  # TODO: Retrieve from function definition
+        IS_METHOD = False # TODO: Set if route is attached to an object, not bot though
+
+        async def _api_call(self, reason: str = None, *args, **kwargs):
+            # Overwrite actual call here
+            if IS_METHOD:
+                kwargs.update() # TODO: Set path params from available attributes here 
+            kwargs.update(zip(ARGUMENTS, args))
+            r = await self.api_call(
+                path=path.format(**{k: v for k, v in kwargs.items() if k in PATH}),
+                method=method,
+                reason=reason,
+                params={k: v for k, v in kwargs.items() if k in QUERY},
+                json={k: v for k, v in kwargs.items() if k in JSON},
+                # bucket="|".join([str(kwargs.get(major, "-")) for major in MAJOR_PARAMS]), # NOTE: String might be bigger in size than a tuple
+                bucket=(kwargs.get(major, None) for major in MAJOR_PARAMS),
+            )
+            return [RESULT(i) for i in r] if IS_LIST else RESULT(r)
+
+        return _api_call
+
+    return init
