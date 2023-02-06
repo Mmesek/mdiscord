@@ -488,6 +488,16 @@ class Channel(DiscordObject):
     thread_metadata: Thread_Metadata = None
     member: Thread_Member = None
     default_auto_archive_duration: int = 0
+    available_tags: List[Tag] = list
+    applied_tags: List[Snowflake] = list
+
+
+class Tag(DiscordObject):
+    id: Snowflake = 0
+    name: str = None
+    moderated: bool = False
+    emoji_id: Snowflake = None
+    emoji_name: str = None
 
 
 class Channel_Types(Enum):
