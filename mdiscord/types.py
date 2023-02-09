@@ -585,7 +585,7 @@ class Interaction(Interaction):
         )
     
     async def send_followup(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, tts: bool=None, attachments: List[Attachment] = None, username: str=None, avatar_url: str=None, flags: Message_Flags=None, wait: bool=None, thread_id: Snowflake=None) -> Union[Message, None]:
-        m = await self._Client.create_followup_message(self._Client.application.id, self.token, wait=wait, content=content, username=username, avatar_url=avatar_url, tts=tts, attachments=attachments, embeds=embeds, allowed_mentions=allowed_mentions, components=components)
+        m = await self._Client.create_followup_message(self._Client.application.id, self.token, wait=wait, content=content, username=username, avatar_url=avatar_url, tts=tts, attachments=attachments, embeds=embeds, allowed_mentions=allowed_mentions, components=components, flags=flags)
         self._followup_id = m.id
         return m
 

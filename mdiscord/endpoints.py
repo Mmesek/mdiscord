@@ -1741,11 +1741,11 @@ class Endpoints:
         '''
         await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}/messages/@original", method = "DELETE")
 
-    async def create_followup_message(self, application_id: Snowflake, interaction_token: int, wait: bool = False, content: str = None, username: str = None, avatar_url: str = None, tts: bool = None, embeds: List[Embed] = None, payload_json: str = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None, attachments: List[Attachment] = None) -> Message:
+    async def create_followup_message(self, application_id: Snowflake, interaction_token: int, wait: bool = False, content: str = None, username: str = None, avatar_url: str = None, tts: bool = None, embeds: List[Embed] = None, payload_json: str = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None, attachments: List[Attachment] = None, flags: int = None) -> Message:
         '''
         Create a followup message for an Interaction. Functions the same as [Execute Webhook](https://discord.com/developers/docs/resources/webhook#execute_webhook), but wait is always true, and flags can be set to 64 in the body to send an ephemeral message. The thread_id query parameter is not required (and is furthermore ignored) when using this endpoint for interaction followups.
         '''
-        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}", method = "POST", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "attachments": attachments})
+        r = await self.api_call(path = f"/webhooks/{application_id}/{interaction_token}", method = "POST", json={"content":content, "embeds": embeds, "allowed_mentions": allowed_mentions, "components": components, "attachments": attachments, "flags": flags})
         return Message.from_dict(**r)
 
     async def edit_followup_message(self, application_id: Snowflake, interaction_token: int, message_id: Snowflake, content: str = None, embeds: List[Embed] = None, allowed_mentions: Allowed_Mentions = [], components: List[Component]= None, attachments: List[Attachment] = None) -> Message:
