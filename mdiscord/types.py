@@ -583,6 +583,21 @@ class Interaction(Interaction):
                 )
             )
         )
+
+    async def update(self, content: str = None, embeds: List[Embed]=None, components: List[Component]=None, attachments: List[Attachment] = None, allowed_mentions: Allowed_Mentions=None, private: bool = False):
+        flags=Message_Flags.EPHEMERAL if private else None
+        return await self._Client.create_interaction_response(self.id, self.token, Interaction_Response(
+            type=Interaction_Callback_Type.UPDATE_MESSAGE, 
+            data=Interaction_Application_Command_Callback_Data(
+                content=content, 
+                embeds=embeds, 
+                components=components,
+                attachments=attachments,
+                allowed_mentions=allowed_mentions,
+                flags=flags
+                )
+            )
+        )
     
     async def send_followup(self, content: str=None, embeds: List[Embed]=None, components: List[Component]=None, allowed_mentions: Allowed_Mentions=None, tts: bool=None, attachments: List[Attachment] = None, username: str=None, avatar_url: str=None, flags: Message_Flags=None, wait: bool=None, thread_id: Snowflake=None) -> Union[Message, None]:
         m = await self._Client.create_followup_message(self._Client.application.id, self.token, wait=wait, content=content, username=username, avatar_url=avatar_url, tts=tts, attachments=attachments, embeds=embeds, allowed_mentions=allowed_mentions, components=components, flags=flags)
