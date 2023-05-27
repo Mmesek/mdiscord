@@ -94,7 +94,6 @@ class Opcodes(EventListener):
 
     async def invalid_session(self, data: Gateway_Payload) -> None:
         log.info("Invalid Session")
-        print(data)
         if data.d:
             log.info("Resuming after Invalid Session")
             await self.resume()
@@ -109,7 +108,7 @@ class Opcodes(EventListener):
         else:
             await self.identify()
 
-    async def heartbeat_ack(self, data: dict) -> None:
+    async def heartbeat_ack(self, data: Gateway_Payload) -> None:
         self.latency = time.perf_counter() - self.heartbeat_sent
 
     # User
@@ -142,6 +141,7 @@ class Opcodes(EventListener):
             await asyncio.sleep(interval / 1000)
             self.heartbeat_sent = time.perf_counter()
             await self._ws.send_json({"op": 1, "d": self.last_sequence})
+        log.info("Heartbeat stopped")
 
     async def resume(self) -> None:
         log.info("Resuming")
@@ -192,5 +192,6 @@ class Opcodes(EventListener):
                 afk = afk
             )
         ))
+
     def __init__(self):
         self.opcodes = {i.value: getattr(self, i.name.lower(), aInvalid) for i in Gateway_Opcodes}
