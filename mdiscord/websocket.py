@@ -32,14 +32,14 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         self.presence = objects.Gateway_Presence_Update(
             since= time.time(),
             activities=[objects.Bot_Activity(
-                name=cfg.get(name, {}).get('presence', None), #"How the world burns"
-                type=cfg.get(name, {}).get('presence_type', None), #Activity_Types.WATCHING.value
+                name=cfg.get(name, {}).get('presence', None),
+                type=cfg.get(name, {}).get('presence_type', None),
                 url=cfg.get(name, {}).get('url', None)
                 )],
             status= cfg.get(name, {}).get('status', objects.Status_Types.ONLINE),
             afk= False)
 
-        self.intents = cfg[name].get('intents', 0) #14271 # https://ziad87.net/intents/
+        self.intents = cfg[name].get('intents', 0)
         self.shards = [shard, total_shards]
 
         super().__init__(token=cfg['DiscordTokens'][name], user_id=cfg[name].get('user_id'), api_version=cfg.get("Discord", {}).get("api_version", None))
