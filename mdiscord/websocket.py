@@ -97,3 +97,18 @@ class WebSocket_Client(HTTP_Client, Opcodes):
             self.keepConnection = False
         await self._ws.close()
         await self._session.close()
+
+    @classmethod
+    def run(cls, **kwargs):
+        async def runner(**kwargs):
+            ws = cls(**kwargs)
+            while True:
+                async with ws:
+                    try:
+                        await ws.receive()
+                    except KeyboardInterrupt:
+                        return
+                    except Exception as ex:
+                        log.critical("Uncaught Exception", exc_info=ex)
+
+        asyncio.run(runner(**kwargs))
