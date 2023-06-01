@@ -66,7 +66,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
                     if data.op != 11 and data.s is not None:
                         self.last_sequence = data.s
                     from mlib.types import Invalid
-                    asyncio.create_task(self.opcodes.get(data.op, Invalid)(data))#, name="Dispatch")
+                    asyncio.create_task(self.opcodes.get(data.op, Invalid)(data), name="Dispatch")
             except Exception as ex:
                 log.exception("Exception! Type: %s", msg.type, exc_info=ex)
 

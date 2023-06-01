@@ -102,7 +102,7 @@ class Opcodes(EventListener):
             await self.identify()
 
     async def hello(self, data: Gateway_Payload) -> None:
-        self.heartbeating = asyncio.create_task(self.heartbeat(data.d["heartbeat_interval"]))#, name="Heartbeat")
+        self.heartbeating = asyncio.create_task(self.heartbeat(data.d["heartbeat_interval"]), name="Heartbeat")
         if self.resume_url and self.session_id:
             await self.resume()
         else:
