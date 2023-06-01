@@ -28,7 +28,7 @@ from .types import (
     Bot_Activity, Identify_Connection_Properties
 )
 from .utils import log, EventListener
-from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError
+from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError, UserError
 Dispatch = {}
 Predicates = {}
 
@@ -61,6 +61,11 @@ class Opcodes(EventListener):
                     else:
                         if await function(self, data.d):
                             return
+                except UserError as ex:
+                    log.debug(ex)
+                    channel_id = getattr(data.d, "channel_id")
+                    if channel_id:
+                        await self.create_message(channel_id=channel_id, content=str(ex))
                 except BadRequest as ex:
                     log.warn("Bad Request", exc_info=ex)
                 except NotFound as ex:
