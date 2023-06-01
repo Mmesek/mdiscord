@@ -81,5 +81,6 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         await asyncio.sleep(1)
         if hasattr(self, 'heartbeating'):
             self.heartbeating.cancel()
+            self.keepConnection = False
         await self._ws.close()
         await self._session.close()
