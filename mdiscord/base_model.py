@@ -69,7 +69,10 @@ class Snowflake(int):
 
 class Events(Enum):
     def __call__(self, *args, **kwargs):
-        return self.func.from_dict(*args, **kwargs)
+        try:
+            return self.func.from_dict(*args, **kwargs)
+        except AttributeError:
+            return kwargs
 
     def __new__(cls: Type[_T], value: object) -> _T:
         obj = object.__new__(cls)
