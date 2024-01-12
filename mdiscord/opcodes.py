@@ -120,13 +120,15 @@ class Opcodes(EventListener):
 
     async def heartbeat_ack(self, data: Gateway_Payload) -> None:
         self.latency = time.perf_counter() - self.heartbeat_sent
+        if self.latency > 5:
+            log.debug(f"Last heartbeat latency {self.latency}s")
 
     # User
     async def send(self, _json: object):
         raise NotImplementedError
 
     async def identify(self) -> None:
-        log.info("Identifing")
+        log.debug("Identifing")
         await self.send(
             Gateway_Payload(
                 op=Gateway_Opcodes.IDENTIFY,
@@ -146,6 +148,7 @@ class Opcodes(EventListener):
 
     async def heartbeat(self, interval: int) -> None:
         self.keepConnection = True
+        log.debug(f"Initiated Heartbeat at interval {interval / 1000}s")
         while self.keepConnection:
             await asyncio.sleep(interval / 1000)
             self.heartbeat_sent = time.perf_counter()
@@ -153,7 +156,7 @@ class Opcodes(EventListener):
         log.info("Heartbeat stopped")
 
     async def resume(self) -> None:
-        log.info("Resuming")
+        log.debug("Resuming")
         await self.send(
             Gateway_Payload(
                 op=Gateway_Opcodes.RESUME,

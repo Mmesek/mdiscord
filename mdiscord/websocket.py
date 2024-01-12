@@ -53,12 +53,12 @@ class WebSocket_Client(HTTP_Client, Opcodes):
             user_id=cfg[name].get("user_id"),
             api_version=cfg.get("Discord", {}).get("api_version", None),
         )
-        log.debug("Initating Bot with token %s", self.token)
+        log.debug("Initating Bot with token %s[...]%s", self.token[:5], self.token[-5:])
 
     async def __aenter__(self):
         self.decompress = Deserializer()
         if self._session and self._session.closed or not self._session:
-            log.info("Restarting session")
+            log.debug("Restarting session")
             self._new_session()
         if not self.resume_url:
             gate = await self.get_gateway_bot()
