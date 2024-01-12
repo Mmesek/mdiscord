@@ -630,6 +630,8 @@ class Channel(Channel):
         if limit < 1:
             return messages
         r = await self._Client.get_channel_messages(self.id, before=before_id, limit=min(limit, 100))
+        if not r:
+            return messages
         return await self.get_messages(r[-1].id, messages=messages + r, limit=limit - len(r))
 
 
