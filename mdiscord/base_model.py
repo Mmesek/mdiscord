@@ -97,12 +97,6 @@ class Flag(Flag):
 class DiscordObject:
     _Client: Optional[Bot] = None
 
-    def __init__(self, **kwargs):
-        names = set([f.name for f in fields(self)])
-        for k, v in kwargs.items():
-            if k in names:
-                setattr(self, k, v)
-
     def __post_init__(self):
         for field in self.__dict__:
             if field.startswith("_"):
