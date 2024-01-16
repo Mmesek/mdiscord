@@ -32,7 +32,7 @@ class HTTP_Client(Endpoints, Serializer):
         else:
             resolver = None
         self._session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(ssl=False, resolver=resolver)
+            connector=aiohttp.TCPConnector(ssl=False, resolver=resolver, force_close=True, enable_cleanup_closed=True)
         )  # , json_serialize=Encoder().encode)
 
     async def api_call(self, path: str, method: str, **kwargs):
