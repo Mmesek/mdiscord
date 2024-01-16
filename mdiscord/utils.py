@@ -85,13 +85,15 @@ def default_check(data: DiscordObject) -> bool:
 class EventListener:
     '''Event Listener mixin'''
     _listeners: Dict[str, List[Tuple[asyncio.Future, Callable[[DiscordObject], bool]]]]
-    def wait_for(self, event: Union[str, Gateway_Events], *, check: Optional[Callable[[DiscordObject], bool]] = default_check, timeout: Optional[float] = None) -> DiscordObject:
+    def wait_for(self, event: Union[str, Gateway_Events], repeat: int = 1, *, check: Optional[Callable[[DiscordObject], bool]] = default_check, timeout: Optional[float] = None) -> DiscordObject:
         '''Wait for Dispatch event that meets predicate statement
 
         Parameters
         ----------
         event:
             Dispatch Event to wait for
+        repeat:
+            How many times this event should be waited for
         check:
             Callable function with predicate to meet
         timeout:
@@ -112,7 +114,8 @@ class EventListener:
             self._listeners[event] = []
 
         future = asyncio.get_event_loop().create_future()
-        self._listeners[event].append((future, check))
+        for i in range(repeat):
+            self._listeners[event].append((future, check))
         return asyncio.wait_for(future, timeout)
 
     def check_listeners(self, event: str, data: DiscordObject) -> bool:
@@ -127,14 +130,18 @@ class EventListener:
         if not hasattr(self, '_listeners') or not self._listeners.get(event, None):
             return
         removed = []
+        predicates_met = []
         for i, (future, check) in enumerate(self._listeners[event]):
             if future.cancelled():
                 removed.append(i)
+                continue
+            if check in predicates_met:
                 continue
 
             try:
                 if check(data):
                     future.set_result(data)
+                    predicates_met.append(check)
                     removed.append(i)
             except Exception as ex:
                 try:
