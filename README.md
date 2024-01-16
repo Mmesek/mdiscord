@@ -4,7 +4,7 @@
 [![GitHub](https://img.shields.io/github/license/Mmesek/mdiscord)](../../LICENSE.md)
 
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/Mmesek/mdiscord)](https://www.codefactor.io/repository/github/mmesek/mdiscord)
-![Lines of code](https://img.shields.io/tokei/lines/github/Mmesek/mdiscord?style=plastic)
+![Lines of code](https://sloc.xyz/github/Mmesek/mdiscord?style=plastic)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Mmesek/mdiscord)]()
 [![GitHub repo size](https://img.shields.io/github/repo-size/Mmesek/mdiscord)]()
 
