@@ -22,61 +22,61 @@ DescriptionConstraint = Annotated[str, Meta(min_length=1, max_length=100)]
 
 
 class Application(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the app"""
-    name: str = None
+    name: str = UNSET
     """Name of the app"""
     icon: Nullable[str] = UNSET
     """Icon_Hash"""
-    description: str = None
+    description: str = UNSET
     """Description of the app"""
-    rpc_origins: Optional[list[str]] = None
+    rpc_origins: Optional[list[str]] = UNSET
     """List of RPC origin URLs, if RPC is enabled"""
-    bot_public: bool = None
+    bot_public: bool = UNSET
     """When false, only the app owner can add the app to guilds"""
-    bot_require_code_grant: bool = None
+    bot_require_code_grant: bool = UNSET
     """When true, the app's bot will only join upon completion of the full OAuth2 code grant flow"""
-    bot: Optional["User"] = None
+    bot: Optional["User"] = UNSET
     """Partial user  for the bot user associated with the app"""
-    terms_of_service_url: Optional[str] = None
+    terms_of_service_url: Optional[str] = UNSET
     """URL of the app's Terms of Service"""
-    privacy_policy_url: Optional[str] = None
+    privacy_policy_url: Optional[str] = UNSET
     """URL of the app's Privacy Policy"""
-    owner: Optional["User"] = None
+    owner: Optional["User"] = UNSET
     """Partial user  for the owner of the app"""
-    summary: str = None
+    summary: str = UNSET
     """deprecated and will be removed in v11. An empty string"""
-    verify_key: str = None
+    verify_key: str = UNSET
     """GetTicket"""
     team: Nullable["Team"] = UNSET
     """If the app belongs to a team, this will be a list of the members of that team"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """Guild associated with the app. For example, a developer support server"""
-    guild: Optional["Guild"] = None
+    guild: Optional["Guild"] = UNSET
     """Partial  of the associated guild"""
-    primary_sku_id: Optional[Snowflake] = None
+    primary_sku_id: Optional[Snowflake] = UNSET
     """If this app is a game sold on Discord, this field will be the id of the 'Game SKU' that is created, if exists"""
-    slug: Optional[str] = None
+    slug: Optional[str] = UNSET
     """If this app is a game sold on Discord, this field will be the URL slug that links to the store page"""
-    cover_image: Optional[str] = None
+    cover_image: Optional[str] = UNSET
     """Cover_Image_Hash"""
-    flags: Optional[int] = None
+    flags: Optional[int] = UNSET
     """Flags"""
-    approximate_guild_count: Optional[int] = None
+    approximate_guild_count: Optional[int] = UNSET
     """Approximate count of guilds the app has been added to"""
-    redirect_uris: Optional[list[str]] = None
+    redirect_uris: Optional[list[str]] = UNSET
     """Array of redirect URIs for the app"""
-    interactions_endpoint_url: Optional[str] = None
+    interactions_endpoint_url: Optional[str] = UNSET
     """Interactions_Endpoint_URL"""
-    role_connections_verification_url: Optional[str] = None
+    role_connections_verification_url: Optional[str] = UNSET
     """Role connection verification URL for the app"""
-    tags: Optional[list[str]] = None
+    tags: Optional[list[str]] = UNSET
     """List of tags describing the content and functionality of the app. Max of 5 tags"""
-    install_params: Optional["Install_Params"] = None
+    install_params: Optional["Install_Params"] = UNSET
     """Settings for the app's default in-app authorization link, if enabled"""
-    integration_types_config: Optional["Application_Integration_Types"] = None
+    integration_types_config: Optional["Application_Integration_Types"] = UNSET
     """In_Preview"""
-    custom_install_url: Optional[str] = None
+    custom_install_url: Optional[str] = UNSET
     """Default custom authorization URL for the app, if enabled"""
 
 
@@ -92,7 +92,7 @@ class Application_Integration_Types(Enum):
 
 
 class Application_Integration_Type_Configuration(DiscordObject):
-    oauth2_install_params: Optional["Install_Params"] = None
+    oauth2_install_params: Optional["Install_Params"] = UNSET
     """Install params for each installation context's default in-app authorization link"""
 
 
@@ -120,24 +120,24 @@ class Application_Flags(Flag):
 
 
 class Install_Params(DiscordObject):
-    scopes: list[str] = None
+    scopes: list[str] = UNSET
     """Scopes"""
-    permissions: str = None
+    permissions: str = UNSET
     """Permissions"""
 
 
 class Application_Role_Connection_Metadata(DiscordObject):
-    type: "Application_Role_Connection_Metadata_Type" = None
+    type: "Application_Role_Connection_Metadata_Type" = UNSET
     """type of metadata value"""
-    key: Annotated[str, Meta(pattern=r"a-z0-9_", min_length=1, max_length=50)] = None
+    key: Annotated[str, Meta(pattern=r"a-z0-9_", min_length=1, max_length=50)] = UNSET
     """dictionary key for the metadata field"""
-    name: DescriptionConstraint = None
+    name: DescriptionConstraint = UNSET
     """name of the metadata field"""
-    name_localizations: Optional[dict["Locales", DescriptionConstraint]] = None
+    name_localizations: Optional[dict["Locales", DescriptionConstraint]] = UNSET
     """translations of the name"""
-    description: Annotated[str, Meta(min_length=1, max_length=200)] = None
+    description: Annotated[str, Meta(min_length=1, max_length=200)] = UNSET
     """description of the metadata field"""
-    description_localizations: Optional[dict["Locales", Annotated[str, Meta(min_length=1, max_length=200)]]] = None
+    description_localizations: Optional[dict["Locales", Annotated[str, Meta(min_length=1, max_length=200)]]] = UNSET
     """translations of the description"""
 
 
@@ -171,21 +171,21 @@ class Audit_Log(DiscordObject):
     * Threads referenced in THREAD_CREATE and THREAD_UPDATE events are included in the threads map since archived threads might not be kept in memory by clients.
     """
 
-    application_commands: list["Application_Command"] = None
+    application_commands: list["Application_Command"] = UNSET
     """List of application commands referenced in the audit log"""
-    audit_log_entries: list["Audit_Log_Entry"] = None
+    audit_log_entries: list["Audit_Log_Entry"] = UNSET
     """List of audit log entries, sorted from most to least recent"""
-    auto_moderation_rules: list["Auto_Moderation_Rule"] = None
+    auto_moderation_rules: list["Auto_Moderation_Rule"] = UNSET
     """List of auto moderation rules referenced in the audit log"""
-    guild_scheduled_events: list["Guild_Scheduled_Event"] = None
+    guild_scheduled_events: list["Guild_Scheduled_Event"] = UNSET
     """List of guild scheduled events referenced in the audit log"""
-    integrations: list["Integration"] = None
+    integrations: list["Integration"] = UNSET
     """List of  integration s"""
-    threads: list["Channel"] = None
+    threads: list["Channel"] = UNSET
     """List of threads referenced in the audit log"""
-    users: list["User"] = None
+    users: list["User"] = UNSET
     """List of users referenced in the audit log"""
-    webhooks: list["Webhook"] = None
+    webhooks: list["Webhook"] = UNSET
     """List of webhooks referenced in the audit log"""
 
 
@@ -197,18 +197,18 @@ class Audit_Log_Entry(DiscordObject):
 
     target_id: Nullable[str] = UNSET
     """ID of the affected entity"""
-    guild_id: Optional[Snowflake] = None
-    changes: Optional["Audit_Log_Change"] = None
+    guild_id: Optional[Snowflake] = UNSET
+    changes: Optional["Audit_Log_Change"] = UNSET
     """Changes made to the target_id"""
     user_id: Nullable[Snowflake] = UNSET
     """User"""
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the entry"""
-    action_type: "Audit_Log_Events" = None
+    action_type: "Audit_Log_Events" = UNSET
     """Type of action that occurred"""
-    options: Optional["Optional_Audit_Entry_Info"] = None
+    options: Optional["Optional_Audit_Entry_Info"] = UNSET
     """Additional info for certain event types"""
-    reason: Optional[str] = None
+    reason: Optional[str] = UNSET
     """Reason for the change"""
 
 
@@ -348,29 +348,29 @@ class Audit_Log_Events(Enum):
 
 
 class Optional_Audit_Entry_Info(DiscordObject):
-    application_id: Snowflake = None
+    application_id: Snowflake = UNSET
     """ID of the app whose permissions were targeted"""
-    auto_moderation_rule_name: str = None
+    auto_moderation_rule_name: str = UNSET
     """Name of the Auto Moderation rule that was triggered"""
-    auto_moderation_rule_trigger_type: str = None
+    auto_moderation_rule_trigger_type: str = UNSET
     """Trigger type of the Auto Moderation rule that was triggered"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """Channel in which the entities were targeted"""
-    count: str = None
+    count: str = UNSET
     """Number of entities that were targeted"""
-    delete_member_days: str = None
+    delete_member_days: str = UNSET
     """Number of days after which inactive members were kicked"""
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the overwritten entity"""
-    members_removed: str = None
+    members_removed: str = UNSET
     """Number of members removed by the prune"""
-    message_id: Snowflake = None
+    message_id: Snowflake = UNSET
     """ID of the message that was targeted"""
-    role_name: Optional[str] = None
+    role_name: Optional[str] = UNSET
     """Name of the role if type is '0'"""
-    type: str = None
+    type: str = UNSET
     """Type of overwritten entity - role (0) or member (1)"""
-    integration_type: str = None
+    integration_type: str = UNSET
     """The type of integration which performed the action"""
 
 
@@ -380,149 +380,149 @@ class Audit_Log_Change(DiscordObject):
     Details about these exceptions are explained in [the next section](https://discord.com/developers/docs/resources/audit_log#audit_log_change_object_audit_log_change_exceptions).
     """
 
-    new_value: Optional[Any] = None
+    new_value: Optional[Any] = UNSET
     """New value of the key"""
-    old_value: Optional[Any] = None
+    old_value: Optional[Any] = UNSET
     """Old value of the key"""
-    key: str = None
+    key: str = UNSET
     """Name of the changed entity, with a few exceptions"""
 
 
 class Audit_Log_Change_Key(DiscordObject):
-    name: str = None
+    name: str = UNSET
     """name changed"""
-    description: str = None
+    description: str = UNSET
     """description changed"""
-    icon_hash: str = None
+    icon_hash: str = UNSET
     """icon changed"""
-    splash_hash: str = None
+    splash_hash: str = UNSET
     """invite splash page artwork changed"""
-    discovery_splash_hash: str = None
+    discovery_splash_hash: str = UNSET
     """discovery splash changed"""
-    banner_hash: str = None
+    banner_hash: str = UNSET
     """guild banner changed"""
-    owner_id: Snowflake = None
+    owner_id: Snowflake = UNSET
     """owner changed"""
-    region: str = None
+    region: str = UNSET
     """region changed"""
-    preferred_locale: str = None
+    preferred_locale: str = UNSET
     """preferred locale changed"""
-    afk_channel_id: Snowflake = None
+    afk_channel_id: Snowflake = UNSET
     """afk channel changed"""
-    afk_timeout: int = None
+    afk_timeout: int = UNSET
     """afk timeout duration changed"""
-    rules_channel_id: Snowflake = None
+    rules_channel_id: Snowflake = UNSET
     """id of the rules channel changed"""
-    public_updates_channel_id: Snowflake = None
+    public_updates_channel_id: Snowflake = UNSET
     """id of the public updates channel changed"""
-    mfa_level: int = None
+    mfa_level: int = UNSET
     """two-factor auth requirement changed"""
-    verification_level: int = None
+    verification_level: int = UNSET
     """required verification level changed"""
-    explicit_content_filter: int = None
+    explicit_content_filter: int = UNSET
     """Whose_Messages"""
-    default_message_notifications: int = None
+    default_message_notifications: int = UNSET
     """Message_Notification_Level"""
-    vanity_url_code: str = None
+    vanity_url_code: str = UNSET
     """guild invite vanity url changed"""
-    _add: "Role" = None
+    _add: "Role" = UNSET
     """new role added"""
-    _remove: "Role" = None
+    _remove: "Role" = UNSET
     """role removed"""
-    prune_delete_days: int = None
+    prune_delete_days: int = UNSET
     """change in number of days after which inactive and role-unassigned members are kicked"""
-    widget_enabled: bool = None
+    widget_enabled: bool = UNSET
     """server widget enabled/disable"""
-    widget_channel_id: Snowflake = None
+    widget_channel_id: Snowflake = UNSET
     """channel id of the server widget changed"""
-    system_channel_id: Snowflake = None
+    system_channel_id: Snowflake = UNSET
     """id of the system channel changed"""
-    position: int = None
+    position: int = UNSET
     """text"""
-    topic: str = None
+    topic: str = UNSET
     """text channel topic"""
-    bitrate: int = None
+    bitrate: int = UNSET
     """voice channel bitrate changed"""
-    permission_overwrites: "Overwrite" = None
+    permission_overwrites: "Overwrite" = UNSET
     """permissions on a channel changed"""
-    nsfw: bool = None
+    nsfw: bool = UNSET
     """channel nsfw restriction changed"""
-    application_id: Snowflake = None
+    application_id: Snowflake = UNSET
     """application id of the added"""
-    rate_limit_per_user: int = None
+    rate_limit_per_user: int = UNSET
     """amount of seconds a user has to wait before sending another message changed"""
-    permissions: str = None
+    permissions: str = UNSET
     """Permissions"""
-    color: int = None
+    color: int = UNSET
     """role color changed"""
-    hoist: bool = None
+    hoist: bool = UNSET
     """role is now displayed/no longer displayed separate from online users"""
-    mentionable: bool = None
+    mentionable: bool = UNSET
     """role is now mentionable/unmentionable"""
-    allow: str = None
+    allow: str = UNSET
     """a permission on a text"""
-    deny: str = None
+    deny: str = UNSET
     """a permission on a text"""
-    code: str = None
+    code: str = UNSET
     """invite code changed"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """channel for invite code changed"""
-    inviter_id: Snowflake = None
+    inviter_id: Snowflake = UNSET
     """person who created invite code changed"""
-    max_uses: int = None
+    max_uses: int = UNSET
     """change to max number of times invite code can be used"""
-    uses: int = None
+    uses: int = UNSET
     """number of times invite code used changed"""
-    max_age: int = None
+    max_age: int = UNSET
     """how long invite code lasts changed"""
-    temporary: bool = None
+    temporary: bool = UNSET
     """invite code is temporary/never expires"""
-    deaf: bool = None
+    deaf: bool = UNSET
     """user server deafened/undeafened"""
-    mute: bool = None
+    mute: bool = UNSET
     """user server muted/unmuted"""
-    nick: str = None
+    nick: str = UNSET
     """user nickname changed"""
-    avatar_hash: str = None
+    avatar_hash: str = UNSET
     """user avatar changed"""
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the id of the changed entity - sometimes used in conjunction with other keys"""
-    type: "Channel_Types" = None
+    type: "Channel_Types" = UNSET
     """type of entity created"""
-    enable_emoticons: bool = None
+    enable_emoticons: bool = UNSET
     """integration emoticons enabled/disabled"""
-    expire_behavior: int = None
+    expire_behavior: int = UNSET
     """integration expiring subscriber behavior changed"""
-    expire_grace_period: int = None
+    expire_grace_period: int = UNSET
     """integration expire grace period changed"""
-    user_limit: int = None
+    user_limit: int = UNSET
     """new user limit in a voice channel"""
-    privacy_level: "Privacy_Level" = None
+    privacy_level: "Privacy_Level" = UNSET
     """the privacy level of the stage instance."""
 
 
 class Auto_Moderation_Rule(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the id of this rule"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """the id of the guild which this rule belongs to"""
-    name: str = None
+    name: str = UNSET
     """the rule name"""
-    creator_id: Snowflake = None
+    creator_id: Snowflake = UNSET
     """the user which first created this rule"""
-    event_type: "Event_Types" = None
+    event_type: "Event_Types" = UNSET
     """Event_Type"""
-    trigger_type: "Trigger_Types" = None
+    trigger_type: "Trigger_Types" = UNSET
     """Trigger_Type"""
-    trigger_metadata: "Trigger_Metadata" = None
+    trigger_metadata: "Trigger_Metadata" = UNSET
     """Trigger_Metadata"""
-    actions: "Auto_Moderation_Action" = None
+    actions: "Auto_Moderation_Action" = UNSET
     """the actions which will execute when the rule is triggered"""
-    enabled: bool = None
+    enabled: bool = UNSET
     """whether the rule is enabled"""
-    exempt_roles: list[Snowflake] = None
+    exempt_roles: list[Snowflake] = UNSET
     """the role ids that should not be affected by the rule"""
-    exempt_channels: list[Snowflake] = None
+    exempt_channels: list[Snowflake] = UNSET
     """the channel ids that should not be affected by the rule"""
 
 
@@ -553,17 +553,17 @@ class Trigger_Metadata(DiscordObject):
     Rules with KEYWORD_PRESET [trigger_type](https:##discord.com/developers/docs/resources/auto_moderation#auto-moderation-rule-object-trigger-types) accept a maximum of 1000 keywords.
     """
 
-    keyword_filter: list[str] = None
+    keyword_filter: list[str] = UNSET
     """substrings which will be searched for in content"""
-    regex_patterns: list[str] = None
+    regex_patterns: list[str] = UNSET
     """regular expression patterns which will be matched against content"""
-    presets: list["Keyword_Preset_Types"] = None
+    presets: list["Keyword_Preset_Types"] = UNSET
     """the internally pre-defined wordsets which will be searched for in content"""
-    allow_list: list[str] = None
+    allow_list: list[str] = UNSET
     """substrings which should not trigger the rule"""
-    mention_total_limit: int = None
+    mention_total_limit: int = UNSET
     """total number of unique role and user mentions allowed per message"""
-    mention_raid_protection_enabled: bool = None
+    mention_raid_protection_enabled: bool = UNSET
     """whether to automatically detect mention raids"""
 
 
@@ -608,23 +608,23 @@ class Auto_Moderation_Action_Execution(DiscordObject):
     *** MESSAGE_CONTENT (1 << 15) [gateway intent](https:#/discord.com/developers/docs/topics/gateway#gateway-intents) is required to receive the content and matched_content fields.
     """
 
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild in which action was executed"""
-    action: "Auto_Moderation_Action" = None
+    action: "Auto_Moderation_Action" = UNSET
     """Action which was executed"""
-    rule_id: Snowflake = None
+    rule_id: Snowflake = UNSET
     """ID of the rule which action belongs to"""
-    rule_trigger_type: "Trigger_Types" = None
+    rule_trigger_type: "Trigger_Types" = UNSET
     """Trigger type of rule which was triggered"""
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user which generated the content which triggered the rule"""
-    channel_id: Optional[Snowflake] = None
+    channel_id: Optional[Snowflake] = UNSET
     """ID of the channel in which user content was posted"""
-    message_id: Optional[Snowflake] = None
+    message_id: Optional[Snowflake] = UNSET
     """ID of any user message which content belongs to"""
-    alert_system_message_id: Optional[Snowflake] = None
+    alert_system_message_id: Optional[Snowflake] = UNSET
     """ID of any system auto moderation messages posted as a result of this action"""
-    content: str = None
+    content: str = UNSET
     """User-generated text content"""
     matched_keyword: Nullable[str] = UNSET
     """Word"""
@@ -638,9 +638,9 @@ class Auto_Moderation_Action(DiscordObject):
     See the Associated Action Types column in [action metadata](https:#/discord.com/developers/docs/resources/auto_moderation#auto-moderation-action-object-action-metadata) to understand which type values require metadata to be set.
     """
 
-    type: "Action_Types" = None
+    type: "Action_Types" = UNSET
     """the type of action"""
-    metadata: "Action_Metadata" = None
+    metadata: "Action_Metadata" = UNSET
     """additional metadata needed during execution for this specific action type"""
 
 
@@ -662,11 +662,11 @@ class Action_Metadata(DiscordObject):
     Different fields are relevant based on the.
     """
 
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """channel to which user content should be logged"""
-    duration_seconds: int = None
+    duration_seconds: int = UNSET
     """timeout duration in seconds"""
-    custom_message: Optional[str] = None
+    custom_message: Optional[str] = UNSET
     """additional explanation that will be shown to members whenever their message is blocked"""
 
 
@@ -677,39 +677,39 @@ class Channel(DiscordObject):
     ** For threads created before July 1, 2022, the message count is inaccurate when it's greater than 50.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the id of this channel"""
-    type: "Channel_Types" = None
+    type: "Channel_Types" = UNSET
     """Type_Of_Channel"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """the id of the guild"""
-    position: Optional[int] = None
+    position: Optional[int] = UNSET
     """sorting position of the channel"""
-    permission_overwrites: Optional["Overwrite"] = None
+    permission_overwrites: Optional["Overwrite"] = UNSET
     """explicit permission overwrites for members and roles"""
     name: Optional[Nullable[str]] = UNSET
     """the name of the channel"""
     topic: Optional[Nullable[str]] = UNSET
     """the channel topic"""
-    nsfw: Optional[bool] = None
+    nsfw: Optional[bool] = UNSET
     """whether the channel is nsfw"""
     last_message_id: Optional[Nullable[Snowflake]] = UNSET
     """the id of the last message sent in this channel"""
-    bitrate: Optional[int] = None
+    bitrate: Optional[int] = UNSET
     """the bitrate"""
-    user_limit: Optional[int] = None
+    user_limit: Optional[int] = UNSET
     """the user limit of the voice channel"""
-    rate_limit_per_user: int = None
+    rate_limit_per_user: int = UNSET
     """amount of seconds a user has to wait before sending another message"""
-    recipients: Optional["User"] = None
+    recipients: Optional["User"] = UNSET
     """the recipients of the DM"""
     icon: Optional[Nullable[str]] = UNSET
     """icon hash of the group DM"""
-    owner_id: Optional[Snowflake] = None
+    owner_id: Optional[Snowflake] = UNSET
     """id of the creator of the group DM"""
-    application_id: Optional[Snowflake] = None
+    application_id: Optional[Snowflake] = UNSET
     """application id of the group DM creator if it is bot-created"""
-    managed: Optional[bool] = None
+    managed: Optional[bool] = UNSET
     """for group DM channels: whether the channel is managed by an application via the gdm.join OAuth2 scope"""
     parent_id: Optional[Nullable[Snowflake]] = UNSET
     """for guild channels: id of the parent category for a channel"""
@@ -717,35 +717,35 @@ class Channel(DiscordObject):
     """when the last pinned message was pinned. This may be null in events such as GUILD_CREATE when a message is not pinned"""
     rtc_region: Optional[Nullable[str]] = UNSET
     """Voice_Region"""
-    video_quality_mode: Optional[int] = None
+    video_quality_mode: Optional[int] = UNSET
     """Video_Quality_Mode"""
-    message_count: int = None
+    message_count: int = UNSET
     """number of messages"""
-    member_count: Optional[int] = None
+    member_count: Optional[int] = UNSET
     """an approximate count of users in a thread, stops counting at 50"""
-    thread_metadata: Optional["Thread_Metadata"] = None
+    thread_metadata: Optional["Thread_Metadata"] = UNSET
     """thread-specific fields not needed by other channels"""
-    member: Optional["Thread_Member"] = None
+    member: Optional["Thread_Member"] = UNSET
     """thread member  for the current user, if they have joined the thread, only included on certain API endpoints"""
-    default_auto_archive_duration: Optional[int] = None
+    default_auto_archive_duration: Optional[int] = UNSET
     """default duration, copied onto newly created threads, in minutes, threads will stop showing in the channel list after the specified period of inactivity, can be set to: 60, 1440, 4320, 10080"""
-    permissions: Optional[str] = None
+    permissions: Optional[str] = UNSET
     """Implicit_Permissions"""
-    flags: Optional["Channel_Flags"] = None
+    flags: Optional["Channel_Flags"] = UNSET
     """Channel_Flags"""
-    total_message_sent: Optional[int] = None
+    total_message_sent: Optional[int] = UNSET
     """number of messages ever sent in a thread, it's similar to message_count on message creation, but will not decrement the number when a message is deleted"""
-    available_tags: Optional[list["Forum_Tag"]] = None
+    available_tags: Optional[list["Forum_Tag"]] = UNSET
     """the set of tags that can be used in a GUILD_FORUM"""
-    applied_tags: Optional[list[Snowflake]] = None
+    applied_tags: Optional[list[Snowflake]] = UNSET
     """the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM"""
     default_reaction_emoji: Optional[Nullable["Default_Reaction"]] = UNSET
     """the emoji to show in the add reaction button on a thread in a GUILD_FORUM"""
-    default_thread_rate_limit_per_user: Optional[int] = None
+    default_thread_rate_limit_per_user: Optional[int] = UNSET
     """the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update"""
     default_sort_order: Optional[Nullable["Sort_Order_Types"]] = UNSET
     """Default_Sort_Order_Type"""
-    default_forum_layout: Optional["Forum_Layout_Types"] = None
+    default_forum_layout: Optional["Forum_Layout_Types"] = UNSET
     """Default_Forum_Layout_View"""
 
 
@@ -833,19 +833,19 @@ class Message(DiscordObject):
     If the field exists but is null, the referenced message was deleted.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """id of the message"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """id of the channel the message was sent in"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """id of the guild the message was sent in"""
-    author: "User" = None
+    author: "User" = UNSET
     """the author of this message"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """member properties for this message's author"""
-    content: str = None
+    content: str = UNSET
     """contents of the message"""
-    timestamp: datetime = None
+    timestamp: datetime = UNSET
     """when this message was sent"""
     edited_timestamp: Nullable[datetime] = UNSET
     """when this message was edited"""
@@ -865,47 +865,47 @@ class Message(DiscordObject):
     """any embedded content"""
     reactions: Optional[list["Reaction"]] = list
     """reactions to the message"""
-    nonce: Optional[int] = None
+    nonce: Optional[int] = UNSET
     """used for validating a message was sent"""
     pinned: bool = False
     """whether this message is pinned"""
-    webhook_id: Optional[Snowflake] = None
+    webhook_id: Optional[Snowflake] = UNSET
     """if the message is generated by a webhook, this is the webhook's id"""
-    type: "Message_Types" = None
+    type: "Message_Types" = UNSET
     """Type_Of_Message"""
-    activity: Optional["Message_Activity"] = None
+    activity: Optional["Message_Activity"] = UNSET
     """sent with Rich Presence-related chat embeds"""
-    application: Optional["Application"] = None
+    application: Optional["Application"] = UNSET
     """sent with Rich Presence-related chat embeds"""
-    application_id: Optional[Snowflake] = None
+    application_id: Optional[Snowflake] = UNSET
     """Interaction"""
-    message_reference: Optional["Message_Reference"] = None
+    message_reference: Optional["Message_Reference"] = UNSET
     """data showing the source of a crosspost, channel follow add, pin,"""
-    flags: Optional["Message_Flags"] = None
+    flags: Optional["Message_Flags"] = UNSET
     """Message_Flags"""
     referenced_message: Nullable["Message"] = UNSET
     """the message associated with the message_reference"""
-    interaction_metadata: Optional["Message_Interaction_Metadata"] = None
+    interaction_metadata: Optional["Message_Interaction_Metadata"] = UNSET
     """In_Preview"""
-    interaction: Optional["Interaction"] = None
+    interaction: Optional["Interaction"] = UNSET
     """Interaction"""
-    thread: Optional["Channel"] = None
+    thread: Optional["Channel"] = UNSET
     """Thread_Member"""
-    components: list["Component"] = None
+    components: list["Component"] = UNSET
     """sent if the message contains components like buttons, action rows,"""
-    sticker_items: Optional[list["Sticker"]] = None
+    sticker_items: Optional[list["Sticker"]] = UNSET
     """sent if the message contains stickers"""
-    stickers: Optional[list["Sticker"]] = None
+    stickers: Optional[list["Sticker"]] = UNSET
     """Deprecated the stickers sent with the message"""
-    position: Optional[int] = None
+    position: Optional[int] = UNSET
     """A generally increasing integer"""
-    role_subscription_data: Optional["Role_Subscription_Data"] = None
+    role_subscription_data: Optional["Role_Subscription_Data"] = UNSET
     """data of the role subscription purchase"""
-    resolved: Optional["Resolved_Data"] = None
+    resolved: Optional["Resolved_Data"] = UNSET
     """Auto-populated_Select_Menus"""
-    poll: Optional["Poll"] = None
+    poll: Optional["Poll"] = UNSET
     """A poll!"""
-    call: Optional["Message_Call"] = None
+    call: Optional["Message_Call"] = UNSET
     """the call associated with the message"""
 
 
@@ -954,9 +954,9 @@ class Message_Types(Enum):
 
 
 class Message_Activity(DiscordObject):
-    type: int = None
+    type: int = UNSET
     """Type_Of_Message_Activity"""
-    party_id: Optional[str] = None
+    party_id: Optional[str] = UNSET
     """Rich_Presence_Event"""
 
 
@@ -993,11 +993,11 @@ class Message_Flags(Flag):
 
 
 class Sticker_Item(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """id of the sticker"""
-    name: str = None
+    name: str = UNSET
     """name of the sticker"""
-    format_type: "Sticker_Format_Types" = None
+    format_type: "Sticker_Format_Types" = UNSET
     """Type_Of_Sticker_Format"""
 
 
@@ -1014,29 +1014,29 @@ class Sticker(DiscordObject):
     Incidentally the client will always use a name generated from an emoji as the value of this field when creating or modifying a guild sticker.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """Id_Of_The_Sticker"""
-    pack_id: Optional[Snowflake] = None
+    pack_id: Optional[Snowflake] = UNSET
     """for standard stickers, id of the pack the sticker is from"""
-    name: str = None
+    name: str = UNSET
     """name of the sticker"""
     description: Nullable[str] = UNSET
     """description of the sticker"""
-    tags: str = None
+    tags: str = UNSET
     """autocomplete/suggestion tags for the sticker"""
-    asset: Optional[str] = None
+    asset: Optional[str] = UNSET
     """Deprecated previously the sticker asset hash, now an empty string"""
-    type: "Sticker_Types" = None
+    type: "Sticker_Types" = UNSET
     """Type_Of_Sticker"""
-    format_type: "Sticker_Format_Types" = None
+    format_type: "Sticker_Format_Types" = UNSET
     """Type_Of_Sticker_Format"""
-    available: Optional[bool] = None
+    available: Optional[bool] = UNSET
     """whether this guild sticker can be used, may be false due to loss of Server Boosts"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """id of the guild that owns this sticker"""
-    user: Optional["User"] = None
+    user: Optional["User"] = UNSET
     """the user that uploaded the guild sticker"""
-    sort_value: Optional[int] = None
+    sort_value: Optional[int] = UNSET
     """the standard sticker's sort order within its pack"""
 
 
@@ -1048,24 +1048,24 @@ class Sticker_Types(Enum):
 
 
 class Sticker_Pack(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """id of the sticker pack"""
-    stickers: list["Sticker"] = None
+    stickers: list["Sticker"] = UNSET
     """the stickers in the pack"""
-    name: str = None
+    name: str = UNSET
     """name of the sticker pack"""
-    sku_id: Snowflake = None
+    sku_id: Snowflake = UNSET
     """id of the pack's SKU"""
-    cover_sticker_id: Optional[Snowflake] = None
+    cover_sticker_id: Optional[Snowflake] = UNSET
     """id of a sticker in the pack which is shown as the pack's icon"""
-    description: str = None
+    description: str = UNSET
     """description of the sticker pack"""
-    banner_asset_id: Optional[Snowflake] = None
+    banner_asset_id: Optional[Snowflake] = UNSET
     """Banner_Image"""
 
 
 class Message_Call(DiscordObject):
-    participants: list["list[Snowflake]"] = None
+    participants: list["list[Snowflake]"] = UNSET
     """User"""
     ended_timestamp: Optional[Nullable[datetime]] = UNSET
     """time when call ended"""
@@ -1076,53 +1076,53 @@ class Message_Reference(DiscordObject):
     * `channel_id` is optional when creating a reply, but will always be present when receiving an event/response that includes this data model.
     """
 
-    message_id: Optional[Snowflake] = None
+    message_id: Optional[Snowflake] = UNSET
     """id of the originating message"""
-    channel_id: Optional[Snowflake] = None
+    channel_id: Optional[Snowflake] = UNSET
     """id of the originating message's channel"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """id of the originating message's guild"""
-    fail_if_not_exists: Optional[bool] = None
+    fail_if_not_exists: Optional[bool] = UNSET
     """when sending, whether to error if the referenced message doesn't exist instead of sending as a normal"""
 
 
 class Followed_Channel(DiscordObject):
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """source channel id"""
-    webhook_id: Snowflake = None
+    webhook_id: Snowflake = UNSET
     """created target webhook id"""
 
 
 class Reaction(DiscordObject):
-    count: int = None
+    count: int = UNSET
     """Total number of times this emoji has been used to react"""
-    count_details: "Reaction_Count_Details" = None
+    count_details: "Reaction_Count_Details" = UNSET
     """Reaction_Count_Details"""
-    me: bool = None
+    me: bool = UNSET
     """Whether the current user reacted using this emoji"""
-    me_burst: bool = None
+    me_burst: bool = UNSET
     """Whether the current user super-reacted using this emoji"""
-    emoji: "Emoji" = None
+    emoji: "Emoji" = UNSET
     """emoji information"""
-    burst_colors: list = None
+    burst_colors: list = UNSET
     """HEX colors used for super reaction"""
 
 
 class Reaction_Count_Details(DiscordObject):
-    burst: int = None
+    burst: int = UNSET
     """Count of super reactions"""
-    normal: int = None
+    normal: int = UNSET
     """Count of normal reactions"""
 
 
 class Overwrite(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """role or user_id"""
     type: int = 0
     """either 0 (role) or 1 (member)"""
-    allow: str = None
+    allow: str = UNSET
     """permission bit set"""
-    deny: str = None
+    deny: str = UNSET
     """permission bit set"""
 
 
@@ -1132,15 +1132,15 @@ class Thread_Metadata(DiscordObject):
     Read details about the upcoming changes to the locked field in the [Change Log entry](https://discord.com/developers/docs/change/log#update_to_locked_threads).> warn.
     """
 
-    archived: bool = None
+    archived: bool = UNSET
     """whether the thread is archived"""
-    auto_archive_duration: int = None
+    auto_archive_duration: int = UNSET
     """the thread will stop showing in the channel list after auto_archive_duration minutes of inactivity, can be set to: 60, 1440, 4320, 10080"""
-    archive_timestamp: datetime = None
+    archive_timestamp: datetime = UNSET
     """timestamp when the thread's archive status was last changed, used for calculating recent activity"""
-    locked: bool = None
+    locked: bool = UNSET
     """whether the thread is locked; when a thread is locked, only users with MANAGE_THREADS can unarchive it"""
-    invitable: Optional[bool] = None
+    invitable: Optional[bool] = UNSET
     """whether non-moderators can add other non-moderators to a thread; only available on private threads"""
     create_timestamp: Optional[Nullable[datetime]] = UNSET
     """timestamp when the thread was created; only populated for threads created after 2022-01-09"""
@@ -1152,15 +1152,15 @@ class Thread_Member(DiscordObject):
     ** The member field is only present when with_member is set to true when calling [List Thread Members](https:#/discord.com/developers/docs/resources/channel#list-thread-members) or [Get Thread Member](https:#/discord.com/developers/docs/resources/channel#get-thread-member).
     """
 
-    id: Optional[Snowflake] = None
+    id: Optional[Snowflake] = UNSET
     """ID of the thread"""
-    user_id: Optional[Snowflake] = None
+    user_id: Optional[Snowflake] = UNSET
     """ID of the user"""
-    join_timestamp: datetime = None
+    join_timestamp: datetime = UNSET
     """Time the user last joined the thread"""
-    flags: int = None
+    flags: int = UNSET
     """Any user-thread settings, currently only used for notifications"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """Additional information about the user"""
 
 
@@ -1177,11 +1177,11 @@ class Forum_Tag(DiscordObject):
     * At most one of emoji_id and emoji_name may be set to a non-null value.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the id of the tag"""
-    name: str = None
+    name: str = UNSET
     """the name of the tag"""
-    moderated: bool = None
+    moderated: bool = UNSET
     """whether this tag can only be added to"""
     emoji_id: Nullable[Snowflake] = UNSET
     """the id of a guild's custom emoji"""
@@ -1209,31 +1209,31 @@ class Forum_Message_Params(DiscordObject):
 
 
 class Embed(DiscordObject):
-    title: Optional[Annotated[str, Meta(max_length=256)]] = None
+    title: Optional[Annotated[str, Meta(max_length=256)]] = UNSET
     """title of embed"""
-    type: Optional["Embed_Types"] = None
+    type: Optional["Embed_Types"] = UNSET
     """Type_Of_Embed"""
-    description: Optional[Annotated[str, Meta(max_length=4096)]] = None
+    description: Optional[Annotated[str, Meta(max_length=4096)]] = UNSET
     """description of embed"""
-    url: Optional[str] = None
+    url: Optional[str] = UNSET
     """url of embed"""
-    timestamp: Optional[datetime] = None
+    timestamp: Optional[datetime] = UNSET
     """timestamp of embed content"""
-    color: Optional[int] = None
+    color: Optional[int] = UNSET
     """color code of the embed"""
-    footer: Optional["Embed_Footer"] = None
+    footer: Optional["Embed_Footer"] = UNSET
     """footer information"""
-    image: Optional["Embed_Image"] = None
+    image: Optional["Embed_Image"] = UNSET
     """image information"""
-    thumbnail: Optional["Embed_Thumbnail"] = None
+    thumbnail: Optional["Embed_Thumbnail"] = UNSET
     """thumbnail information"""
-    video: Optional["Embed_Video"] = None
+    video: Optional["Embed_Video"] = UNSET
     """video information"""
-    provider: Optional["Embed_Provider"] = None
+    provider: Optional["Embed_Provider"] = UNSET
     """provider information"""
-    author: Optional["Embed_Author"] = None
+    author: Optional["Embed_Author"] = UNSET
     """author information"""
-    fields: Optional[Annotated[list["Embed_Field"], Meta(max_length=25)]] = None
+    fields: Optional[Annotated[list["Embed_Field"], Meta(max_length=25)]] = UNSET
     """fields information, max of 25"""
 
 
@@ -1253,71 +1253,71 @@ class Embed_Types(Enum):
 
 
 class Embed_Thumbnail(DiscordObject):
-    url: str = None
+    url: str = UNSET
     """source url of thumbnail"""
-    proxy_url: Optional[str] = None
+    proxy_url: Optional[str] = UNSET
     """a proxied url of the thumbnail"""
-    height: Optional[int] = None
+    height: Optional[int] = UNSET
     """height of thumbnail"""
-    width: Optional[int] = None
+    width: Optional[int] = UNSET
     """width of thumbnail"""
 
 
 class Embed_Video(DiscordObject):
-    url: Optional[str] = None
+    url: Optional[str] = UNSET
     """source url of video"""
-    proxy_url: Optional[str] = None
+    proxy_url: Optional[str] = UNSET
     """a proxied url of the video"""
-    height: Optional[int] = None
+    height: Optional[int] = UNSET
     """height of video"""
-    width: Optional[int] = None
+    width: Optional[int] = UNSET
     """width of video"""
 
 
 class Embed_Image(DiscordObject):
-    url: str = None
+    url: str = UNSET
     """source url of image"""
-    proxy_url: Optional[str] = None
+    proxy_url: Optional[str] = UNSET
     """a proxied url of the image"""
-    height: Optional[int] = None
+    height: Optional[int] = UNSET
     """height of image"""
-    width: Optional[int] = None
+    width: Optional[int] = UNSET
     """width of image"""
 
 
 class Embed_Provider(DiscordObject):
-    name: Optional[str] = None
+    name: Optional[str] = UNSET
     """name of provider"""
-    url: Optional[str] = None
+    url: Optional[str] = UNSET
     """url of provider"""
 
 
 class Embed_Author(DiscordObject):
-    name: Optional[Annotated[str, Meta(max_length=256)]] = None
+    name: Optional[Annotated[str, Meta(max_length=256)]] = UNSET
     """name of author"""
-    url: Optional[str] = None
+    url: Optional[str] = UNSET
     """url of author"""
-    icon_url: Optional[str] = None
+    icon_url: Optional[str] = UNSET
     """url of author icon"""
-    proxy_icon_url: Optional[str] = None
+    proxy_icon_url: Optional[str] = UNSET
     """a proxied url of author icon"""
 
 
 class Embed_Footer(DiscordObject):
-    text: Annotated[str, Meta(max_length=2048)] = None
+    text: Annotated[str, Meta(max_length=2048)] = UNSET
     """footer text"""
-    icon_url: Optional[str] = None
+    icon_url: Optional[str] = UNSET
     """url of footer icon"""
-    proxy_icon_url: Optional[str] = None
+    proxy_icon_url: Optional[str] = UNSET
     """a proxied url of footer icon"""
 
 
 class Embed_Field(DiscordObject):
-    name: Annotated[str, Meta(max_length=256)] = None
+    name: Annotated[str, Meta(max_length=256)] = UNSET
     """name of the field"""
-    value: Annotated[str, Meta(max_length=1024)] = None
+    value: Annotated[str, Meta(max_length=1024)] = UNSET
     """value of the field"""
-    inline: Optional[bool] = None
+    inline: Optional[bool] = UNSET
     """whether"""
 
 
@@ -1348,31 +1348,31 @@ class Attachment(DiscordObject):
     Ephemeral attachments on messages are guaranteed to be available as long as the message itself exists.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """attachment id"""
-    filename: str = None
+    filename: str = UNSET
     """name of file attached"""
-    description: Optional[str] = None
+    description: Optional[str] = UNSET
     """description for the file"""
-    content_type: Optional[str] = None
+    content_type: Optional[str] = UNSET
     """Media_Type"""
-    size: int = None
+    size: int = UNSET
     """size of file in bytes"""
-    url: str = None
+    url: str = UNSET
     """source url of file"""
-    proxy_url: str = None
+    proxy_url: str = UNSET
     """a proxied url of file"""
     height: Optional[Nullable[int]] = UNSET
     """height of file"""
     width: Optional[Nullable[int]] = UNSET
     """width of file"""
-    ephemeral: bool = None
+    ephemeral: bool = UNSET
     """whether this attachment is ephemeral"""
-    duration_secs: Optional[float] = None
+    duration_secs: Optional[float] = UNSET
     """the duration of the audio file"""
-    waveform: Optional[str] = None
+    waveform: Optional[str] = UNSET
     """base64 encoded bytearray representing a sampled waveform"""
-    flags: Optional["Attachment_Flags"] = None
+    flags: Optional["Attachment_Flags"] = UNSET
     """Attachment_Flags"""
 
 
@@ -1382,13 +1382,13 @@ class Attachment_Flags(Flag):
 
 
 class Channel_Mention(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """id of the channel"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """id of the guild containing the channel"""
-    type: int = None
+    type: int = UNSET
     """Type_Of_Channel"""
-    name: str = None
+    name: str = UNSET
     """the name of the channel"""
 
 
@@ -1408,18 +1408,18 @@ class Allowed_Mentions(DiscordObject):
     """Array of role_ids to mention"""
     users: list[Snowflake] = list
     """Array of user_ids to mention"""
-    replied_user: bool = None
+    replied_user: bool = UNSET
     """For replies, whether to mention the author of the message being replied to"""
 
 
 class Role_Subscription_Data(DiscordObject):
-    role_subscription_listing_id: Snowflake = None
+    role_subscription_listing_id: Snowflake = UNSET
     """the id of the sku and listing that the user is subscribed to"""
-    tier_name: str = None
+    tier_name: str = UNSET
     """the name of the tier that the user is subscribed to"""
-    total_months_subscribed: int = None
+    total_months_subscribed: int = UNSET
     """the cumulative number of months that the user has been subscribed for"""
-    is_renewal: bool = None
+    is_renewal: bool = UNSET
     """whether this notification is for a renewal rather than a new purchase"""
 
 
@@ -1428,17 +1428,17 @@ class Emoji(DiscordObject):
     """Emoji_Id"""
     name: Nullable[str] = UNSET
     """emoji name"""
-    roles: Optional[list["Role"]] = None
+    roles: Optional[list["Role"]] = UNSET
     """roles allowed to use this emoji"""
-    user: Optional["User"] = None
+    user: Optional["User"] = UNSET
     """user that created this emoji"""
-    require_colons: Optional[bool] = None
+    require_colons: Optional[bool] = UNSET
     """whether this emoji must be wrapped in colons"""
-    managed: Optional[bool] = None
+    managed: Optional[bool] = UNSET
     """whether this emoji is managed"""
-    animated: Optional[bool] = None
+    animated: Optional[bool] = UNSET
     """whether this emoji is animated"""
-    available: Optional[bool] = None
+    available: Optional[bool] = UNSET
     """whether this emoji can be used, may be false due to loss of Server Boosts"""
 
 
@@ -1449,9 +1449,9 @@ class Guild(DiscordObject):
     ** This field is deprecated and is replaced by [channel.rtc_region](https:#/discord.com/developers/docs/resources/channel#channel-object-channel-structure).
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """guild id"""
-    name: str = None
+    name: str = UNSET
     """guild name"""
     icon: Nullable[str] = UNSET
     """Icon_Hash"""
@@ -1461,69 +1461,69 @@ class Guild(DiscordObject):
     """Splash_Hash"""
     discovery_splash: Nullable[str] = UNSET
     """Discovery_Splash_Hash"""
-    owner: bool = None
+    owner: bool = UNSET
     """The_User"""
-    owner_id: Snowflake = None
+    owner_id: Snowflake = UNSET
     """id of owner"""
-    permissions: str = None
+    permissions: str = UNSET
     """The_User"""
     region: Nullable[str] = UNSET
     """Voice_Region"""
     afk_channel_id: Nullable[Snowflake] = UNSET
     """id of afk channel"""
-    afk_timeout: int = None
+    afk_timeout: int = UNSET
     """afk timeout in seconds"""
-    widget_enabled: Optional[bool] = None
+    widget_enabled: Optional[bool] = UNSET
     """true if the server widget is enabled"""
     widget_channel_id: Optional[Nullable[Snowflake]] = UNSET
     """the channel id that the widget will generate an invite to,"""
-    verification_level: "Verification_Level" = None
+    verification_level: "Verification_Level" = UNSET
     """Verification_Level"""
-    default_message_notifications: "Default_Message_Notification_Level" = None
+    default_message_notifications: "Default_Message_Notification_Level" = UNSET
     """Message_Notifications_Level"""
-    explicit_content_filter: "Explicit_Content_Filter_Level" = None
+    explicit_content_filter: "Explicit_Content_Filter_Level" = UNSET
     """Explicit_Content_Filter_Level"""
-    roles: list["Role"] = None
+    roles: list["Role"] = UNSET
     """roles in the guild"""
-    emojis: list["Emoji"] = None
+    emojis: list["Emoji"] = UNSET
     """custom guild emojis"""
-    features: list["Guild_Features"] = None
+    features: list["Guild_Features"] = UNSET
     """enabled guild features"""
-    mfa_level: "MFA_Level" = None
+    mfa_level: "MFA_Level" = UNSET
     """MFA_Level"""
     application_id: Nullable[Snowflake] = UNSET
     """application id of the guild creator if it is bot-created"""
     system_channel_id: Nullable[Snowflake] = UNSET
     """the id of the channel where guild notices such as welcome messages and boost events are posted"""
-    system_channel_flags: "System_Channel_Flags" = None
+    system_channel_flags: "System_Channel_Flags" = UNSET
     """System_Channel_Flags"""
     rules_channel_id: Nullable[Snowflake] = UNSET
     """the id of the channel where Community guilds can display rules and/or guidelines"""
-    joined_at: Optional[datetime] = None
+    joined_at: Optional[datetime] = UNSET
     """when this guild was joined at"""
-    large: Optional[bool] = None
+    large: Optional[bool] = UNSET
     """true if this is considered a large guild"""
-    unavailable: Optional[bool] = None
+    unavailable: Optional[bool] = UNSET
     """true if this guild is unavailable due to an outage"""
-    member_count: Optional[int] = None
+    member_count: Optional[int] = UNSET
     """total number of members in this guild"""
-    voice_states: Optional[list["Voice_State"]] = None
+    voice_states: Optional[list["Voice_State"]] = UNSET
     """states of members currently in voice channels; lacks the `guild_id` key"""
-    members: Optional[list["Guild_Member"]] = None
+    members: Optional[list["Guild_Member"]] = UNSET
     """users in the guild"""
-    channels: Optional[list[Channel]] = None
+    channels: Optional[list[Channel]] = UNSET
     """channels in the guild"""
-    threads: Optional[list[Channel]] = None
+    threads: Optional[list[Channel]] = UNSET
     """all active threads in the guild that current user has permission to view"""
-    presences: Optional[list["Presence_Update"]] = None
+    presences: Optional[list["Presence_Update"]] = UNSET
     """presences of the members in the guild, will only include non-offline members if the size is greater than `large threshold`"""
-    stage_instances: Optional[list["Stage_Instance"]] = None
+    stage_instances: Optional[list["Stage_Instance"]] = UNSET
     """Stage instances in the guild"""
-    guild_scheduled_events: Optional[list["Guild_Scheduled_Event"]] = None
+    guild_scheduled_events: Optional[list["Guild_Scheduled_Event"]] = UNSET
     """Scheduled events in the guild"""
     max_presences: Optional[Nullable[int]] = UNSET
     """the maximum number of presences for the guild"""
-    max_members: Optional[int] = None
+    max_members: Optional[int] = UNSET
     """the maximum number of members for the guild"""
     vanity_url_code: Nullable[str] = UNSET
     """the vanity url code for the guild"""
@@ -1531,29 +1531,29 @@ class Guild(DiscordObject):
     """the description of a guild"""
     banner: Nullable[str] = UNSET
     """Banner_Hash"""
-    premium_tier: "Premium_Tier" = None
+    premium_tier: "Premium_Tier" = UNSET
     """Premium_Tier"""
-    premium_subscription_count: Optional[int] = None
+    premium_subscription_count: Optional[int] = UNSET
     """the number of boosts this guild currently has"""
-    preferred_locale: "Locales" = None
+    preferred_locale: "Locales" = UNSET
     """the preferred locale of a Community guild; used in server discovery and notices from Discord; defaults to 'en-US'"""
     public_updates_channel_id: Nullable[Snowflake] = UNSET
     """the id of the channel where admins and moderators of Community guilds receive notices from Discord"""
-    max_video_channel_users: Optional[int] = None
+    max_video_channel_users: Optional[int] = UNSET
     """the maximum amount of users in a video channel"""
-    max_stage_video_channel_users: Optional[int] = None
+    max_stage_video_channel_users: Optional[int] = UNSET
     """the maximum amount of users in a stage video channel"""
-    approximate_member_count: Optional[int] = None
+    approximate_member_count: Optional[int] = UNSET
     """approximate number of members in this guild, returned from the GET /guilds/<id> and /users/@me/guilds endpoints when with_counts is true"""
-    approximate_presence_count: Optional[int] = None
+    approximate_presence_count: Optional[int] = UNSET
     """approximate number of non-offline members in this guild, returned from the GET /guilds/<id> and /users/@me/guilds  endpoints when with_counts is true"""
-    welcome_screen: Optional["Welcome_Screen"] = None
+    welcome_screen: Optional["Welcome_Screen"] = UNSET
     """Invite"""
-    nsfw_level: "Guild_NSFW_Level" = None
+    nsfw_level: "Guild_NSFW_Level" = UNSET
     """Guild_NSFW_Level"""
-    stickers: Optional["Sticker"] = None
+    stickers: Optional["Sticker"] = UNSET
     """custom guild stickers"""
-    premium_progress_bar_enabled: bool = None
+    premium_progress_bar_enabled: bool = UNSET
     """whether the guild has the boost progress bar enabled"""
     safety_alerts_channel_id: Nullable[Snowflake] = UNSET
     """the id of the channel where admins and moderators of Community guilds receive safety alerts from Discord"""
@@ -1670,9 +1670,9 @@ class Mutable_Guild_Features(Enum):
 
 
 class Guild_Preview(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """guild id"""
-    name: str = None
+    name: str = UNSET
     """guild name"""
     icon: Nullable[str] = UNSET
     """Icon_Hash"""
@@ -1680,22 +1680,22 @@ class Guild_Preview(DiscordObject):
     """Splash_Hash"""
     discovery_splash: Nullable[str] = UNSET
     """Discovery_Splash_Hash"""
-    emojis: list["Emoji"] = None
+    emojis: list["Emoji"] = UNSET
     """custom guild emojis"""
-    features: list["Guild_Features"] = None
+    features: list["Guild_Features"] = UNSET
     """enabled guild features"""
-    approximate_member_count: int = None
+    approximate_member_count: int = UNSET
     """approximate number of members in this guild"""
-    approximate_presence_count: int = None
+    approximate_presence_count: int = UNSET
     """approximate number of online members in this guild"""
     description: Nullable[str] = UNSET
     """the description for the guild"""
-    stickers: list["Sticker"] = None
+    stickers: list["Sticker"] = UNSET
     """custom guild stickers"""
 
 
 class Guild_Widget_Settings(DiscordObject):
-    enabled: bool = None
+    enabled: bool = UNSET
     """whether the widget is enabled"""
     channel_id: Nullable[Snowflake] = UNSET
     """the widget channel id"""
@@ -1707,17 +1707,17 @@ class Guild_Widget(DiscordObject):
     > The fields id, discriminator and avatar are anonymized to prevent abuse.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """guild id"""
-    name: str = None
+    name: str = UNSET
     """guild name"""
     instant_invite: Nullable[str] = UNSET
     """instant invite for the guilds specified widget invite channel"""
-    channels: list["Channel"] = None
+    channels: list["Channel"] = UNSET
     """voice and stage channels which are accessible by @everyone"""
-    members: list["User"] = None
+    members: list["User"] = UNSET
     """special widget user s that includes users presence"""
-    presence_count: int = None
+    presence_count: int = UNSET
     """number of online members in this guild"""
 
 
@@ -1730,27 +1730,27 @@ class Guild_Member(DiscordObject):
     In non GUILD_ events which can only be triggered by non-pending users, pending will not be included.
     """
 
-    user: Optional["User"] = None
+    user: Optional["User"] = UNSET
     """the user this guild member represents"""
     nick: Optional[Nullable[str]] = UNSET
     """this user's guild nickname"""
     avatar: Optional[Nullable[str]] = UNSET
     """Guild_Avatar_Hash"""
-    roles: list[Snowflake] = None
+    roles: list[Snowflake] = UNSET
     """Role"""
-    joined_at: datetime = None
+    joined_at: datetime = UNSET
     """when the user joined the guild"""
     premium_since: Optional[Nullable[datetime]] = UNSET
     """Boosting"""
-    deaf: bool = None
+    deaf: bool = UNSET
     """whether the user is deafened in voice channels"""
-    mute: bool = None
+    mute: bool = UNSET
     """whether the user is muted in voice channels"""
-    flags: "Guild_Member_Flags" = None
+    flags: "Guild_Member_Flags" = UNSET
     """Guild_Member_Flags"""
-    pending: Optional[bool] = None
+    pending: Optional[bool] = UNSET
     """Membership_Screening"""
-    permissions: Optional[str] = None
+    permissions: Optional[str] = UNSET
     """total permissions of the member in the channel, including overwrites, returned when in the interaction"""
     communication_disabled_until: Optional[Nullable[datetime]] = UNSET
     """Timeout"""
@@ -1781,37 +1781,37 @@ class Integration(DiscordObject):
     > Some older integrations may not have an attached user.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """integration id"""
-    name: str = None
+    name: str = UNSET
     """integration name"""
-    type: str = None
+    type: str = UNSET
     """integration type (twitch, youtube, discord, or guild_subscription)"""
-    enabled: bool = None
+    enabled: bool = UNSET
     """is this integration enabled"""
-    syncing: bool = None
+    syncing: bool = UNSET
     """is this integration syncing"""
-    role_id: Snowflake = None
+    role_id: Snowflake = UNSET
     """id that this integration uses for 'subscribers'"""
-    enable_emoticons: bool = None
+    enable_emoticons: bool = UNSET
     """whether emoticons should be synced for this integration"""
-    expire_behavior: "Integration_Expire_Behaviors" = None
+    expire_behavior: "Integration_Expire_Behaviors" = UNSET
     """the behavior of expiring subscribers"""
-    expire_grace_period: int = None
+    expire_grace_period: int = UNSET
     """the grace period"""
-    user: Optional["User"] = None
+    user: Optional["User"] = UNSET
     """user for this integration"""
-    account: "Integration_Account" = None
+    account: "Integration_Account" = UNSET
     """integration account information"""
-    synced_at: datetime = None
+    synced_at: datetime = UNSET
     """when this integration was last synced"""
-    subscriber_count: int = None
+    subscriber_count: int = UNSET
     """how many subscribers this integration has"""
-    revoked: bool = None
+    revoked: bool = UNSET
     """has this integration been revoked"""
-    application: Optional["Application"] = None
+    application: Optional["Application"] = UNSET
     """The bot/OAuth2 application for discord integrations"""
-    scopes: Optional["OAuth2_Scopes"] = None
+    scopes: Optional["OAuth2_Scopes"] = UNSET
     """the scopes the application has been authorized for"""
 
 
@@ -1828,43 +1828,43 @@ class Integration_Expire_Behaviors(Enum):
 
 
 class Integration_Account(DiscordObject):
-    id: str = None
+    id: str = UNSET
     """id of the account"""
-    name: str = None
+    name: str = UNSET
     """name of the account"""
 
 
 class Integration_Application(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the id of the app"""
-    name: str = None
+    name: str = UNSET
     """the name of the app"""
     icon: Nullable[str] = UNSET
     """Icon_Hash"""
-    description: str = None
+    description: str = UNSET
     """the description of the app"""
-    bot: Optional["User"] = None
+    bot: Optional["User"] = UNSET
     """the bot associated with this application"""
 
 
 class Ban(DiscordObject):
     reason: Nullable[str] = UNSET
     """the reason for the ban"""
-    user: "User" = None
+    user: "User" = UNSET
     """the banned user"""
 
 
 class Welcome_Screen(DiscordObject):
     description: Nullable[str] = UNSET
     """the server description shown in the welcome screen"""
-    welcome_channels: list["Welcome_Screen_Channel"] = None
+    welcome_channels: list["Welcome_Screen_Channel"] = UNSET
     """the channels shown in the welcome screen, up to 5"""
 
 
 class Welcome_Screen_Channel(DiscordObject):
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """the channel's id"""
-    description: str = None
+    description: str = UNSET
     """the description shown for the channel"""
     emoji_id: Nullable[Snowflake] = UNSET
     """Emoji_Id"""
@@ -1873,32 +1873,32 @@ class Welcome_Screen_Channel(DiscordObject):
 
 
 class Guild_Onboarding(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild this onboarding is part of"""
-    prompts: list["Onboarding_Prompt"] = None
+    prompts: list["Onboarding_Prompt"] = UNSET
     """Prompts shown during onboarding and in customize community"""
-    default_channel_ids: list["list[Snowflake]"] = None
+    default_channel_ids: list["list[Snowflake]"] = UNSET
     """Channel IDs that members get opted into automatically"""
-    enabled: bool = None
+    enabled: bool = UNSET
     """Whether onboarding is enabled in the guild"""
-    mode: "Onboarding_Mode" = None
+    mode: "Onboarding_Mode" = UNSET
     """Current mode of onboarding"""
 
 
 class Onboarding_Prompt(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the prompt"""
-    type: "Prompt_Types" = None
+    type: "Prompt_Types" = UNSET
     """Type of prompt"""
-    options: list["Prompt_Option"] = None
+    options: list["Prompt_Option"] = UNSET
     """Options available within the prompt"""
-    title: str = None
+    title: str = UNSET
     """Title of the prompt"""
-    single_select: bool = None
+    single_select: bool = UNSET
     """Indicates whether users are limited to selecting one option for the prompt"""
-    required: bool = None
+    required: bool = UNSET
     """Indicates whether the prompt is required before a user completes the onboarding flow"""
-    in_onboarding: bool = None
+    in_onboarding: bool = UNSET
     """Indicates whether the prompt is present in the onboarding flow. If false, the prompt will only appear in the Channels & Roles tab"""
 
 
@@ -1908,21 +1908,21 @@ class Prompt_Option(DiscordObject):
     > When creating or updating a prompt option, the emoji_id, emoji_name, and emoji_animated fields must be used instead of the emoji object.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the prompt option"""
-    channel_ids: list["list[Snowflake]"] = None
+    channel_ids: list["list[Snowflake]"] = UNSET
     """IDs for channels a member is added to when the option is selected"""
-    role_ids: list["list[Snowflake]"] = None
+    role_ids: list["list[Snowflake]"] = UNSET
     """IDs for roles assigned to a member when the option is selected"""
-    emoji: Optional["Emoji"] = None
+    emoji: Optional["Emoji"] = UNSET
     """Emoji of the option"""
-    emoji_id: Optional[Snowflake] = None
+    emoji_id: Optional[Snowflake] = UNSET
     """Emoji ID of the option"""
-    emoji_name: Optional[str] = None
+    emoji_name: Optional[str] = UNSET
     """Emoji name of the option"""
-    emoji_animated: Optional[bool] = None
+    emoji_animated: Optional[bool] = UNSET
     """Whether the emoji is animated"""
-    title: str = None
+    title: str = UNSET
     """Title of the option"""
     description: Nullable[str] = UNSET
     """Description of the option"""
@@ -1950,35 +1950,35 @@ class Guild_Scheduled_Event(DiscordObject):
     ** See [field requirements by entity type](https:#/discord.com/developers/docs/resources/guild_scheduled_event#guild-scheduled-event-object-field-requirements-by-entity-type) to understand the relationship between entity_type and the following fields: channel_id, entity_metadata, and scheduled_end_time.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the id of the scheduled event"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """the guild id which the scheduled event belongs to"""
     channel_id: Nullable[Snowflake] = UNSET
     """Scheduled_Entity_Type"""
     creator_id: Nullable[Snowflake] = UNSET
     """the id of the user that created the scheduled event"""
-    name: str = None
+    name: str = UNSET
     """the name of the scheduled event"""
     description: Optional[Nullable[str]] = UNSET
     """the description of the scheduled event"""
-    scheduled_start_time: datetime = None
+    scheduled_start_time: datetime = UNSET
     """the time the scheduled event will start"""
     scheduled_end_time: Nullable[datetime] = UNSET
     """the time the scheduled event will end, required if entity_type is EXTERNAL"""
-    privacy_level: "Privacy_Level" = None
+    privacy_level: "Privacy_Level" = UNSET
     """the privacy level of the scheduled event"""
-    status: list["Guild_Scheduled_Event_Status"] = None
+    status: list["Guild_Scheduled_Event_Status"] = UNSET
     """the status of the scheduled event"""
-    entity_type: "Guild_Scheduled_Event_Entity_Types" = None
+    entity_type: "Guild_Scheduled_Event_Entity_Types" = UNSET
     """the type of the scheduled event"""
     entity_id: Nullable[Snowflake] = UNSET
     """the id of an entity associated with a guild scheduled event"""
     entity_metadata: Nullable["Guild_Scheduled_Event_Entity_Metadata"] = UNSET
     """additional metadata for the guild scheduled event"""
-    creator: Optional["User"] = None
+    creator: Optional["User"] = UNSET
     """the user that created the scheduled event"""
-    user_count: Optional[int] = None
+    user_count: Optional[int] = UNSET
     """the number of users subscribed to the scheduled event"""
     image: Optional[Nullable[str]] = UNSET
     """Cover_Image_Hash"""
@@ -2011,39 +2011,39 @@ class Guild_Scheduled_Event_Entity_Metadata(DiscordObject):
     * [required](https:#/discord.com/developers/docs/resources/guild_scheduled_event#guild-scheduled-event-object-guild-scheduled-event-entity-metadata) for events with 'entity_type': EXTERNAL.
     """
 
-    location: str = None
+    location: str = UNSET
     """location of the event"""
 
 
 class Guild_Scheduled_Event_User(DiscordObject):
-    guild_scheduled_event_id: Snowflake = None
+    guild_scheduled_event_id: Snowflake = UNSET
     """the scheduled event id which the user subscribed to"""
-    user: "User" = None
+    user: "User" = UNSET
     """user which subscribed to an event"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """guild member data for this user for the guild which this event belongs to, if any"""
 
 
 class Guild_Template(DiscordObject):
-    code: str = None
+    code: str = UNSET
     """the template code"""
-    name: str = None
+    name: str = UNSET
     """template name"""
     description: Nullable[str] = UNSET
     """the description for the template"""
-    usage_count: int = None
+    usage_count: int = UNSET
     """number of times this template has been used"""
-    creator_id: Snowflake = None
+    creator_id: Snowflake = UNSET
     """the ID of the user who created the template"""
-    creator: "User" = None
+    creator: "User" = UNSET
     """the user who created the template"""
-    created_at: datetime = None
+    created_at: datetime = UNSET
     """when this template was created"""
-    updated_at: datetime = None
+    updated_at: datetime = UNSET
     """when this template was last synced to the source guild"""
-    source_guild_id: Snowflake = None
+    source_guild_id: Snowflake = UNSET
     """the ID of the guild this template is based on"""
-    serialized_source_guild: "Guild" = None
+    serialized_source_guild: "Guild" = UNSET
     """the guild snapshot this template contains"""
     is_dirty: Nullable[bool] = UNSET
     """whether the template has unsynced changes"""
@@ -2058,29 +2058,29 @@ class Invite_Types(Enum):
 class Invite(DiscordObject):
     type: "Invite_Types" = Invite_Types.GUILD
     """Type_Of_Invite"""
-    code: str = None
+    code: str = UNSET
     """the invite code"""
-    guild: Optional["Guild"] = None
+    guild: Optional["Guild"] = UNSET
     """the guild this invite is for"""
     channel: Nullable["Channel"] = UNSET
     """the channel this invite is for"""
-    inviter: Optional["User"] = None
+    inviter: Optional["User"] = UNSET
     """the user who created the invite"""
-    target_type: Optional["Invite_Target_Types"] = None
+    target_type: Optional["Invite_Target_Types"] = UNSET
     """Type_Of_Target"""
-    target_user: Optional["User"] = None
+    target_user: Optional["User"] = UNSET
     """the user whose stream to display for this voice channel stream invite"""
-    target_application: Optional["Application"] = None
+    target_application: Optional["Application"] = UNSET
     """the embedded application to open for this voice channel embedded application invite"""
-    approximate_presence_count: Optional[int] = None
+    approximate_presence_count: Optional[int] = UNSET
     """approximate count of online members, returned from the GET /invites/<code> endpoint when with_counts is true"""
-    approximate_member_count: Optional[int] = None
+    approximate_member_count: Optional[int] = UNSET
     """approximate count of total members, returned from the GET /invites/<code> endpoint when with_counts is true"""
     expires_at: Optional[Nullable[datetime]] = UNSET
     """the expiration date of this invite, returned from the GET /invites/<code> endpoint when with_expiration is true"""
-    stage_instance: Optional["Invite_Stage_Instance"] = None
+    stage_instance: Optional["Invite_Stage_Instance"] = UNSET
     """Public_Stage_Instance"""
-    guild_scheduled_event: Optional["Guild_Scheduled_Event"] = None
+    guild_scheduled_event: Optional["Guild_Scheduled_Event"] = UNSET
     """guild scheduled event data, only included if guild_scheduled_event_id contains a valid guild scheduled event id"""
 
 
@@ -2090,26 +2090,26 @@ class Invite_Target_Types(Enum):
 
 
 class Invite_Metadata(DiscordObject):
-    uses: int = None
+    uses: int = UNSET
     """number of times this invite has been used"""
-    max_uses: int = None
+    max_uses: int = UNSET
     """max number of times this invite can be used"""
-    max_age: int = None
+    max_age: int = UNSET
     """duration"""
-    temporary: bool = None
+    temporary: bool = UNSET
     """whether this invite only grants temporary membership"""
-    created_at: datetime = None
+    created_at: datetime = UNSET
     """when this invite was created"""
 
 
 class Invite_Stage_Instance(DiscordObject):
-    members: list["Guild_Member"] = None
+    members: list["Guild_Member"] = UNSET
     """the members speaking in the Stage"""
-    participant_count: int = None
+    participant_count: int = UNSET
     """the number of users in the Stage"""
-    speaker_count: int = None
+    speaker_count: int = UNSET
     """the number of users speaking in the Stage"""
-    topic: str = None
+    topic: str = UNSET
     """the topic of the Stage instance"""
 
 
@@ -2118,30 +2118,30 @@ class Poll(DiscordObject):
     expiry is marked as nullable to support non-expiring polls in the future, but all polls have an expiry currently.
     """
 
-    question: "Poll_Media" = None
+    question: "Poll_Media" = UNSET
     """The question of the poll. Only text is supported"""
-    answers: list["Poll_Answer"] = None
+    answers: list["Poll_Answer"] = UNSET
     """Each of the answers available in the poll"""
     expiry: Nullable[datetime] = UNSET
     """The time when the poll ends"""
-    allow_multiselect: bool = None
+    allow_multiselect: bool = UNSET
     """Whether a user can select multiple answers"""
-    layout_type: "Layout_Type" = None
+    layout_type: "Layout_Type" = UNSET
     """Layout_Type"""
-    results: Optional["Poll_Results"] = None
+    results: Optional["Poll_Results"] = UNSET
     """The results of the poll"""
 
 
 class Poll_Create_Request(DiscordObject):
-    question: "Poll_Media" = None
+    question: "Poll_Media" = UNSET
     """The question of the poll. Only text is supported"""
-    answers: list["Poll_Answer"] = None
+    answers: list["Poll_Answer"] = UNSET
     """Each of the answers available in the poll, up to 10"""
-    duration: int = None
+    duration: int = UNSET
     """Number of hours the poll should be open for, up to 7 days"""
-    allow_multiselect: bool = None
+    allow_multiselect: bool = UNSET
     """Whether a user can select multiple answers"""
-    layout_type: Optional["Layout_Type"] = None
+    layout_type: Optional["Layout_Type"] = UNSET
     """Layout_Type"""
 
 
@@ -2161,9 +2161,9 @@ class Poll_Media(DiscordObject):
     When creating a poll answer with an emoji, one only needs to send either the id (custom emoji) or name (default emoji) as the only field.
     """
 
-    text: Optional[str] = None
+    text: Optional[str] = UNSET
     """The text of the field"""
-    emoji: Optional["Emoji"] = None
+    emoji: Optional["Emoji"] = UNSET
     """The emoji of the field"""
 
 
@@ -2172,40 +2172,40 @@ class Poll_Answer(DiscordObject):
     * Only sent as part of responses from Discord's API/Gateway.
     """
 
-    answer_id: int = None
+    answer_id: int = UNSET
     """The ID of the answer"""
-    poll_media: "Poll_Media" = None
+    poll_media: "Poll_Media" = UNSET
     """The data of the answer"""
 
 
 class Poll_Results(DiscordObject):
-    is_finalized: bool = None
+    is_finalized: bool = UNSET
     """Whether the votes have been precisely counted"""
-    answer_counts: list["Poll_Answer_Count"] = None
+    answer_counts: list["Poll_Answer_Count"] = UNSET
     """The counts for each answer"""
 
 
 class Poll_Answer_Count(DiscordObject):
-    id: int = None
+    id: int = UNSET
     """The answer_id"""
-    count: int = None
+    count: int = UNSET
     """The number of votes for this answer"""
-    me_voted: bool = None
+    me_voted: bool = UNSET
     """Whether the current user voted for this answer"""
 
 
 class Stage_Instance(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """The id of this Stage instance"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """The guild id of the associated Stage channel"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """The id of the associated Stage channel"""
-    topic: str = None
+    topic: str = UNSET
     """The topic of the Stage instance"""
-    privacy_level: int = None
+    privacy_level: int = UNSET
     """Privacy_Level"""
-    discoverable_disabled: bool = None
+    discoverable_disabled: bool = UNSET
     """Whether"""
     guild_scheduled_event_id: Nullable[Snowflake] = UNSET
     """The id of the scheduled event for this Stage instance"""
@@ -2219,37 +2219,37 @@ class Privacy_Level(Enum):
 
 
 class User(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the user's id"""
-    username: str = None
+    username: str = UNSET
     """the user's username, not unique across the platform"""
-    discriminator: str = None
+    discriminator: str = UNSET
     """the user's Discord-tag"""
     global_name: Nullable[str] = UNSET
     """the user's display name, if it is set. For bots, this is the application name"""
     avatar: Nullable[str] = UNSET
     """Avatar_Hash"""
-    bot: Optional[bool] = None
+    bot: Optional[bool] = UNSET
     """whether the user belongs to an OAuth2 application"""
-    system: Optional[bool] = None
+    system: Optional[bool] = UNSET
     """whether the user is an Official Discord System user"""
-    mfa_enabled: Optional[bool] = None
+    mfa_enabled: Optional[bool] = UNSET
     """whether the user has two factor enabled on their account"""
     banner: Optional[Nullable[str]] = UNSET
     """Banner_Hash"""
     accent_color: Optional[Nullable[int]] = UNSET
     """the user's banner color encoded as an integer representation of hexadecimal color code"""
-    locale: Optional["Locales"] = None
+    locale: Optional["Locales"] = UNSET
     """Language_Option"""
-    verified: Optional[bool] = None
+    verified: Optional[bool] = UNSET
     """whether the email on this account has been verified"""
     email: Optional[Nullable[str]] = UNSET
     """the user's email"""
-    flags: Optional["User_Flags"] = None
+    flags: Optional["User_Flags"] = UNSET
     """Flags"""
-    premium_type: Optional["Premium_Types"] = None
+    premium_type: Optional["Premium_Types"] = UNSET
     """Type_Of_Nitro_Subscription"""
-    public_flags: Optional["User_Flags"] = None
+    public_flags: Optional["User_Flags"] = UNSET
     """Flags"""
     avatar_decoration_data: Optional[Nullable["Avatar_Decoration_Data"]] = UNSET
     """data for the user's avatar decoration"""
@@ -2302,32 +2302,32 @@ class Premium_Types(Enum):
 
 
 class Avatar_Decoration_Data(DiscordObject):
-    asset: str = None
+    asset: str = UNSET
     """Avatar_Decoration_Hash"""
-    sku_id: Snowflake = None
+    sku_id: Snowflake = UNSET
     """id of the avatar decoration's SKU"""
 
 
 class Connection(DiscordObject):
-    id: str = None
+    id: str = UNSET
     """id of the connection account"""
-    name: str = None
+    name: str = UNSET
     """the username of the connection account"""
-    type: "Services" = None
+    type: "Services" = UNSET
     """the service of the connection"""
-    revoked: Optional[bool] = None
+    revoked: Optional[bool] = UNSET
     """whether the connection is revoked"""
-    integrations: Optional[list[Integration]] = None
+    integrations: Optional[list[Integration]] = UNSET
     """Server_Integrations"""
-    verified: bool = None
+    verified: bool = UNSET
     """whether the connection is verified"""
-    friend_sync: bool = None
+    friend_sync: bool = UNSET
     """whether friend sync is enabled for this connection"""
-    show_activity: bool = None
+    show_activity: bool = UNSET
     """whether activities related to this connection will be shown in presence updates"""
-    two_way_link: bool = None
+    two_way_link: bool = UNSET
     """whether this connection has a corresponding third party OAuth2 token"""
-    visibility: "Visibility_Types" = None
+    visibility: "Visibility_Types" = UNSET
     """Visibility"""
 
 
@@ -2371,49 +2371,49 @@ class Application_Role_Connection(DiscordObject):
     """the vanity name of the platform a bot has connected"""
     platform_username: Nullable[Annotated[str, Meta(max_length=100)]] = UNSET
     """the username on the platform a bot has connected"""
-    metadata: Application_Role_Connection_Metadata = None
+    metadata: Application_Role_Connection_Metadata = UNSET
     """Application_Role_Connection_Metadata"""
 
 
 class Voice_State(DiscordObject):
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """the guild id this voice state is for"""
     channel_id: Nullable[Snowflake] = UNSET
     """the channel id this user is connected to"""
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """the user id this voice state is for"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """the guild member this voice state is for"""
-    session_id: str = None
+    session_id: str = UNSET
     """the session id for this voice state"""
-    deaf: bool = None
+    deaf: bool = UNSET
     """whether this user is deafened by the server"""
-    mute: bool = None
+    mute: bool = UNSET
     """whether this user is muted by the server"""
-    self_deaf: bool = None
+    self_deaf: bool = UNSET
     """whether this user is locally deafened"""
-    self_mute: bool = None
+    self_mute: bool = UNSET
     """whether this user is locally muted"""
-    self_stream: Optional[bool] = None
+    self_stream: Optional[bool] = UNSET
     """whether this user is streaming using 'Go Live'"""
-    self_video: bool = None
+    self_video: bool = UNSET
     """whether this user's camera is enabled"""
-    suppress: bool = None
+    suppress: bool = UNSET
     """whether this user's permission to speak is denied"""
     request_to_speak_timestamp: Nullable[datetime] = UNSET
     """the time at which the user requested to speak"""
 
 
 class Voice_Region(DiscordObject):
-    id: str = None
+    id: str = UNSET
     """unique ID for the region"""
-    name: str = None
+    name: str = UNSET
     """name of the region"""
-    optimal: bool = None
+    optimal: bool = UNSET
     """true for a single server that is closest to the current user's client"""
-    deprecated: bool = None
+    deprecated: bool = UNSET
     """whether this is a deprecated voice region"""
-    custom: bool = None
+    custom: bool = UNSET
     """whether this is a custom voice region"""
 
 
@@ -2422,29 +2422,29 @@ class Webhook(DiscordObject):
     * These fields will be absent if the webhook creator has since lost access to the guild where the followed channel resides.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """the id of the webhook"""
-    type: int = None
+    type: int = UNSET
     """Type"""
     guild_id: Optional[Nullable[Snowflake]] = UNSET
     """the guild id this webhook is for, if any"""
     channel_id: Nullable[Snowflake] = UNSET
     """the channel id this webhook is for, if any"""
-    user: Optional["User"] = None
+    user: Optional["User"] = UNSET
     """the user this webhook was created by"""
     name: Nullable[str] = UNSET
     """the default name of the webhook"""
     avatar: Nullable[str] = UNSET
     """Hash"""
-    token: Optional[str] = None
+    token: Optional[str] = UNSET
     """the secure token of the webhook"""
     application_id: Nullable[Snowflake] = UNSET
     """the bot/OAuth2 application that created this webhook"""
-    source_guild: "Guild" = None
+    source_guild: "Guild" = UNSET
     """the guild of the channel that this webhook is following"""
-    source_channel: "Channel" = None
+    source_channel: "Channel" = UNSET
     """the channel that this webhook is following"""
-    url: Optional[str] = None
+    url: Optional[str] = UNSET
     """Webhooks"""
 
 
@@ -2470,7 +2470,7 @@ class Gateway_Payload(DiscordObject):
     * `s` and `t` are `null` when `op` is not `0` ([Gateway Dispatch opcode](https://discord.com/developers/docs/topics/opcodes_and_status_codes#gateway-gateway-opcodes)).
     """
 
-    op: int = None
+    op: int = UNSET
     """Gateway_Opcode"""
     d: Nullable[dict[Any, Any]] = UNSET
     """Event data"""
@@ -2481,28 +2481,28 @@ class Gateway_Payload(DiscordObject):
 
 
 class Gateway_URL_Query_String_Params(DiscordObject):
-    v: int = None
+    v: int = UNSET
     """Gateway Version to use"""
-    encoding: str = None
+    encoding: str = UNSET
     """The encoding of received gateway packets"""
-    compress: Optional[str] = None
+    compress: Optional[str] = UNSET
     """Transport_Compression"""
 
 
 class Identify(DiscordObject):
-    token: str = None
+    token: str = UNSET
     """Authentication token"""
-    properties: "Identify_Connection_Properties" = None
+    properties: "Identify_Connection_Properties" = UNSET
     """Connection_Properties"""
     compress: Optional[bool] = False
     """Whether this connection supports compression of packets"""
     large_threshold: Optional[Annotated[int, Meta(ge=50, le=250)]] = 50
     """Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list"""
-    shard: Optional[list[int]] = None
+    shard: Optional[list[int]] = UNSET
     """Guild_Sharding"""
-    presence: Optional["Presence_Update"] = None
+    presence: Optional["Presence_Update"] = UNSET
     """Presence structure for initial presence information"""
-    intents: "Intents" = None
+    intents: "Intents" = UNSET
     """Gateway_Intents"""
 
 
@@ -2513,11 +2513,11 @@ class Identify_Connection_Properties(DiscordObject):
     While they currently still work, it is recommended to move to non-prefixed fields.
     """
 
-    os: str = None
+    os: str = UNSET
     """Your operating system"""
-    browser: str = None
+    browser: str = UNSET
     """Your library name"""
-    device: str = None
+    device: str = UNSET
     """Your library name"""
 
 
@@ -2539,9 +2539,9 @@ class Send_Events(Enum):
 
 
 class Resume(DiscordObject):
-    token: str = None
+    token: str = UNSET
     """Session token"""
-    session_id: str = None
+    session_id: str = UNSET
     """Session ID"""
     seq: int = 0
     """Last sequence number received"""
@@ -2554,39 +2554,39 @@ class Request_Guild_Members(DiscordObject):
     If you send an invalid nonce it will be ignored and the reply member_chunk(s) will not have a nonce set.
     """
 
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild to get members for"""
-    query: Optional[str] = None
+    query: Optional[str] = UNSET
     """string that username starts with,"""
-    limit: int = None
+    limit: int = UNSET
     """maximum number of members to send matching the `query`; a limit of `0` can be used with an empty string `query` to return all members"""
-    presences: Optional[bool] = None
+    presences: Optional[bool] = UNSET
     """used to specify if we want the presences of the matched members"""
-    user_ids: Optional[list[Snowflake]] = None
+    user_ids: Optional[list[Snowflake]] = UNSET
     """used to specify which users you wish to fetch"""
-    nonce: Optional[str] = None
+    nonce: Optional[str] = UNSET
     """Guild_Members_Chunk"""
 
 
 class Gateway_Voice_State_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
     channel_id: Nullable[Snowflake] = UNSET
     """ID of the voice channel client wants to join"""
-    self_mute: bool = None
+    self_mute: bool = UNSET
     """Whether the client is muted"""
-    self_deaf: bool = None
+    self_deaf: bool = UNSET
     """Whether the client deafened"""
 
 
 class Gateway_Presence_Update(DiscordObject):
     since: Nullable[int] = UNSET
     """Unix time"""
-    activities: list["Activity"] = None
+    activities: list["Activity"] = UNSET
     """User's activities"""
-    status: str = None
+    status: str = UNSET
     """Status"""
-    afk: bool = None
+    afk: bool = UNSET
     """Whether"""
 
 
@@ -2599,40 +2599,40 @@ class Status_Types(Enum):
 
 
 class Hello(DiscordObject):
-    heartbeat_interval: int = None
+    heartbeat_interval: int = UNSET
     """Interval"""
 
 
 class Ready(DiscordObject):
-    v: int = None
+    v: int = UNSET
     """API_Version"""
-    user: "User" = None
+    user: "User" = UNSET
     """Information about the user including email"""
-    guilds: list["Guild"] = None
+    guilds: list["Guild"] = UNSET
     """Guilds the user is in"""
-    session_id: str = None
+    session_id: str = UNSET
     """Used for resuming connections"""
-    resume_gateway_url: str = None
+    resume_gateway_url: str = UNSET
     """Gateway URL for resuming connections"""
-    shard: Optional[tuple[int, int]] = None
+    shard: Optional[tuple[int, int]] = UNSET
     """Shard_Information"""
-    application: "Application" = None
+    application: "Application" = UNSET
     """Contains `id` and `flags`"""
 
 
 class Thread_List_Sync(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    channel_ids: Optional[list[Snowflake]] = None
+    channel_ids: Optional[list[Snowflake]] = UNSET
     """Parent channel IDs whose threads are being synced. If omitted, then threads were synced for the entire guild. This array may contain channel_ids that have no active threads as well, so you know to clear that data"""
-    threads: list["Channel"] = None
+    threads: list["Channel"] = UNSET
     """All active threads in the given channels that the current user can access"""
-    members: list["Thread_Member"] = None
+    members: list["Thread_Member"] = UNSET
     """All thread member s from the synced threads for the current user, indicating which threads the current user has been added to"""
 
 
 class Thread_Member_Update_Event(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
 
 
@@ -2641,47 +2641,47 @@ class Thread_Members_Update(DiscordObject):
     * In this gateway event, the thread member objects will also include the [guild member](https:#/discord.com/developers/docs/resources/guild#guild-member-object) and nullable [presence](https:#/discord.com/developers/docs/topics/gateway_events#presence) objects for each added thread member.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the thread"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    member_count: int = None
+    member_count: int = UNSET
     """Approximate number of members in the thread, capped at 50"""
-    added_members: Optional[list["Thread_Member"]] = None
+    added_members: Optional[list["Thread_Member"]] = UNSET
     """Users who were added to the thread"""
-    removed_member_ids: Optional[list[Snowflake]] = None
+    removed_member_ids: Optional[list[Snowflake]] = UNSET
     """ID of the users who were removed from the thread"""
 
 
 class Channel_Pins_Update(DiscordObject):
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
     last_pin_timestamp: Optional[Nullable[datetime]] = UNSET
     """Time at which the most recent pinned message was pinned"""
 
 
 class Entitlement(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the entitlement"""
-    sku_id: Snowflake = None
+    sku_id: Snowflake = UNSET
     """ID of the SKU"""
-    application_id: Snowflake = None
+    application_id: Snowflake = UNSET
     """ID of the parent application"""
-    user_id: Optional[Snowflake] = None
+    user_id: Optional[Snowflake] = UNSET
     """ID of the user that is granted access to the entitlement's sku"""
-    type: int = None
+    type: int = UNSET
     """Type_Of_Entitlement"""
-    deleted: bool = None
+    deleted: bool = UNSET
     """Entitlement was deleted"""
-    starts_at: Optional[datetime] = None
+    starts_at: Optional[datetime] = UNSET
     """Start date at which the entitlement is valid. Not present when using test entitlements"""
-    ends_at: Optional[datetime] = None
+    ends_at: Optional[datetime] = UNSET
     """Date at which the entitlement is no longer valid. Not present when using test entitlements"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild that is granted access to the entitlement's sku"""
-    consumed: Optional[bool] = None
+    consumed: Optional[bool] = UNSET
     """For consumable items, whether"""
 
 
@@ -2710,86 +2710,86 @@ class Guild_Create(DiscordObject):
     > If your bot does not have the GUILD_PRESENCES [Gateway Intent](https:#/discord.com/developers/docs/topics/gateway#gateway-intents), or if the guild has over 75k members, members and presences returned in this event will only contain your bot and users in voice channels.
     """
 
-    joined_at: datetime = None
+    joined_at: datetime = UNSET
     """When this guild was joined at"""
-    large: bool = None
+    large: bool = UNSET
     """true if this is considered a large guild"""
-    unavailable: Optional[bool] = None
+    unavailable: Optional[bool] = UNSET
     """true if this guild is unavailable due to an outage"""
-    member_count: int = None
+    member_count: int = UNSET
     """Total number of members in this guild"""
-    voice_states: list["Voice_State"] = None
+    voice_states: list["Voice_State"] = UNSET
     """States of members currently in voice channels; lacks the guild_id key"""
-    members: list["Guild_Member"] = None
+    members: list["Guild_Member"] = UNSET
     """Users in the guild"""
-    channels: list["Channel"] = None
+    channels: list["Channel"] = UNSET
     """Channels in the guild"""
-    threads: list["Channel"] = None
+    threads: list["Channel"] = UNSET
     """All active threads in the guild that current user has permission to view"""
-    presences: list["Presence_Update"] = None
+    presences: list["Presence_Update"] = UNSET
     """Presences of the members in the guild, will only include non-offline members if the size is greater than large threshold"""
-    stage_instances: list["Stage_Instance"] = None
+    stage_instances: list["Stage_Instance"] = UNSET
     """Stage instances in the guild"""
-    guild_scheduled_events: list["Guild_Scheduled_Event"] = None
+    guild_scheduled_events: list["Guild_Scheduled_Event"] = UNSET
     """Scheduled events in the guild"""
 
 
 class Guild_Audit_Log_Entry_Create_Event(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
 
 
 class Guild_Ban_Add(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    user: "User" = None
+    user: "User" = UNSET
     """User who was banned"""
 
 
 class Guild_Ban_Remove(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    user: "User" = None
+    user: "User" = UNSET
     """User who was unbanned"""
 
 
 class Guild_Emojis_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    emojis: list["Emoji"] = None
+    emojis: list["Emoji"] = UNSET
     """Emojis"""
 
 
 class Guild_Stickers_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    stickers: list = None
+    stickers: list = UNSET
     """Stickers"""
 
 
 class Guild_Integrations_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild whose integrations were updated"""
 
 
 class Guild_Member_Add(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
 
 
 class Guild_Member_Remove(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    user: "User" = None
+    user: "User" = UNSET
     """User who was removed"""
 
 
 class Guild_Member_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    roles: list[Snowflake] = None
+    roles: list[Snowflake] = UNSET
     """User role ids"""
-    user: "User" = None
+    user: "User" = UNSET
     """User"""
     nick: Optional[Nullable[str]] = UNSET
     """Nickname of the user in the guild"""
@@ -2799,193 +2799,193 @@ class Guild_Member_Update(DiscordObject):
     """When the user joined the guild"""
     premium_since: Optional[Nullable[datetime]] = UNSET
     """Boosting"""
-    deaf: Optional[bool] = None
+    deaf: Optional[bool] = UNSET
     """Whether the user is deafened in voice channels"""
-    mute: Optional[bool] = None
+    mute: Optional[bool] = UNSET
     """Whether the user is muted in voice channels"""
-    pending: Optional[bool] = None
+    pending: Optional[bool] = UNSET
     """Membership_Screening"""
     communication_disabled_until: Optional[Nullable[datetime]] = UNSET
     """Timeout"""
-    flags: Optional[Guild_Member_Flags] = None
+    flags: Optional[Guild_Member_Flags] = UNSET
     """Guild_Member_Flags"""
 
 
 class Guild_Members_Chunk(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    members: list["Guild_Member"] = None
+    members: list["Guild_Member"] = UNSET
     """Set of guild members"""
-    chunk_index: int = None
+    chunk_index: int = UNSET
     """Chunk index in the expected chunks for this response"""
-    chunk_count: int = None
+    chunk_count: int = UNSET
     """Total number of expected chunks for this response"""
-    not_found: Optional[list[Snowflake]] = None
+    not_found: Optional[list[Snowflake]] = UNSET
     """When passing an invalid ID to REQUEST_GUILD_MEMBERS, it will be returned here"""
-    presences: Optional[list["Presence_Update"]] = None
+    presences: Optional[list["Presence_Update"]] = UNSET
     """When passing true to REQUEST_GUILD_MEMBERS, presences of the returned members will be here"""
-    nonce: Optional[str] = None
+    nonce: Optional[str] = UNSET
     """Guild_Members_Request"""
 
 
 class Guild_Role_Create(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    role: "Role" = None
+    role: "Role" = UNSET
     """Role that was created"""
 
 
 class Guild_Role_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    role: "Role" = None
+    role: "Role" = UNSET
     """Role that was updated"""
 
 
 class Guild_Role_Delete(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    role_id: Snowflake = None
+    role_id: Snowflake = UNSET
     """ID of the role"""
 
 
 class Guild_Scheduled_Event_User_Add(DiscordObject):
-    guild_scheduled_event_id: Snowflake = None
+    guild_scheduled_event_id: Snowflake = UNSET
     """ID of the guild scheduled event"""
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
 
 
 class Guild_Scheduled_Event_User_Remove(DiscordObject):
-    guild_scheduled_event_id: Snowflake = None
+    guild_scheduled_event_id: Snowflake = UNSET
     """ID of the guild scheduled event"""
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
 
 
 class Integration_Create(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
 
 
 class Integration_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
 
 
 class Integration_Delete(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """Integration ID"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    application_id: Optional[Snowflake] = None
+    application_id: Optional[Snowflake] = UNSET
     """ID of the bot/OAuth2 application for this discord integration"""
 
 
 class Invite_Create(DiscordObject):
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """Channel the invite is for"""
-    code: str = None
+    code: str = UNSET
     """Code"""
-    created_at: datetime = None
+    created_at: datetime = UNSET
     """Time at which the invite was created"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """Guild of the invite"""
-    inviter: Optional["User"] = None
+    inviter: Optional["User"] = UNSET
     """User that created the invite"""
-    max_age: int = None
+    max_age: int = UNSET
     """How long the invite is valid for"""
-    max_uses: int = None
+    max_uses: int = UNSET
     """Maximum number of times the invite can be used"""
-    target_type: Optional[Invite_Target_Types] = None
+    target_type: Optional[Invite_Target_Types] = UNSET
     """Type_Of_Target"""
-    target_user: Optional["User"] = None
+    target_user: Optional["User"] = UNSET
     """User whose stream to display for this voice channel stream invite"""
-    target_application: Optional["Application"] = None
+    target_application: Optional["Application"] = UNSET
     """Embedded application to open for this voice channel embedded application invite"""
-    temporary: bool = None
+    temporary: bool = UNSET
     """Whether"""
-    uses: int = None
+    uses: int = UNSET
     """How many times the invite has been used"""
 
 
 class Invite_Delete(DiscordObject):
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """Channel of the invite"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """Guild of the invite"""
-    code: str = None
+    code: str = UNSET
     """Code"""
 
 
 class Message_Create(DiscordObject):
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild the message was sent in - unless it is an ephemeral message"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """Member properties for this message's author. Missing for ephemeral messages and messages from webhooks"""
-    mentions: list["User"] = None
+    mentions: list["User"] = UNSET
     """Users specifically mentioned in the message"""
 
 
 class Message_Delete(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the message"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
 
 
 class Message_Delete_Bulk(DiscordObject):
-    ids: list[Snowflake] = None
+    ids: list[Snowflake] = UNSET
     """IDs of the messages"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
 
 
 class Message_Reaction_Add(DiscordObject):
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    message_id: Snowflake = None
+    message_id: Snowflake = UNSET
     """ID of the message"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """Member who reacted if this happened in a guild"""
-    emoji: "Emoji" = None
+    emoji: "Emoji" = UNSET
     """Example"""
-    message_author_id: Optional[Snowflake] = None
+    message_author_id: Optional[Snowflake] = UNSET
     """ID of the user who authored the message which was reacted to"""
-    burst: bool = None
+    burst: bool = UNSET
     """true if this is a super-reaction"""
-    burst_colors: Optional[list[str]] = None
+    burst_colors: Optional[list[str]] = UNSET
     """Colors used for super-reaction animation in '#rrggbb' format"""
-    type: "Reaction_Types" = None
+    type: "Reaction_Types" = UNSET
     """Type_Of_Reaction"""
 
 
 class Message_Reaction_Remove(DiscordObject):
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    message_id: Snowflake = None
+    message_id: Snowflake = UNSET
     """ID of the message"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
-    emoji: "Emoji" = None
+    emoji: "Emoji" = UNSET
     """Example"""
-    burst: bool = None
+    burst: bool = UNSET
     """true if this was a super-reaction"""
-    type: "Reaction_Types" = None
+    type: "Reaction_Types" = UNSET
     """Type_Of_Reaction"""
 
 
@@ -2995,61 +2995,61 @@ class Reaction_Types(Enum):
 
 
 class Message_Reaction_Remove_All(DiscordObject):
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    message_id: Snowflake = None
+    message_id: Snowflake = UNSET
     """ID of the message"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
 
 
 class Message_Reaction_Remove_Emoji(DiscordObject):
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
-    message_id: Snowflake = None
+    message_id: Snowflake = UNSET
     """ID of the message"""
-    emoji: "Emoji" = None
+    emoji: "Emoji" = UNSET
     """Emoji that was removed"""
 
 
 class Presence_Update(DiscordObject):
-    user: "User" = None
+    user: "User" = UNSET
     """User whose presence is being updated"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    status: Status_Types = None
+    status: Status_Types = UNSET
     """Either 'idle', 'dnd', 'online' or 'offline'"""
-    activities: list["Activity"] = None
+    activities: list["Activity"] = UNSET
     """User's current activities"""
-    client_status: list["Client_Status"] = None
+    client_status: list["Client_Status"] = UNSET
     """User's platform-dependent status"""
 
 
 class Message_Poll_Vote_Add_Fields(DiscordObject):
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    message_id: Snowflake = None
+    message_id: Snowflake = UNSET
     """ID of the message"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
-    answer_id: int = None
+    answer_id: int = UNSET
     """ID of the answer"""
 
 
 class Message_Poll_Vote_Remove_Fields(DiscordObject):
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    message_id: Snowflake = None
+    message_id: Snowflake = UNSET
     """ID of the message"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
-    answer_id: int = None
+    answer_id: int = UNSET
     """ID of the answer"""
 
 
@@ -3059,19 +3059,19 @@ class Client_Status(DiscordObject):
     If a user is offline or invisible, the corresponding field is not present.
     """
 
-    desktop: Optional[str] = None
+    desktop: Optional[str] = UNSET
     """User's status set for an active desktop"""
-    mobile: Optional[str] = None
+    mobile: Optional[str] = UNSET
     """User's status set for an active mobile"""
-    web: Optional[str] = None
+    web: Optional[str] = UNSET
     """User's status set for an active web"""
 
 
 class Bot_Activity(DiscordObject):
-    name: Optional[str] = None
+    name: Optional[str] = UNSET
     state: Optional[Nullable[str]] = UNSET
-    type: Optional["Activity_Types"] = None
-    url: Optional[str] = None
+    type: Optional["Activity_Types"] = UNSET
+    url: Optional[str] = UNSET
 
 
 class Activity(DiscordObject):
@@ -3080,17 +3080,17 @@ class Activity(DiscordObject):
     > Bot users are only able to set name, state, type, and url.
     """
 
-    name: str = None
+    name: str = UNSET
     """Activity's name"""
-    type: int = None
+    type: int = UNSET
     """Activity_Type"""
     url: Optional[Nullable[str]] = UNSET
     """Stream URL, is validated when type is 1"""
-    created_at: int = None
+    created_at: int = UNSET
     """Unix timestamp"""
-    timestamps: Optional["Activity_Timestamps"] = None
+    timestamps: Optional["Activity_Timestamps"] = UNSET
     """Unix timestamps for start and/or end of the game"""
-    application_id: Optional[Snowflake] = None
+    application_id: Optional[Snowflake] = UNSET
     """Application ID for the game"""
     details: Optional[Nullable[str]] = UNSET
     """What the player is currently doing"""
@@ -3098,17 +3098,17 @@ class Activity(DiscordObject):
     """User's current party status,"""
     emoji: Optional[Nullable["Emoji"]] = UNSET
     """Emoji used for a custom status"""
-    party: Optional["Activity_Party"] = None
+    party: Optional["Activity_Party"] = UNSET
     """Information for the current party of the player"""
-    assets: Optional["Activity_Assets"] = None
+    assets: Optional["Activity_Assets"] = UNSET
     """Images for the presence and their hover texts"""
-    secrets: Optional["Activity_Secrets"] = None
+    secrets: Optional["Activity_Secrets"] = UNSET
     """Secrets for Rich Presence joining and spectating"""
-    instance: Optional[bool] = None
+    instance: Optional[bool] = UNSET
     """Whether"""
-    flags: Optional["Activity_Flags"] = None
+    flags: Optional["Activity_Flags"] = UNSET
     """Activity_Flags"""
-    buttons: Optional["Activity_Buttons"] = None
+    buttons: Optional["Activity_Buttons"] = UNSET
     """Custom buttons shown in the Rich Presence"""
 
 
@@ -3128,36 +3128,36 @@ class Activity_Types(Enum):
 
 
 class Activity_Timestamps(DiscordObject):
-    start: Optional[int] = None
+    start: Optional[int] = UNSET
     """Unix time"""
-    end: Optional[int] = None
+    end: Optional[int] = UNSET
     """Unix time"""
 
 
 class Activity_Emoji(DiscordObject):
-    name: str = None
+    name: str = UNSET
     """Name of the emoji"""
-    id: Optional[Snowflake] = None
+    id: Optional[Snowflake] = UNSET
     """ID of the emoji"""
-    animated: Optional[bool] = None
+    animated: Optional[bool] = UNSET
     """Whether the emoji is animated"""
 
 
 class Activity_Party(DiscordObject):
-    id: Optional[str] = None
+    id: Optional[str] = UNSET
     """ID of the party"""
-    size: Optional[tuple[int, int]] = None
+    size: Optional[tuple[int, int]] = UNSET
     """Used to show the party's current and maximum size"""
 
 
 class Activity_Assets(DiscordObject):
-    large_image: Optional["Activity_Asset_Image"] = None
+    large_image: Optional["Activity_Asset_Image"] = UNSET
     """Activity_Asset_Image"""
-    large_text: Optional[str] = None
+    large_text: Optional[str] = UNSET
     """Text displayed when hovering over the large image of the activity"""
-    small_image: Optional["Activity_Asset_Image"] = None
+    small_image: Optional["Activity_Asset_Image"] = UNSET
     """Activity_Asset_Image"""
-    small_text: Optional[str] = None
+    small_text: Optional[str] = UNSET
     """Text displayed when hovering over the small image of the activity"""
 
 
@@ -3167,16 +3167,16 @@ class Activity_Asset_Image(DiscordObject):
     Treat data within this field carefully, as it is user-specifiable and not sanitized.
     """
 
-    application_asset: str = None
-    media_proxy_image: str = None
+    application_asset: str = UNSET
+    media_proxy_image: str = UNSET
 
 
 class Activity_Secrets(DiscordObject):
-    join: Optional[str] = None
+    join: Optional[str] = UNSET
     """Secret for joining a party"""
-    spectate: Optional[str] = None
+    spectate: Optional[str] = UNSET
     """Secret for spectating a game"""
-    match: Optional[str] = None
+    match: Optional[str] = UNSET
     """Secret for a specific instanced match"""
 
 
@@ -3199,38 +3199,38 @@ class Activity_Buttons(DiscordObject):
     When sending, the buttons field must be an array of the below object:.
     """
 
-    label: str = None
+    label: str = UNSET
     """Text shown on the button"""
-    url: str = None
+    url: str = UNSET
     """URL opened when clicking the button"""
 
 
 class Typing_Start(DiscordObject):
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """ID of the guild"""
-    user_id: Snowflake = None
+    user_id: Snowflake = UNSET
     """ID of the user"""
-    timestamp: int = None
+    timestamp: int = UNSET
     """Unix time"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """Member who started typing if this happened in a guild"""
 
 
 class Voice_Server_Update(DiscordObject):
-    token: str = None
+    token: str = UNSET
     """Voice connection token"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """Guild this voice server update is for"""
     endpoint: Nullable[str] = UNSET
     """Voice server host"""
 
 
 class Webhooks_Update(DiscordObject):
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    channel_id: Snowflake = None
+    channel_id: Snowflake = UNSET
     """ID of the channel"""
 
 
@@ -3242,37 +3242,37 @@ class Application_Command(DiscordObject):
     You can instead set default_member_permissions to '0' to disable the command for everyone except admins by default, and/or use contexts to disable globally-scoped commands inside of DMs with your app.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """Unique ID of command"""
-    type: Optional["Application_Command_Types"] = None
+    type: Optional["Application_Command_Types"] = UNSET
     """Type_Of_Command"""
-    application_id: Snowflake = None
+    application_id: Snowflake = UNSET
     """ID of the parent application"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """Guild ID of the command, if not global"""
-    name: NameConstraint = None
+    name: NameConstraint = UNSET
     """Name_Of_Command"""
     name_localizations: Optional[Nullable[dict["Locales", NameConstraint]]] = UNSET
     """Localization dictionary for name field. Values follow the same restrictions as name"""
-    description: DescriptionConstraint = None
+    description: DescriptionConstraint = UNSET
     """Description for CHAT_INPUT commands, 1-100 characters. Empty string for USER and MESSAGE commands"""
     description_localizations: Optional[Nullable[dict["Locales", DescriptionConstraint]]] = UNSET
     """Localization dictionary for description field. Values follow the same restrictions as description"""
-    options: list["Application_Command_Option"] = None
+    options: list["Application_Command_Option"] = UNSET
     """Parameters for the command, max of 25"""
     default_member_permissions: Nullable[str] = UNSET
     """Permissions"""
-    dm_permission: Optional[bool] = None
+    dm_permission: Optional[bool] = UNSET
     """Deprecated"""
     default_permission: Optional[Nullable[bool]] = UNSET
     """Not recommended for use as field will soon be deprecated. Indicates whether the command is enabled by default when the app is added to a guild, defaults to true"""
-    nsfw: Optional[bool] = None
+    nsfw: Optional[bool] = UNSET
     """Age-restricted"""
-    integration_types: Optional["Application_Integration_Types"] = None
+    integration_types: Optional["Application_Integration_Types"] = UNSET
     """In_Preview"""
     contexts: Optional[Nullable["Interaction_Context_Types"]] = UNSET
     """In_Preview"""
-    version: Snowflake = None
+    version: Snowflake = UNSET
     """Autoincrementing version identifier updated during substantial record changes"""
 
 
@@ -3299,17 +3299,17 @@ class Gateway_Bot(DiscordObject):
 
     url: str = ""
     shards: int = 0
-    session_start_limit: "Session_Start_Limit" = None
+    session_start_limit: "Session_Start_Limit" = UNSET
 
 
 class Session_Start_Limit(DiscordObject):
-    total: int = None
+    total: int = UNSET
     """Total number of session starts the current user is allowed"""
-    remaining: int = None
+    remaining: int = UNSET
     """Remaining number of session starts the current user is allowed"""
-    reset_after: int = None
+    reset_after: int = UNSET
     """Number of milliseconds after which the limit resets"""
-    max_concurrency: int = None
+    max_concurrency: int = UNSET
     """Number of identify requests allowed per 5 seconds"""
 
 
@@ -3382,15 +3382,15 @@ class OAuth2_Scopes(Enum):
 
 
 class Bot_Auth_Parameters(DiscordObject):
-    client_id: str = None
+    client_id: str = UNSET
     """your app's client id"""
-    scope: str = None
+    scope: str = UNSET
     """needs to include `bot` for the bot flow"""
-    permissions: str = None
+    permissions: str = UNSET
     """Permissions"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """pre-fills the dropdown picker with a guild for the user"""
-    disable_guild_select: bool = None
+    disable_guild_select: bool = UNSET
     """`true`"""
 
 
@@ -3896,29 +3896,29 @@ class Role(DiscordObject):
     Roles without colors (`color == 0`) do not count towards the final computed color in the user list.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """role id"""
-    name: str = None
+    name: str = UNSET
     """role name"""
-    color: int = None
+    color: int = UNSET
     """integer representation of hexadecimal color code"""
-    hoist: bool = None
+    hoist: bool = UNSET
     """if this role is pinned in the user listing"""
     icon: Optional[Nullable[str]] = UNSET
     """Icon_Hash"""
     unicode_emoji: Optional[Nullable[str]] = UNSET
     """role unicode emoji"""
-    position: int = None
+    position: int = UNSET
     """position of this role"""
-    permissions: str = None
+    permissions: str = UNSET
     """permission bit set"""
-    managed: bool = None
+    managed: bool = UNSET
     """whether this role is managed by an integration"""
-    mentionable: bool = None
+    mentionable: bool = UNSET
     """whether this role is mentionable"""
-    tags: Optional["Role_Tags"] = None
+    tags: Optional["Role_Tags"] = UNSET
     """the tags this role has"""
-    flags: "Role_Flags" = None
+    flags: "Role_Flags" = UNSET
     """Role_Flags"""
 
 
@@ -3928,13 +3928,13 @@ class Role_Tags(DiscordObject):
     They will be present and set to null if they are 'true', and will be not present if they are 'false'.
     """
 
-    bot_id: Optional[Snowflake] = None
+    bot_id: Optional[Snowflake] = UNSET
     """the id of the bot this role belongs to"""
-    integration_id: Optional[Snowflake] = None
+    integration_id: Optional[Snowflake] = UNSET
     """the id of the integration this role belongs to"""
     premium_subscriber: Nullable[bool] = UNSET
     """whether this is the guild's Booster role"""
-    subscription_listing_id: Optional[Snowflake] = None
+    subscription_listing_id: Optional[Snowflake] = UNSET
     """the id of this role's subscription sku and listing"""
     available_for_purchase: Nullable[bool] = UNSET
     """whether this role is available for purchase"""
@@ -3953,13 +3953,13 @@ class Rate_Limit(DiscordObject):
     The rate-limiting response will look something like the following[:](https:##takeb1nzyto.space/).
     """
 
-    message: str = None
+    message: str = UNSET
     """A message saying you are being rate limited"""
-    retry_after: float = None
+    retry_after: float = UNSET
     """The number of seconds to wait before submitting another request"""
-    _global: bool = None
+    _global: bool = UNSET
     """A value indicating if you are being globally rate limited"""
-    code: Optional[int] = None
+    code: Optional[int] = UNSET
     """Error_Code"""
 
 
@@ -3979,24 +3979,24 @@ class Team_Member_Role_Types(Enum):
 class Team(DiscordObject):
     icon: Nullable[str] = UNSET
     """Hash of the image of the team's icon"""
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """Unique ID of the team"""
-    members: list["Team_Member"] = None
+    members: list["Team_Member"] = UNSET
     """Members of the team"""
-    name: str = None
+    name: str = UNSET
     """Name of the team"""
-    owner_user_id: Snowflake = None
+    owner_user_id: Snowflake = UNSET
     """User ID of the current team owner"""
 
 
 class Team_Member(DiscordObject):
-    membership_state: int = None
+    membership_state: int = UNSET
     """Membership_State"""
-    team_id: Snowflake = None
+    team_id: Snowflake = UNSET
     """ID of the parent team of which they are a member"""
-    user: "User" = None
+    user: "User" = UNSET
     """Avatar, discriminator, ID, and username of the user"""
-    role: str = None
+    role: str = UNSET
     """Role"""
 
 
@@ -4050,15 +4050,15 @@ class IP_Discovery(DiscordObject):
     To retrieve your external IP and port, send the following UDP packet to your voice port (all numeric are big endian):.
     """
 
-    type: int = None
+    type: int = UNSET
     """Values 0x1 and 0x2 indicate request and response, respectively"""
-    length: int = None
+    length: int = UNSET
     """Message length excluding Type and Length fields"""
-    ssrc: c_uint = None
+    ssrc: c_uint = UNSET
     """Unsigned integer"""
-    address: str = None
+    address: str = UNSET
     """Null-terminated string in response"""
-    port: c_ushort = None
+    port: c_ushort = UNSET
     """Unsigned short"""
 
 
@@ -4177,11 +4177,11 @@ class CDN_Endpoints(Enum):
 
 
 class Attachment_CDN_URL_Parameters(DiscordObject):
-    ex: str = None
+    ex: str = UNSET
     """Hex timestamp indicating when an attachment CDN URL will expire"""
-    is_: str = None
+    is_: str = UNSET
     """Hex timestamp indicating when the URL was issued"""
-    hm: str = None
+    hm: str = UNSET
     """Unique signature that remains valid until the URL's expiration"""
 
 
@@ -4221,30 +4221,30 @@ class Locales(Enum):
 
 
 class Component(DiscordObject):
-    type: "Component_Types" = None
+    type: "Component_Types" = UNSET
     """Component_Type"""
-    style: Optional["Button_Styles"] = None
+    style: Optional["Button_Styles"] = UNSET
     """Button_Styles"""
-    label: Optional[str] = None
+    label: Optional[str] = UNSET
     """text that appears on the button, max 80 characters"""
-    emoji: Optional[Emoji] = None
+    emoji: Optional[Emoji] = UNSET
     """`name`, `id`, and `animated`"""
-    custom_id: Optional[str] = None
+    custom_id: Optional[str] = UNSET
     """a developer-defined identifier for the button, max 100 characters"""
-    url: Optional[str] = None
+    url: Optional[str] = UNSET
     """a url for link-style buttons"""
-    disabled: Optional[bool] = None
+    disabled: Optional[bool] = UNSET
     """whether the button is disabled, default `false`"""
-    components: Optional[list["Component"]] = None
+    components: Optional[list["Component"]] = UNSET
     """a list of child components"""
-    options: list["Select_Option"] = None
-    placeholder: str = None
-    min_values: int = None
-    max_values: int = None
-    value: str = None
-    required: bool = None
-    min_length: int = None
-    max_length: int = None
+    options: list["Select_Option"] = UNSET
+    placeholder: str = UNSET
+    min_values: int = UNSET
+    max_values: int = UNSET
+    value: str = UNSET
+    required: bool = UNSET
+    min_length: int = UNSET
+    max_length: int = UNSET
 
 
 class Component_Types(Enum):
@@ -4301,15 +4301,15 @@ class Button(DiscordObject):
     """2 for a button"""
     style: "Button_Styles" = Button_Styles.PRIMARY
     """Button_Style"""
-    label: Optional[str] = None
+    label: Optional[str] = UNSET
     """Text that appears on the button; max 80 characters"""
-    emoji: Optional["Emoji"] = None
+    emoji: Optional["Emoji"] = UNSET
     """name, id, and animated"""
-    custom_id: Optional[str] = None
+    custom_id: Optional[str] = UNSET
     """Developer-defined identifier for the button; max 100 characters"""
-    url: Optional[str] = None
+    url: Optional[str] = UNSET
     """URL for link-style buttons"""
-    disabled: Optional[bool] = None
+    disabled: Optional[bool] = UNSET
     """Whether the button is disabled"""
 
 
@@ -4322,41 +4322,41 @@ class Select_Menu(DiscordObject):
 
     type: Component_Types = Component_Types.STRING_SELECT
     """Type"""
-    custom_id: DescriptionConstraint = None
+    custom_id: DescriptionConstraint = UNSET
     """ID for the select menu; max 100 characters"""
-    options: Annotated[list["Select_Option"], Meta(max_length=25)] = None
+    options: Annotated[list["Select_Option"], Meta(max_length=25)] = UNSET
     """Specified choices in a select menu"""
-    channel_types: list["Channel_Types"] = None
+    channel_types: list["Channel_Types"] = UNSET
     """List of channel types to include in the channel select component"""
-    placeholder: Optional[str] = None
+    placeholder: Optional[str] = UNSET
     """Placeholder text if nothing is selected; max 150 characters"""
-    default_values: list["Select_Default_Value"] = None
+    default_values: list["Select_Default_Value"] = UNSET
     """List of default values for auto-populated select menu components; number of default values must be in the range defined by min_values and max_values"""
-    min_values: Optional[Annotated[int, Meta(ge=0, le=25)]] = None
+    min_values: Optional[Annotated[int, Meta(ge=0, le=25)]] = UNSET
     """Minimum number of items that must be chosen"""
-    max_values: Optional[Annotated[int, Meta(ge=1, le=25)]] = None
+    max_values: Optional[Annotated[int, Meta(ge=1, le=25)]] = UNSET
     """Maximum number of items that can be chosen"""
-    disabled: Optional[bool] = None
+    disabled: Optional[bool] = UNSET
     """Whether select menu is disabled"""
 
 
 class Select_Option(DiscordObject):
-    label: Annotated[str, Meta(max_length=100)] = None
+    label: Annotated[str, Meta(max_length=100)] = UNSET
     """User-facing name of the option; max 100 characters"""
-    value: Annotated[str, Meta(max_length=100)] = None
+    value: Annotated[str, Meta(max_length=100)] = UNSET
     """Dev-defined value of the option; max 100 characters"""
-    description: Optional[Annotated[str, Meta(max_length=100)]] = None
+    description: Optional[Annotated[str, Meta(max_length=100)]] = UNSET
     """Additional description of the option; max 100 characters"""
-    emoji: Optional["Emoji"] = None
+    emoji: Optional["Emoji"] = UNSET
     """`id`, `name`, and `animated`"""
-    default: Optional[bool] = None
+    default: Optional[bool] = UNSET
     """Will show this option as selected by default"""
 
 
 class Select_Default_Value(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of a user, role or channel"""
-    type: str = None
+    type: str = UNSET
     """Type of value that `id` represents. Either `user`, `role`, or `channel`"""
 
 
@@ -4369,33 +4369,33 @@ class Application_Command_Option(DiscordObject):
     > Options using autocomplete are not confined to only use choices given by the application.
     """
 
-    type: "Application_Command_Option_Type" = None
+    type: "Application_Command_Option_Type" = UNSET
     """Type of option"""
-    name: NameConstraint = None
+    name: NameConstraint = UNSET
     """1-32_Character_Name"""
     name_localizations: Optional[Nullable[dict["Locales", NameConstraint]]] = UNSET
     """Localization dictionary for the name field. Values follow the same restrictions as name"""
-    description: DescriptionConstraint = None
+    description: DescriptionConstraint = UNSET
     """1-100 character description"""
     description_localizations: Optional[Nullable[dict["Locales", DescriptionConstraint]]] = UNSET
     """Localization dictionary for the description field. Values follow the same restrictions as description"""
-    required: Optional[bool] = None
+    required: Optional[bool] = UNSET
     """Whether the parameter is required"""
-    choices: Optional["Application_Command_Option_Choice"] = None
+    choices: Optional["Application_Command_Option_Choice"] = UNSET
     """Choices for the user to pick from, max 25"""
-    options: Optional["Application_Command_Option"] = None
+    options: Optional["Application_Command_Option"] = UNSET
     """If the option is a subcommand"""
-    channel_types: Optional["Channel_Types"] = None
+    channel_types: Optional["Channel_Types"] = UNSET
     """The channels shown will be restricted to these types"""
-    min_value: Optional[int | float] = None
+    min_value: Optional[int | float] = UNSET
     """The minimum value permitted"""
-    max_value: Optional[int | float] = None
+    max_value: Optional[int | float] = UNSET
     """The maximum value permitted"""
-    min_length: Optional[int] = None
+    min_length: Optional[int] = UNSET
     """The minimum allowed length"""
-    max_length: Optional[int] = None
+    max_length: Optional[int] = UNSET
     """The maximum allowed length"""
-    autocomplete: bool = None
+    autocomplete: bool = UNSET
     """If autocomplete interactions are enabled for this option"""
 
 
@@ -4419,11 +4419,11 @@ class Application_Command_Option_Choice(DiscordObject):
     * Type of value depends on the [option type](https:#/discord.com/developers/docs/interactions/application_commands#application-command-object-application-command-option-type) that the choice belongs to.
     """
 
-    name: DescriptionConstraint = None
+    name: DescriptionConstraint = UNSET
     """1-100 character choice name"""
     name_localizations: Optional[Nullable[dict["Locales", DescriptionConstraint]]] = UNSET
     """Localization dictionary for the name field. Values follow the same restrictions as name"""
-    value: DescriptionConstraint | int = None
+    value: DescriptionConstraint | int = UNSET
     """Value for the choice, up to 100 characters if string"""
 
 
@@ -4433,13 +4433,13 @@ class Guild_Application_Command_Permissions(DiscordObject):
     When the id field is the application ID instead of a command ID, the permissions apply to all commands that do not contain explicit overwrites.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the command"""
-    application_id: Snowflake = None
+    application_id: Snowflake = UNSET
     """ID of the application the command belongs to"""
-    guild_id: Snowflake = None
+    guild_id: Snowflake = UNSET
     """ID of the guild"""
-    permissions: Annotated[list["Application_Command_Permissions"], Meta(max_length=100)] = None
+    permissions: Annotated[list["Application_Command_Permissions"], Meta(max_length=100)] = UNSET
     """Permissions for the command in the guild, max of 100"""
 
 
@@ -4448,12 +4448,12 @@ class Application_Command_Permissions(DiscordObject):
     Application command permissions allow you to enable or disable commands for specific users, roles, or channels within a guild.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the role, user, or channel. 
     It can also be a permission constant like `guild_id` for everyone or `guild_id - 1` for all channels"""
-    type: "Application_Command_Permission_Type" = None
+    type: "Application_Command_Permission_Type" = UNSET
     """role"""
-    permission: bool = None
+    permission: bool = UNSET
     """`true` to allow, `false`, to disallow"""
 
 
@@ -4473,23 +4473,23 @@ class Application_Command_Permission_Type(Enum):
 
 
 class Text_Input(DiscordObject):
-    type: int = None
+    type: int = UNSET
     """4 for a text input"""
-    custom_id: str = None
+    custom_id: str = UNSET
     """Developer-defined identifier for the input; max 100 characters"""
-    style: int = None
+    style: int = UNSET
     """Text_Input_Style"""
-    label: str = None
+    label: str = UNSET
     """Label for this component; max 45 characters"""
-    min_length: Optional[int] = None
+    min_length: Optional[int] = UNSET
     """Minimum input length for a text input; min 0, max 4000"""
-    max_length: Optional[int] = None
+    max_length: Optional[int] = UNSET
     """Maximum input length for a text input; min 1, max 4000"""
-    required: Optional[bool] = None
+    required: Optional[bool] = UNSET
     """Whether this component is required to be filled"""
-    value: Optional[str] = None
+    value: Optional[str] = UNSET
     """Pre-filled value for this component; max 4000 characters"""
-    placeholder: Optional[str] = None
+    placeholder: Optional[str] = UNSET
     """Custom placeholder text if the input is empty; max 100 characters"""
 
 
@@ -4508,60 +4508,60 @@ class Interaction(DiscordObject):
     **** This is available on all interaction types except PING.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the interaction"""
-    application_id: Snowflake = None
+    application_id: Snowflake = UNSET
     """ID of the application this interaction is for"""
-    type: "Interaction_Type" = None
+    type: "Interaction_Type" = UNSET
     """Type of interaction"""
-    data: "Application_Command_Data" = None
+    data: "Application_Command_Data" = UNSET
     """Interaction data payload"""
-    guild: Optional["Guild"] = None
+    guild: Optional["Guild"] = UNSET
     """Guild that the interaction was sent from"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """Guild that the interaction was sent from"""
-    channel: Optional["Channel"] = None
+    channel: Optional["Channel"] = UNSET
     """Channel that the interaction was sent from"""
-    channel_id: Optional[Snowflake] = None
+    channel_id: Optional[Snowflake] = UNSET
     """Channel that the interaction was sent from"""
-    member: "Guild_Member" = None
+    member: "Guild_Member" = UNSET
     """Guild member data for the invoking user, including permissions"""
-    user: Optional["User"] = None
+    user: Optional["User"] = UNSET
     """User  for the invoking user, if invoked in a DM"""
-    token: str = None
+    token: str = UNSET
     """Continuation token for responding to the interaction"""
-    version: int = None
+    version: int = UNSET
     """Read-only property, always 1"""
-    message: Optional["Message"] = None
+    message: Optional["Message"] = UNSET
     """For components, the message they were attached to"""
-    app_permissions: Bitwise_Permission_Flags = None
+    app_permissions: Bitwise_Permission_Flags = UNSET
     """Bitwise set of permissions the app has in the source location of the interaction"""
-    locale: Locales = None
+    locale: Locales = UNSET
     """Language"""
-    guild_locale: Optional[Locales] = None
+    guild_locale: Optional[Locales] = UNSET
     """Guild's_Preferred_Locale"""
-    entitlements: list["Entitlement"] = None
+    entitlements: list["Entitlement"] = UNSET
     """Monetized_Apps"""
-    authorizing_integration_owners: list["Application_Integration_Types"] = None
+    authorizing_integration_owners: list["Application_Integration_Types"] = UNSET
     """Authorizing_Integration_Owners"""
-    context: Optional["Interaction_Context_Types"] = None
+    context: Optional["Interaction_Context_Types"] = UNSET
     """Context where the interaction was triggered from"""
 
 
 class Message_Interaction_Metadata(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the interaction"""
-    type: "Interaction_Type" = None
+    type: "Interaction_Type" = UNSET
     """Type of interaction"""
-    user: "User" = None
+    user: "User" = UNSET
     """User who triggered the interaction"""
-    authorizing_integration_owners: list["Application_Integration_Types"] = None
+    authorizing_integration_owners: list["Application_Integration_Types"] = UNSET
     """Authorizing_Integration_Owners"""
-    original_response_message_id: Optional[Snowflake] = None
+    original_response_message_id: Optional[Snowflake] = UNSET
     """Follow-up_Messages"""
-    interacted_message_id: Optional[Snowflake] = None
+    interacted_message_id: Optional[Snowflake] = UNSET
     """ID of the message that contained interactive component, present only on messages created from component interactions"""
-    triggering_interaction_metadata: Optional["Message_Interaction_Metadata"] = None
+    triggering_interaction_metadata: Optional["Message_Interaction_Metadata"] = UNSET
     """Metadata for the interaction that was used to open the modal, present only on modal submit interactions"""
 
 
@@ -4593,19 +4593,19 @@ class Application_Command_Data(DiscordObject):
     * This [can be partial](https:#/discord.com/developers/docs/interactions/application_commands#autocomplete) when in response to APPLICATION_COMMAND_AUTOCOMPLETE.
     """
 
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the invoked command"""
-    name: str = None
+    name: str = UNSET
     """Name of the invoked command"""
-    type: Interaction_Type = None
+    type: Interaction_Type = UNSET
     """type"""
-    resolved: Optional["Resolved_Data"] = None
+    resolved: Optional["Resolved_Data"] = UNSET
     """converted users + roles + channels + attachments"""
     options: Optional[list["Application_Command_Interaction_Data_Option"]] = list
     """the params + values from the user"""
-    guild_id: Optional[Snowflake] = None
+    guild_id: Optional[Snowflake] = UNSET
     """the id of the guild the command is registered to"""
-    target_id: Optional[Snowflake] = None
+    target_id: Optional[Snowflake] = UNSET
     """User"""
 
 
@@ -4614,20 +4614,20 @@ class Message_Component_Data(DiscordObject):
     * This is always present for select menu components.
     """
 
-    custom_id: str = None
+    custom_id: str = UNSET
     """custom_id"""
-    component_type: int = None
+    component_type: int = UNSET
     """Type"""
-    values: list["Select_Option"] = None
+    values: list["Select_Option"] = UNSET
     """Select_Menu"""
-    resolved: Optional["Resolved_Data"] = None
+    resolved: Optional["Resolved_Data"] = UNSET
     """resolved entities from selected options"""
 
 
 class Modal_Submit_Data(DiscordObject):
-    custom_id: str = None
+    custom_id: str = UNSET
     """custom_id"""
-    components: list[Component] = None
+    components: list[Component] = UNSET
     """the values submitted by the user"""
 
 
@@ -4639,17 +4639,17 @@ class Resolved_Data(DiscordObject):
     Threads will also have thread_metadata and parent_id fields.
     """
 
-    users: Optional[dict[Snowflake, User]] = None
+    users: Optional[dict[Snowflake, User]] = UNSET
     """the ids and Users"""
-    members: Optional[dict[Snowflake, Guild_Member]] = None
+    members: Optional[dict[Snowflake, Guild_Member]] = UNSET
     """the ids and Members"""
-    roles: Optional[dict[Snowflake, Role]] = None
+    roles: Optional[dict[Snowflake, Role]] = UNSET
     """the ids and Roles"""
-    channels: Optional[dict[Snowflake, Channel]] = None
+    channels: Optional[dict[Snowflake, Channel]] = UNSET
     """the ids and Channels"""
-    messages: Optional[dict[Snowflake, Message]] = None
+    messages: Optional[dict[Snowflake, Message]] = UNSET
     """the ids and Messages"""
-    attachments: Optional[dict[Snowflake, Attachment]] = None
+    attachments: Optional[dict[Snowflake, Attachment]] = UNSET
     """the ids and attachments"""
 
 
@@ -4658,22 +4658,22 @@ class Application_Command_Interaction_Data_Option(DiscordObject):
     All options have names, and an option can either be a parameter and input value--in which case value will be set--or it can denote a subcommand or group--in which case it will contain a top-level key and another array of options.
     """
 
-    name: str = None
+    name: str = UNSET
     """Name of the parameter"""
-    type: Application_Command_Option_Type = None
+    type: Application_Command_Option_Type = UNSET
     """Application_Command_Option_Type"""
-    value: Optional[str | int | float] = None
+    value: Optional[str | int | float] = UNSET
     """Value of the option resulting from user input"""
-    options: Optional[list["Application_Command_Interaction_Data_Option"]] = None
+    options: Optional[list["Application_Command_Interaction_Data_Option"]] = UNSET
     """Present if this option is a group"""
-    focused: Optional[bool] = None
+    focused: Optional[bool] = UNSET
     """true if this option is the currently focused option for autocomplete"""
 
 
 class Interaction_Response(DiscordObject):
-    type: "Interaction_Callback_Type" = None
+    type: "Interaction_Callback_Type" = UNSET
     """the type of response"""
-    data: Optional["Interaction_Application_Command_Callback_Data"] = None
+    data: Optional["Interaction_Application_Command_Callback_Data"] = UNSET
     """an optional response message"""
 
 
@@ -4708,27 +4708,27 @@ class Interaction_Application_Command_Callback_Data(DiscordObject):
     * See [Uploading Files](https:#/discord.com/developers/docs/reference#uploading-files) for details.
     """
 
-    tts: Optional[bool] = None
+    tts: Optional[bool] = UNSET
     """is the response TTS"""
-    content: Optional[str] = None
+    content: Optional[str] = UNSET
     """message content"""
-    embeds: Optional[Annotated[list[Embed], Meta(max_length=10)]] = None
+    embeds: Optional[Annotated[list[Embed], Meta(max_length=10)]] = UNSET
     """supports up to 10 embeds"""
-    allowed_mentions: Optional["Allowed_Mentions"] = None
+    allowed_mentions: Optional["Allowed_Mentions"] = UNSET
     """Allowed_Mentions"""
-    flags: Optional["Message_Flags"] = None
+    flags: Optional["Message_Flags"] = UNSET
     """Message_Flags"""
-    components: Optional[Annotated[list["Component"], Meta(max_length=5)]] = None
+    components: Optional[Annotated[list["Component"], Meta(max_length=5)]] = UNSET
     """message components"""
-    attachments: list["Attachment"] = None
+    attachments: list["Attachment"] = UNSET
     """attachment s with filename and description"""
-    poll: Optional["Poll"] = None
+    poll: Optional["Poll"] = UNSET
     """A poll!"""
-    choices: list[Application_Command_Option_Choice] = None
+    choices: list[Application_Command_Option_Choice] = UNSET
     """autocomplete choices"""
-    custom_id: str = None
+    custom_id: str = UNSET
     """a developer-defined identifier for the modal, max 100 characters"""
-    title: str = None
+    title: str = UNSET
     """the title of the popup modal, max 45 characters"""
 
 
@@ -4738,7 +4738,7 @@ class Interaction_Application_Command_Callback_Data_Flags(Flag):
 
 
 class Autocomplete(DiscordObject):
-    choices: list["Application_Command_Option_Choice"] = None
+    choices: list["Application_Command_Option_Choice"] = UNSET
     """autocomplete choices"""
 
 
@@ -4790,39 +4790,39 @@ class Modal(DiscordObject):
     If the 3 second deadline is exceeded, the token will be invalidated.
     """
 
-    custom_id: Annotated[str, Meta(max_length=100)] = None
+    custom_id: Annotated[str, Meta(max_length=100)] = UNSET
     """a developer-defined identifier for the modal, max 100 characters"""
-    title: Annotated[str, Meta(max_length=45)] = None
+    title: Annotated[str, Meta(max_length=45)] = UNSET
     """the title of the popup modal, max 45 characters"""
-    components: list["Component"] = None
+    components: list["Component"] = UNSET
     """between 1 and 5"""
 
 
 class Message_Interaction(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of the interaction"""
-    type: "Interaction_Type" = None
+    type: "Interaction_Type" = UNSET
     """Type of interaction"""
-    name: str = None
+    name: str = UNSET
     """Application_Command"""
-    user: "User" = None
+    user: "User" = UNSET
     """User who invoked the interaction"""
-    member: Optional["Guild_Member"] = None
+    member: Optional["Guild_Member"] = UNSET
     """Member who invoked the interaction in the guild"""
 
 
 class SKU(DiscordObject):
-    id: Snowflake = None
+    id: Snowflake = UNSET
     """ID of SKU"""
-    type: "SKU_Types" = None
+    type: "SKU_Types" = UNSET
     """Type_Of_SKU"""
-    application_id: Snowflake = None
+    application_id: Snowflake = UNSET
     """ID of the parent application"""
-    name: str = None
+    name: str = UNSET
     """Customer-facing name of your premium offering"""
-    slug: str = None
+    slug: str = UNSET
     """System-generated URL slug based on the SKU's name"""
-    flags: "SKU_Flags" = None
+    flags: "SKU_Flags" = UNSET
     """SKU_Flags"""
 
 
