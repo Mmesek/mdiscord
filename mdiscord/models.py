@@ -17,6 +17,43 @@ from msgspec import UNSET, Meta
 
 from .base_model import DiscordObject, Snowflake, DISCORD_EPOCH, Events, Nullable, UnixTimestamp, Duration
 
+class Limits(IntEnum):
+    """
+    To facilitate showing rich content, rich embeds do not follow the traditional limits of message content.
+    However, some limits are still in place to prevent excessively large embeds.
+    The following table describes the limits:
+    Additionally, the combined sum of characters in all title, description, field.name, field.value, footer.text, and author.name fields across all embeds attached to a message must not exceed 6000 characters.
+    Violating any of these constraints will result in a Bad Request response.
+    Embeds are deduplicated by URL.
+    If a message contains multiple embeds with the same URL, only the first is shown.
+    """
+
+    TITLE = 256
+    DESCRIPTION = 4096
+    FIELDS = 25
+    FIELD_NAME = 256
+    FIELD_VALUE = 1024
+    FOOTER_TEXT = 2048
+    AUTHOR_NAME = 256
+    TOTAL = 6000
+
+
+EmbedDescriptionConstraint = Annotated[str, Meta(max_length=Limits.DESCRIPTION)]
+TextConstraint = Annotated[str, Meta(max_length=Limits.FOOTER_TEXT)]
+ValueConstraint = Annotated[str, Meta(max_length=Limits.FIELD_VALUE)]
+TitleConstraint = Annotated[str, Meta(max_length=Limits.TITLE)]
+LongDescConstraint = Annotated[str, Meta(min_length=1, max_length=200)]
+DescriptionConstraint = Annotated[str, Meta(max_length=100)]
+KeyConstraint = Annotated[str, Meta(pattern=r"a-z0-9_", min_length=1, max_length=50)]
+LongNameConstraint = Annotated[str, Meta(max_length=50)]
+ModalTitleConstraint = Annotated[str, Meta(max_length=45)]
+CommandConstraint = Annotated[str, Meta(min_length=1, max_length=32, pattern=r"^[\w-]{1,32}$")]
+
+LargeThresholdConstraint = Annotated[int, Meta(ge=50, le=250)]
+EmbedFieldsConstraint = Annotated[list["Embed_Field"], Meta(max_length=Limits.FIELDS)]
+EmbedsConstraint = Annotated[list["Embed"], Meta(max_length=10)]
+ComponentConstraint = Annotated[list["Component"], Meta(max_length=5)]
+
 class Application(DiscordObject):
     id: Snowflake = UNSET
     """ID of the app"""
@@ -125,15 +162,15 @@ class Install_Params(DiscordObject):
 class Application_Role_Connection_Metadata(DiscordObject):
     type: "Application_Role_Connection_Metadata_Type" = UNSET
     """type of metadata value"""
-    key: Annotated[str, Meta(pattern=r"a-z0-9_", min_length=1, max_length=50)] = UNSET
+    key: KeyConstraint = UNSET
     """dictionary key for the metadata field"""
     name: DescriptionConstraint = UNSET
     """name of the metadata field"""
     name_localizations: Optional[dict["Locales", DescriptionConstraint]] = UNSET
     """translations of the name"""
-    description: Annotated[str, Meta(min_length=1, max_length=200)] = UNSET
+    description: LongDescConstraint = UNSET
     """description of the metadata field"""
-    description_localizations: Optional[dict["Locales", Annotated[str, Meta(min_length=1, max_length=200)]]] = UNSET
+    description_localizations: Optional[dict["Locales", LongDescConstraint]] = UNSET
     """translations of the description"""
 
 
@@ -1205,11 +1242,11 @@ class Forum_Message_Params(DiscordObject):
 
 
 class Embed(DiscordObject):
-    title: Optional[Annotated[str, Meta(max_length=256)]] = UNSET
+    title: Optional[TitleConstraint] = UNSET
     """title of embed"""
     type: Optional["Embed_Types"] = UNSET
     """Type_Of_Embed"""
-    description: Optional[Annotated[str, Meta(max_length=4096)]] = UNSET
+    description: Optional[EmbedDescriptionConstraint] = UNSET
     """description of embed"""
     url: Optional[str] = UNSET
     """url of embed"""
@@ -1229,7 +1266,7 @@ class Embed(DiscordObject):
     """provider information"""
     author: Optional["Embed_Author"] = UNSET
     """author information"""
-    fields: Optional[Annotated[list["Embed_Field"], Meta(max_length=25)]] = UNSET
+    fields: Optional[EmbedFieldsConstraint] = UNSET
     """fields information, max of 25"""
 
 
@@ -1289,7 +1326,7 @@ class Embed_Provider(DiscordObject):
 
 
 class Embed_Author(DiscordObject):
-    name: Optional[Annotated[str, Meta(max_length=256)]] = UNSET
+    name: Optional[TitleConstraint] = UNSET
     """name of author"""
     url: Optional[str] = UNSET
     """url of author"""
@@ -1300,7 +1337,7 @@ class Embed_Author(DiscordObject):
 
 
 class Embed_Footer(DiscordObject):
-    text: Annotated[str, Meta(max_length=2048)] = UNSET
+    text: TextConstraint = UNSET
     """footer text"""
     icon_url: Optional[str] = UNSET
     """url of footer icon"""
@@ -1309,32 +1346,12 @@ class Embed_Footer(DiscordObject):
 
 
 class Embed_Field(DiscordObject):
-    name: Annotated[str, Meta(max_length=256)] = UNSET
+    name: TitleConstraint = UNSET
     """name of the field"""
-    value: Annotated[str, Meta(max_length=1024)] = UNSET
+    value: ValueConstraint = UNSET
     """value of the field"""
     inline: Optional[bool] = UNSET
     """whether"""
-
-
-class Embed_Limits(IntEnum):
-    """
-    To facilitate showing rich content, rich embeds do not follow the traditional limits of message content.
-    However, some limits are still in place to prevent excessively large embeds.
-    The following table describes the limits:
-    Additionally, the combined sum of characters in all title, description, field.name, field.value, footer.text, and author.name fields across all embeds attached to a message must not exceed 6000 characters.
-    Violating any of these constraints will result in a Bad Request response.
-    Embeds are deduplicated by URL.
-    If a message contains multiple embeds with the same URL, only the first is shown.
-    """
-
-    TITLE = 256
-    DESCRIPTION = 4096
-    FIELDS = 25
-    FIELD_NAME = 256
-    FIELD_VALUE = 1024
-    FOOTER_TEXT = 2048
-    AUTHOR_NAME = 256
 
 
 class Attachment(DiscordObject):
@@ -2363,9 +2380,9 @@ class Visibility_Types(Enum):
 
 
 class Application_Role_Connection(DiscordObject):
-    platform_name: Nullable[Annotated[str, Meta(max_length=50)]] = UNSET
+    platform_name: Nullable[LongNameConstraint] = UNSET
     """the vanity name of the platform a bot has connected"""
-    platform_username: Nullable[Annotated[str, Meta(max_length=100)]] = UNSET
+    platform_username: Nullable[DescriptionConstraint] = UNSET
     """the username on the platform a bot has connected"""
     metadata: Application_Role_Connection_Metadata = UNSET
     """Application_Role_Connection_Metadata"""
@@ -2492,7 +2509,7 @@ class Identify(DiscordObject):
     """Connection_Properties"""
     compress: Optional[bool] = False
     """Whether this connection supports compression of packets"""
-    large_threshold: Optional[Annotated[int, Meta(ge=50, le=250)]] = 50
+    large_threshold: Optional[LargeThresholdConstraint] = 50
     """Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list"""
     shard: Optional[list[int]] = UNSET
     """Guild_Sharding"""
@@ -3246,9 +3263,9 @@ class Application_Command(DiscordObject):
     """ID of the parent application"""
     guild_id: Optional[Snowflake] = UNSET
     """Guild ID of the command, if not global"""
-    name: NameConstraint = UNSET
+    name: CommandConstraint = UNSET
     """Name_Of_Command"""
-    name_localizations: Optional[Nullable[dict["Locales", NameConstraint]]] = UNSET
+    name_localizations: Optional[Nullable[dict["Locales", CommandConstraint]]] = UNSET
     """Localization dictionary for name field. Values follow the same restrictions as name"""
     description: DescriptionConstraint = UNSET
     """Description for CHAT_INPUT commands, 1-100 characters. Empty string for USER and MESSAGE commands"""
@@ -4337,11 +4354,11 @@ class Select_Menu(DiscordObject):
 
 
 class Select_Option(DiscordObject):
-    label: Annotated[str, Meta(max_length=100)] = UNSET
+    label: DescriptionConstraint = UNSET
     """User-facing name of the option; max 100 characters"""
-    value: Annotated[str, Meta(max_length=100)] = UNSET
+    value: DescriptionConstraint = UNSET
     """Dev-defined value of the option; max 100 characters"""
-    description: Optional[Annotated[str, Meta(max_length=100)]] = UNSET
+    description: Optional[DescriptionConstraint] = UNSET
     """Additional description of the option; max 100 characters"""
     emoji: Optional["Emoji"] = UNSET
     """`id`, `name`, and `animated`"""
@@ -4367,9 +4384,9 @@ class Application_Command_Option(DiscordObject):
 
     type: "Application_Command_Option_Type" = UNSET
     """Type of option"""
-    name: NameConstraint = UNSET
+    name: CommandConstraint = UNSET
     """1-32_Character_Name"""
-    name_localizations: Optional[Nullable[dict["Locales", NameConstraint]]] = UNSET
+    name_localizations: Optional[Nullable[dict["Locales", CommandConstraint]]] = UNSET
     """Localization dictionary for the name field. Values follow the same restrictions as name"""
     description: DescriptionConstraint = UNSET
     """1-100 character description"""
@@ -4708,13 +4725,13 @@ class Interaction_Application_Command_Callback_Data(DiscordObject):
     """is the response TTS"""
     content: Optional[str] = UNSET
     """message content"""
-    embeds: Optional[Annotated[list[Embed], Meta(max_length=10)]] = UNSET
+    embeds: Optional[EmbedsConstraint] = UNSET
     """supports up to 10 embeds"""
     allowed_mentions: Optional["Allowed_Mentions"] = UNSET
     """Allowed_Mentions"""
     flags: Optional["Message_Flags"] = UNSET
     """Message_Flags"""
-    components: Optional[Annotated[list["Component"], Meta(max_length=5)]] = UNSET
+    components: Optional[ComponentConstraint] = UNSET
     """message components"""
     attachments: list["Attachment"] = UNSET
     """attachment s with filename and description"""
@@ -4786,9 +4803,9 @@ class Modal(DiscordObject):
     If the 3 second deadline is exceeded, the token will be invalidated.
     """
 
-    custom_id: Annotated[str, Meta(max_length=100)] = UNSET
+    custom_id: DescriptionConstraint = UNSET
     """a developer-defined identifier for the modal, max 100 characters"""
-    title: Annotated[str, Meta(max_length=45)] = UNSET
+    title: ModalTitleConstraint = UNSET
     """the title of the popup modal, max 45 characters"""
     components: list["Component"] = UNSET
     """between 1 and 5"""
