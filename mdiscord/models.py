@@ -38,10 +38,10 @@ class Limits(IntEnum):
     TOTAL = 6000
 
 
-EmbedDescriptionConstraint = Annotated[str, Meta(max_length=Limits.DESCRIPTION)]
-TextConstraint = Annotated[str, Meta(max_length=Limits.FOOTER_TEXT)]
-ValueConstraint = Annotated[str, Meta(max_length=Limits.FIELD_VALUE)]
-TitleConstraint = Annotated[str, Meta(max_length=Limits.TITLE)]
+EmbedDescriptionConstraint = Annotated[str, Meta(max_length=Limits.DESCRIPTION.value)]
+TextConstraint = Annotated[str, Meta(max_length=Limits.FOOTER_TEXT.value)]
+ValueConstraint = Annotated[str, Meta(max_length=Limits.FIELD_VALUE.value)]
+TitleConstraint = Annotated[str, Meta(max_length=Limits.TITLE.value)]
 LongDescConstraint = Annotated[str, Meta(min_length=1, max_length=200)]
 DescriptionConstraint = Annotated[str, Meta(max_length=100)]
 KeyConstraint = Annotated[str, Meta(pattern=r"a-z0-9_", min_length=1, max_length=50)]
@@ -50,7 +50,7 @@ ModalTitleConstraint = Annotated[str, Meta(max_length=45)]
 CommandConstraint = Annotated[str, Meta(min_length=1, max_length=32, pattern=r"^[\w-]{1,32}$")]
 
 LargeThresholdConstraint = Annotated[int, Meta(ge=50, le=250)]
-EmbedFieldsConstraint = Annotated[list["Embed_Field"], Meta(max_length=Limits.FIELDS)]
+EmbedFieldsConstraint = Annotated[list["Embed_Field"], Meta(max_length=Limits.FIELDS.value)]
 EmbedsConstraint = Annotated[list["Embed"], Meta(max_length=10)]
 ComponentConstraint = Annotated[list["Component"], Meta(max_length=5)]
 
