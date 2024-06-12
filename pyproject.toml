@@ -1,0 +1,26 @@
+[project]
+name = "mDiscord"
+version = "3"
+authors = [{ name = "Mmesek" }]
+description = "Discord API Wrapper with type casting"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Mmesek/mdiscord"
+"Bug Tracker" = "https://github.com/Mmesek/mdiscord/issues"
+"Source Code" = "https://github.com/Mmesek/mdiscord"
+
+[project.license]
+file = "LICENSE"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 120
+target-version = ["py312"]
