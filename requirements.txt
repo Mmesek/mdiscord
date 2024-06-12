@@ -1,4 +1,2 @@
-aiohttp
-aiodns
-Brotli
-orjson
+aiohttp[speedups]
+msgspec
