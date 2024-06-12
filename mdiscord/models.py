@@ -15,11 +15,7 @@ from typing import Annotated, Any, Optional
 
 from msgspec import UNSET, Meta
 
-from .base_model import DiscordObject, Snowflake, DISCORD_EPOCH, Events, Nullable
-
-NameConstraint = Annotated[str, Meta(min_length=1, max_length=32, pattern=r"^[\w-]{1,32}$")]
-DescriptionConstraint = Annotated[str, Meta(min_length=1, max_length=100)]
-
+from .base_model import DiscordObject, Snowflake, DISCORD_EPOCH, Events, Nullable, UnixTimestamp, Duration
 
 class Application(DiscordObject):
     id: Snowflake = UNSET
@@ -60,7 +56,7 @@ class Application(DiscordObject):
     """If this app is a game sold on Discord, this field will be the URL slug that links to the store page"""
     cover_image: Optional[str] = UNSET
     """Cover_Image_Hash"""
-    flags: Optional[int] = UNSET
+    flags: Optional['Application_Flags'] = UNSET
     """Flags"""
     approximate_guild_count: Optional[int] = UNSET
     """Approximate count of guilds the app has been added to"""
@@ -370,7 +366,7 @@ class Optional_Audit_Entry_Info(DiscordObject):
     """Name of the role if type is '0'"""
     type: str = UNSET
     """Type of overwritten entity - role (0) or member (1)"""
-    integration_type: str = UNSET
+    integration_type: 'Integration_Types' = UNSET
     """The type of integration which performed the action"""
 
 
@@ -409,19 +405,19 @@ class Audit_Log_Change_Key(DiscordObject):
     """preferred locale changed"""
     afk_channel_id: Snowflake = UNSET
     """afk channel changed"""
-    afk_timeout: int = UNSET
+    afk_timeout: Duration = UNSET
     """afk timeout duration changed"""
     rules_channel_id: Snowflake = UNSET
     """id of the rules channel changed"""
     public_updates_channel_id: Snowflake = UNSET
     """id of the public updates channel changed"""
-    mfa_level: int = UNSET
+    mfa_level: 'MFA_Level' = UNSET
     """two-factor auth requirement changed"""
-    verification_level: int = UNSET
+    verification_level: 'Verification_Level' = UNSET
     """required verification level changed"""
-    explicit_content_filter: int = UNSET
+    explicit_content_filter: 'Explicit_Content_Filter_Level' = UNSET
     """Whose_Messages"""
-    default_message_notifications: int = UNSET
+    default_message_notifications: 'Default_Message_Notification_Level' = UNSET
     """Message_Notification_Level"""
     vanity_url_code: str = UNSET
     """guild invite vanity url changed"""
@@ -449,7 +445,7 @@ class Audit_Log_Change_Key(DiscordObject):
     """channel nsfw restriction changed"""
     application_id: Snowflake = UNSET
     """application id of the added"""
-    rate_limit_per_user: int = UNSET
+    rate_limit_per_user: Duration = UNSET
     """amount of seconds a user has to wait before sending another message changed"""
     permissions: str = UNSET
     """Permissions"""
@@ -491,7 +487,7 @@ class Audit_Log_Change_Key(DiscordObject):
     """type of entity created"""
     enable_emoticons: bool = UNSET
     """integration emoticons enabled/disabled"""
-    expire_behavior: int = UNSET
+    expire_behavior: 'Integration_Expire_Behaviors' = UNSET
     """integration expiring subscriber behavior changed"""
     expire_grace_period: int = UNSET
     """integration expire grace period changed"""
@@ -664,7 +660,7 @@ class Action_Metadata(DiscordObject):
 
     channel_id: Snowflake = UNSET
     """channel to which user content should be logged"""
-    duration_seconds: int = UNSET
+    duration_seconds: Duration = UNSET
     """timeout duration in seconds"""
     custom_message: Optional[str] = UNSET
     """additional explanation that will be shown to members whenever their message is blocked"""
@@ -699,7 +695,7 @@ class Channel(DiscordObject):
     """the bitrate"""
     user_limit: Optional[int] = UNSET
     """the user limit of the voice channel"""
-    rate_limit_per_user: int = UNSET
+    rate_limit_per_user: Duration = UNSET
     """amount of seconds a user has to wait before sending another message"""
     recipients: Optional["User"] = UNSET
     """the recipients of the DM"""
@@ -741,7 +737,7 @@ class Channel(DiscordObject):
     """the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM"""
     default_reaction_emoji: Optional[Nullable["Default_Reaction"]] = UNSET
     """the emoji to show in the add reaction button on a thread in a GUILD_FORUM"""
-    default_thread_rate_limit_per_user: Optional[int] = UNSET
+    default_thread_rate_limit_per_user: Optional[Duration] = UNSET
     """the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update"""
     default_sort_order: Optional[Nullable["Sort_Order_Types"]] = UNSET
     """Default_Sort_Order_Type"""
@@ -954,7 +950,7 @@ class Message_Types(Enum):
 
 
 class Message_Activity(DiscordObject):
-    type: int = UNSET
+    type: 'Message_Activity_Types' = UNSET
     """Type_Of_Message_Activity"""
     party_id: Optional[str] = UNSET
     """Rich_Presence_Event"""
@@ -1386,7 +1382,7 @@ class Channel_Mention(DiscordObject):
     """id of the channel"""
     guild_id: Snowflake = UNSET
     """id of the guild containing the channel"""
-    type: int = UNSET
+    type: 'Channel_Types' = UNSET
     """Type_Of_Channel"""
     name: str = UNSET
     """the name of the channel"""
@@ -1471,7 +1467,7 @@ class Guild(DiscordObject):
     """Voice_Region"""
     afk_channel_id: Nullable[Snowflake] = UNSET
     """id of afk channel"""
-    afk_timeout: int = UNSET
+    afk_timeout: Duration = UNSET
     """afk timeout in seconds"""
     widget_enabled: Optional[bool] = UNSET
     """true if the server widget is enabled"""
@@ -2094,7 +2090,7 @@ class Invite_Metadata(DiscordObject):
     """number of times this invite has been used"""
     max_uses: int = UNSET
     """max number of times this invite can be used"""
-    max_age: int = UNSET
+    max_age: Duration = UNSET
     """duration"""
     temporary: bool = UNSET
     """whether this invite only grants temporary membership"""
@@ -2203,7 +2199,7 @@ class Stage_Instance(DiscordObject):
     """The id of the associated Stage channel"""
     topic: str = UNSET
     """The topic of the Stage instance"""
-    privacy_level: int = UNSET
+    privacy_level: 'Privacy_Level' = UNSET
     """Privacy_Level"""
     discoverable_disabled: bool = UNSET
     """Whether"""
@@ -2424,7 +2420,7 @@ class Webhook(DiscordObject):
 
     id: Snowflake = UNSET
     """the id of the webhook"""
-    type: int = UNSET
+    type: 'Webhook_Types' = UNSET
     """Type"""
     guild_id: Optional[Nullable[Snowflake]] = UNSET
     """the guild id this webhook is for, if any"""
@@ -2470,7 +2466,7 @@ class Gateway_Payload(DiscordObject):
     * `s` and `t` are `null` when `op` is not `0` ([Gateway Dispatch opcode](https://discord.com/developers/docs/topics/opcodes_and_status_codes#gateway-gateway-opcodes)).
     """
 
-    op: int = UNSET
+    op: 'Gateway_Opcodes' = UNSET
     """Gateway_Opcode"""
     d: Nullable[dict[Any, Any]] = UNSET
     """Event data"""
@@ -2580,7 +2576,7 @@ class Gateway_Voice_State_Update(DiscordObject):
 
 
 class Gateway_Presence_Update(DiscordObject):
-    since: Nullable[int] = UNSET
+    since: Nullable[UnixTimestamp] = UNSET
     """Unix time"""
     activities: list["Activity"] = UNSET
     """User's activities"""
@@ -2671,7 +2667,7 @@ class Entitlement(DiscordObject):
     """ID of the parent application"""
     user_id: Optional[Snowflake] = UNSET
     """ID of the user that is granted access to the entitlement's sku"""
-    type: int = UNSET
+    type: "Entitlement_Types" = UNSET
     """Type_Of_Entitlement"""
     deleted: bool = UNSET
     """Entitlement was deleted"""
@@ -2763,7 +2759,7 @@ class Guild_Emojis_Update(DiscordObject):
 class Guild_Stickers_Update(DiscordObject):
     guild_id: Snowflake = UNSET
     """ID of the guild"""
-    stickers: list = UNSET
+    stickers: list[Sticker] = UNSET
     """Stickers"""
 
 
@@ -3082,11 +3078,11 @@ class Activity(DiscordObject):
 
     name: str = UNSET
     """Activity's name"""
-    type: int = UNSET
+    type: Action_Types = UNSET
     """Activity_Type"""
     url: Optional[Nullable[str]] = UNSET
     """Stream URL, is validated when type is 1"""
-    created_at: int = UNSET
+    created_at: UnixTimestamp = UNSET
     """Unix timestamp"""
     timestamps: Optional["Activity_Timestamps"] = UNSET
     """Unix timestamps for start and/or end of the game"""
@@ -3128,9 +3124,9 @@ class Activity_Types(Enum):
 
 
 class Activity_Timestamps(DiscordObject):
-    start: Optional[int] = UNSET
+    start: Optional[UnixTimestamp] = UNSET
     """Unix time"""
-    end: Optional[int] = UNSET
+    end: Optional[UnixTimestamp] = UNSET
     """Unix time"""
 
 
@@ -3212,7 +3208,7 @@ class Typing_Start(DiscordObject):
     """ID of the guild"""
     user_id: Snowflake = UNSET
     """ID of the user"""
-    timestamp: int = UNSET
+    timestamp: UnixTimestamp = UNSET
     """Unix time"""
     member: Optional["Guild_Member"] = UNSET
     """Member who started typing if this happened in a guild"""
