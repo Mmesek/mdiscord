@@ -58,22 +58,15 @@ class Flag(Flag):
 
 
 class DiscordObject(msgspec.Struct, kw_only=True, omit_defaults=True):
-    _Client: Optional[NotSerializable[Bot]] = msgspec.UNSET
+    _Client: NotSerializable[Optional[Bot]] = msgspec.UNSET
 
-    def as_dict(self):
-        from .utils import serializer
-
-        _dict = msgspec.to_builtins(self, enc_hook=serializer)
-        for field in _dict:
-            if field == "_Client":
-                continue
-            else:
-                _dict[field] = as_dict(_dict.get(field))
-        _dict.pop("_Client")
-        return _dict
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            k: v
+            for k, v in msgspec.to_builtins(self, enc_hook=to_builtins).items()
+            if get_origin(get_type_hints(self.__class__)[k]) is not NotSerializable
+        }
 
     @classmethod
     def from_dict(cls, **kwargs):
-        from .utils import deserializer
-
-        return msgspec.convert(kwargs, cls, dec_hook=deserializer)
+        return msgspec.convert(kwargs, cls, dec_hook=from_builtins)
