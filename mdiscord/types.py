@@ -16,43 +16,24 @@ from datetime import datetime
 
 from .base_model import CDN_URL, BASE_URL
 from .models import *  # noqa: F401
+from .meta_types import NotSerializable
+
 Application_Command_Interaction_Data = Interaction_Application_Command_Callback_Data
 
 
 class Attachment(Attachment):
     file: bytes = None
+    spoiler: NotSerializable[bool] = False
 
-    def __init__(
-        self,
-        id: Snowflake = None,
-        filename: str = "file",
-        description: str = None,
-        content_type: str = None,
-        size: int = None,
-        url: str = None,
-        proxy_url: str = None,
-        height: int = None,
-        width: int = None,
-        *,
-        spoiler: bool = False,
-        file: bytes = None,
-        _Client=None,
-    ):
-        if spoiler and not filename.startswith("SPOILER_"):
-            filename = "SPOILER_" + filename
-        super().__init__(
-            _Client=_Client,
-            id=id,
-            filename=filename,
-            description=description,
-            content_type=content_type,
-            size=size,
-            url=url,
-            proxy_url=proxy_url,
-            height=height,
-            width=width,
-        )
-        self.file = file
+    def __post_init__(self):
+        if self.spoiler and not self.filename.startswith("SPOILER_"):
+            self.filename = "SPOILER_" + self.filename
+
+    def toggle_spoiler(self):
+        if not self.filename.startswith("SPOILER_"):
+            self.filename = "SPOILER_" + self.filename
+        else:
+            self.filename = self.filename.split("_", 1)[-1]
 
 
 class UserID(Snowflake):
