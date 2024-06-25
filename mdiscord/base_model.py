@@ -15,6 +15,7 @@ import msgspec
 
 from mlib.types import Enum
 from .serializer import as_dict
+from .meta_types import NotSerializable
 
 if TYPE_CHECKING:
     from .websocket import WebSocket_Client as Bot
@@ -100,7 +101,7 @@ class Flag(Flag):
 
 
 class DiscordObject(msgspec.Struct, kw_only=True, omit_defaults=True):
-    _Client: Optional[Bot] = msgspec.UNSET
+    _Client: Optional[NotSerializable[Bot]] = msgspec.UNSET
 
     def as_dict(self):
         from .utils import serializer
