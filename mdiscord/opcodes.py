@@ -13,6 +13,7 @@ import sys, traceback, platform
 from typing import List, Optional
 from collections import Counter
 
+import msgspec
 from mlib.types import Invalid, aInvalid
 
 from .types import (
@@ -23,14 +24,14 @@ from .types import (
     Gateway_Voice_State_Update,
     Identify,
     Resume,
-    Guild_Request_Members,
+    Request_Guild_Members as Guild_Request_Members,
     Snowflake,
     Status_Types,
     Activity_Types,
     Bot_Activity,
     Identify_Connection_Properties,
 )
-from .utils import log, EventListener
+from .utils import log, EventListener, deserializer
 from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError, UserError
 
 Dispatch = {}
@@ -47,7 +48,13 @@ class Opcodes(EventListener):
     resume_url: str = None
 
     async def dispatch(self, data: Gateway_Payload) -> None:
-        data.d = getattr(Gateway_Events, data.t.title(), Invalid)(_Client=self, **data.d)
+        try:
+            data.d = msgspec.convert(data.d, getattr(Gateway_Events, data.t.title()).type(), dec_hook=deserializer)
+            data.d._Client = self
+        except AttributeError:
+            log.debug("Received unknown event type %s", data.t)
+            return
+
         if not getattr(data.d, "guild_id", False) and "MESSAGE" in data.t:
             data.t = "DIRECT_" + data.t
         if getattr(data.d, "is_bot", False):
