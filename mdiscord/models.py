@@ -17,6 +17,7 @@ from msgspec import UNSET, Meta
 
 from .base_model import DiscordObject, Snowflake, DISCORD_EPOCH, Events, Nullable, UnixTimestamp, Duration
 
+
 class Limits(IntEnum):
     """
     To facilitate showing rich content, rich embeds do not follow the traditional limits of message content.
@@ -53,6 +54,7 @@ LargeThresholdConstraint = Annotated[int, Meta(ge=50, le=250)]
 EmbedFieldsConstraint = Annotated[list["Embed_Field"], Meta(max_length=Limits.FIELDS.value)]
 EmbedsConstraint = Annotated[list["Embed"], Meta(max_length=10)]
 ComponentConstraint = Annotated[list["Component"], Meta(max_length=5)]
+
 
 class Application(DiscordObject):
     id: Snowflake = UNSET
@@ -93,7 +95,7 @@ class Application(DiscordObject):
     """If this app is a game sold on Discord, this field will be the URL slug that links to the store page"""
     cover_image: Optional[str] = UNSET
     """Cover_Image_Hash"""
-    flags: Optional['Application_Flags'] = UNSET
+    flags: Optional["Application_Flags"] = UNSET
     """Flags"""
     approximate_guild_count: Optional[int] = UNSET
     """Approximate count of guilds the app has been added to"""
@@ -403,7 +405,7 @@ class Optional_Audit_Entry_Info(DiscordObject):
     """Name of the role if type is '0'"""
     type: str = UNSET
     """Type of overwritten entity - role (0) or member (1)"""
-    integration_type: 'Integration_Types' = UNSET
+    integration_type: "Integration_Types" = UNSET
     """The type of integration which performed the action"""
 
 
@@ -448,13 +450,13 @@ class Audit_Log_Change_Key(DiscordObject):
     """id of the rules channel changed"""
     public_updates_channel_id: Snowflake = UNSET
     """id of the public updates channel changed"""
-    mfa_level: 'MFA_Level' = UNSET
+    mfa_level: "MFA_Level" = UNSET
     """two-factor auth requirement changed"""
-    verification_level: 'Verification_Level' = UNSET
+    verification_level: "Verification_Level" = UNSET
     """required verification level changed"""
-    explicit_content_filter: 'Explicit_Content_Filter_Level' = UNSET
+    explicit_content_filter: "Explicit_Content_Filter_Level" = UNSET
     """Whose_Messages"""
-    default_message_notifications: 'Default_Message_Notification_Level' = UNSET
+    default_message_notifications: "Default_Message_Notification_Level" = UNSET
     """Message_Notification_Level"""
     vanity_url_code: str = UNSET
     """guild invite vanity url changed"""
@@ -524,7 +526,7 @@ class Audit_Log_Change_Key(DiscordObject):
     """type of entity created"""
     enable_emoticons: bool = UNSET
     """integration emoticons enabled/disabled"""
-    expire_behavior: 'Integration_Expire_Behaviors' = UNSET
+    expire_behavior: "Integration_Expire_Behaviors" = UNSET
     """integration expiring subscriber behavior changed"""
     expire_grace_period: int = UNSET
     """integration expire grace period changed"""
@@ -987,7 +989,7 @@ class Message_Types(Enum):
 
 
 class Message_Activity(DiscordObject):
-    type: 'Message_Activity_Types' = UNSET
+    type: "Message_Activity_Types" = UNSET
     """Type_Of_Message_Activity"""
     party_id: Optional[str] = UNSET
     """Rich_Presence_Event"""
@@ -1399,7 +1401,7 @@ class Channel_Mention(DiscordObject):
     """id of the channel"""
     guild_id: Snowflake = UNSET
     """id of the guild containing the channel"""
-    type: 'Channel_Types' = UNSET
+    type: "Channel_Types" = UNSET
     """Type_Of_Channel"""
     name: str = UNSET
     """the name of the channel"""
@@ -2216,7 +2218,7 @@ class Stage_Instance(DiscordObject):
     """The id of the associated Stage channel"""
     topic: str = UNSET
     """The topic of the Stage instance"""
-    privacy_level: 'Privacy_Level' = UNSET
+    privacy_level: "Privacy_Level" = UNSET
     """Privacy_Level"""
     discoverable_disabled: bool = UNSET
     """Whether"""
@@ -2437,7 +2439,7 @@ class Webhook(DiscordObject):
 
     id: Snowflake = UNSET
     """the id of the webhook"""
-    type: 'Webhook_Types' = UNSET
+    type: "Webhook_Types" = UNSET
     """Type"""
     guild_id: Optional[Nullable[Snowflake]] = UNSET
     """the guild id this webhook is for, if any"""
@@ -2483,7 +2485,7 @@ class Gateway_Payload(DiscordObject):
     * `s` and `t` are `null` when `op` is not `0` ([Gateway Dispatch opcode](https://discord.com/developers/docs/topics/opcodes_and_status_codes#gateway-gateway-opcodes)).
     """
 
-    op: 'Gateway_Opcodes' = UNSET
+    op: "Gateway_Opcodes" = UNSET
     """Gateway_Opcode"""
     d: Nullable[dict[Any, Any]] = UNSET
     """Event data"""

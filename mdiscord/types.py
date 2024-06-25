@@ -96,7 +96,6 @@ class Discord_Paths(Enum):
         return BASE_URL + self.value
 
 
-@dataclass
 class Embed(Embed):
     def set_title(self, title: str) -> Embed:
         """Sets Embed's Title respecting title limit if it's not above total limit"""
@@ -256,9 +255,9 @@ class Sendable:
     async def reply(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         private: bool = False,
@@ -288,9 +287,9 @@ class Sendable:
     async def send(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         reply: bool = False,
@@ -322,9 +321,9 @@ class Sendable:
     async def edit(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         flags: Message_Flags = None,
     ) -> Message:
@@ -361,11 +360,11 @@ class Sendable:
     async def send_followup(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
         allowed_mentions: Allowed_Mentions = [],
         tts: bool = None,
-        attachments: List[Attachment] = None,
+        attachments: list[Attachment] = None,
         username: str = None,
         avatar_url: str = None,
         flags: Message_Flags = None,
@@ -403,9 +402,9 @@ class Sendable:
     async def edit_followup(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = [],
         flags: Message_Flags = None,
     ) -> Union[Message, None]:
@@ -435,9 +434,8 @@ class Sendable:
         raise NotImplementedError
 
 
-@dataclass
 class Message(Message, Sendable):
-    embeds: List[Embed] = list
+    embeds: list[Embed] = list
 
     @property
     def is_private(self) -> bool:
@@ -469,9 +467,9 @@ class Message(Message, Sendable):
     async def reply(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         private: bool = None,
@@ -482,12 +480,16 @@ class Message(Message, Sendable):
             components=components,
             attachments=attachments,
             allowed_mentions=allowed_mentions,
-            message_reference=message_reference
-            or Message_Reference(
-                message_id=self.id, channel_id=self.channel_id, guild_id=self.guild_id if self.guild_id != 0 else None
-            )
-            if self.id
-            else None,
+            message_reference=(
+                message_reference
+                or Message_Reference(
+                    message_id=self.id,
+                    channel_id=self.channel_id,
+                    guild_id=self.guild_id if self.guild_id != 0 else None,
+                )
+                if self.id
+                else None
+            ),
             reply=True,
             private=private,
         )
@@ -495,9 +497,9 @@ class Message(Message, Sendable):
     async def send(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         reply: bool = False,
@@ -517,9 +519,9 @@ class Message(Message, Sendable):
     async def edit(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         flags: Message_Flags = None,
     ) -> Message:
@@ -559,7 +561,7 @@ class Message(Message, Sendable):
         webhook_id,
         webhook_token,
         content: str = None,
-        embeds: List[Embed] = None,
+        embeds: list[Embed] = None,
         allowed_mentions: Allowed_Mentions = None,
     ) -> None:
         """Edits webhook message"""
@@ -575,8 +577,8 @@ class Message(Message, Sendable):
         return await self._Client.create_reaction(self.channel_id, self.id, reaction)
 
     async def get_reactions(
-        self, emoji: str, users: List[User] = [], last_id: Snowflake = 0, limit: Snowflake = 100
-    ) -> List[User]:
+        self, emoji: str, users: list[User] = [], last_id: Snowflake = 0, limit: Snowflake = 100
+    ) -> list[User]:
         """Retrieves all users that reacted to this message"""
         # for chunk in range(int(count / 100) + (count % 100 > 0)): #Alternative pagination method
         r = await self._Client.get_reactions(self.channel_id, self.id, emoji, after=last_id, limit=limit)
@@ -612,7 +614,6 @@ class Message(Message, Sendable):
     deferred = typing
 
 
-@dataclass
 class Guild(Guild):
     def get_icon(self) -> str:
         return CDN_URL + CDN_Endpoints.Guild_Icon.value.format(guild_id=self.id, guild_icon=self.icon)
@@ -626,9 +627,8 @@ class Guild(Guild):
         )
 
 
-@dataclass
 class Channel(Channel):
-    async def get_messages(self, before_id: Snowflake = None, messages: List[Message] = [], limit: int = 100):
+    async def get_messages(self, before_id: Snowflake = None, messages: list[Message] = [], limit: int = 100):
         if limit < 1:
             return messages
         r = await self._Client.get_channel_messages(self.id, before=before_id, limit=min(limit, 100))
@@ -637,7 +637,6 @@ class Channel(Channel):
         return await self.get_messages(r[-1].id, messages=messages + r, limit=limit - len(r))
 
 
-@dataclass
 class User(User):
     def __str__(self):
         return f"{self.username}#{self.discriminator}"
@@ -648,7 +647,6 @@ class User(User):
         return CDN_URL + CDN_Endpoints.Default_User_Avatar.value.format(user_discriminator=self.discriminator % 5)
 
 
-@dataclass
 class Interaction(Interaction):
     data: Application_Command_Interaction_Data = None
     _deferred = False
@@ -702,9 +700,9 @@ class Interaction(Interaction):
     async def reply(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         private: bool = None,
@@ -730,9 +728,9 @@ class Interaction(Interaction):
     async def send(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         reply: bool = None,
@@ -764,9 +762,11 @@ class Interaction(Interaction):
             self.id,
             self.token,
             Interaction_Response(
-                type=Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE
-                if not custom_id
-                else Interaction_Callback_Type.MODAL,
+                type=(
+                    Interaction_Callback_Type.CHANNEL_MESSAGE_WITH_SOURCE
+                    if not custom_id
+                    else Interaction_Callback_Type.MODAL
+                ),
                 data=Interaction_Application_Command_Callback_Data(
                     content=content,
                     embeds=embeds,
@@ -782,9 +782,9 @@ class Interaction(Interaction):
     async def update(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         private: bool = False,
     ):
@@ -808,11 +808,11 @@ class Interaction(Interaction):
     async def send_followup(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
         allowed_mentions: Allowed_Mentions = None,
         tts: bool = None,
-        attachments: List[Attachment] = None,
+        attachments: list[Attachment] = None,
         username: str = None,
         avatar_url: str = None,
         flags: Message_Flags = None,
@@ -839,9 +839,9 @@ class Interaction(Interaction):
     async def edit(
         self,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
-        attachments: List[Attachment] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
+        attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         flags: Message_Flags = None,
         private: bool = False,
@@ -861,10 +861,10 @@ class Interaction(Interaction):
         self,
         message_id: Snowflake = None,
         content: str = None,
-        embeds: List[Embed] = None,
-        components: List[Component] = None,
+        embeds: list[Embed] = None,
+        components: list[Component] = None,
         allowed_mentions: Allowed_Mentions = None,
-        attachments: List[Attachment] = None,
+        attachments: list[Attachment] = None,
         flags: Message_Flags = None,
     ) -> Union[Message, None]:
         return await self._Client.edit_followup_message(
