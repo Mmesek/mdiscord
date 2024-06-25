@@ -8,26 +8,19 @@ Serializer & Deserializer
 :copyright: (c) 2021 Mmesek
 
 """
-from typing import Any
+import aiohttp
+import zlib
+import msgspec
 
-try:
-    import orjson as json
+from .types import Gateway_Payload
+from .utils import deserializer, serializer
 
-    def _dumps(obj: Any, **kwargs):
-        return json.dumps(obj, **kwargs).decode(encoding="utf-8")
-
-    _loads = json.loads
-except ModuleNotFoundError:
-    import json
-
-    _dumps = json.dumps
-    _loads = json.loads
+DECODER = msgspec.json.Decoder(Gateway_Payload, dec_hook=deserializer)
+ENCODER = msgspec.json.Encoder(enc_hook=serializer)
 
 
 class Deserializer:
     def __init__(self):
-        import zlib
-
         self._buffer = bytearray()
         self._zlib = zlib.decompressobj()
 
@@ -42,9 +35,8 @@ class Deserializer:
                     return
             else:
                 return
-        from .types import Gateway_Payload
 
-        return Gateway_Payload(**json.loads(msg))
+        return DECODER.decode(msg)
 
 
 def as_dict(object):
@@ -53,7 +45,7 @@ def as_dict(object):
     from . import Enum
     from enum import Flag
 
-    if type(object) is dict:
+    if isinstance(object, dict):
         _object = {}
         for key in object:
             if key not in ["_Client", "total_characters"]:
@@ -61,7 +53,7 @@ def as_dict(object):
                     continue
                 _object[key] = as_dict(object[key])
         return _object
-    elif type(object) is list:
+    elif isinstance(object, list):
         return [as_dict(key) for key in object]
     elif is_dataclass(object):
         if object._Client:
@@ -71,7 +63,7 @@ def as_dict(object):
         return object.isoformat()
     elif isinstance(object, Enum) or isinstance(object, Flag):
         return object.value
-    elif type(object) is bytes:
+    elif isinstance(object, bytes):
         return bytearray(object)
     elif type(object) is type:
         return None
@@ -87,8 +79,9 @@ class Serializer:
             kwargs["headers"] = []
         if self.token:
             kwargs["headers"].append(("Authorization", f"{self._auth_type} {self.token}"))
-        if kwargs.get("reason"):
+        if kwargs.get("reason", None):
             kwargs["headers"].append(("X-Audit-Log-Reason", kwargs.pop("reason")))
+
         if not (
             type(kwargs.get("json", None)) is dict
             and kwargs.get("json", {}).get("attachments", None)
@@ -100,8 +93,6 @@ class Serializer:
             else:
                 kwargs["headers"].append(("Content-Type", "text/html"))
         else:
-            import aiohttp
-
             kwargs["data"] = aiohttp.FormData(quote_fields=False)
             files = kwargs.get("json", {}).get("attachments", [])
             _index = iter(range(len(files)))
@@ -109,11 +100,10 @@ class Serializer:
                 if not file.id:
                     file.id = next(_index)
                 kwargs["data"].add_field(f"files[{file.id}]", file.file, filename=file.filename or "file")
-            from mlib.utils import remove_None
 
             kwargs["data"].add_field(
                 "payload_json",
-                json.dumps(remove_None(as_dict(kwargs["json"]))).decode(),
+                ENCODER.encode(as_dict(kwargs["json"])).decode(encoding="utf-8"),
                 content_type="application/json",
             )
             kwargs.pop("json")
@@ -122,24 +112,19 @@ class Serializer:
         return kwargs
 
     def _serialize(self, **kwargs):
-        from mlib.utils import remove_None
-
         if kwargs.get("json"):
             kwargs["json"] = as_dict(kwargs["json"])
-            kwargs["json"] = remove_None(kwargs.get("json", {}))
             if type(kwargs["json"]) is dict:
                 for key, value in kwargs["json"].items():
                     if key in {"embeds", "components"} and type(value) is not list:
                         kwargs["json"][key] = [value]
+
         if kwargs.get("params"):
-            kwargs["params"] = remove_None(kwargs.get("params"))
             for param in kwargs["params"]:
                 kwargs["params"][param] = str(kwargs["params"][param])
+
             for i in ["before", "after", "between"]:
                 if kwargs["params"].get(i, False) is None:
                     kwargs.pop(i)
-        nullable = kwargs.pop("nullable", {})
-        kwargs = remove_None(kwargs)
-        if "json" in kwargs and type(kwargs["json"]) is dict:
-            kwargs["json"].update(nullable)
+
         return kwargs
