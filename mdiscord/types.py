@@ -14,7 +14,9 @@ from __future__ import annotations
 from typing import Union, Tuple
 from datetime import datetime
 
+from .base_model import CDN_URL, BASE_URL
 from .models import *  # noqa: F401
+Application_Command_Interaction_Data = Interaction_Application_Command_Callback_Data
 
 
 class Attachment(Attachment):
@@ -898,9 +900,16 @@ class Gateway_Events(Events):
     """Server is going away, client should reconnect to gateway and resume"""
     Invalid_Session = bool
     """Identify"""
-    Application_Command_Create = Application_Command_Create
-    Application_Command_Update = Application_Command_Update
-    Application_Command_Delete = Application_Command_Delete
+    APPLICATION_COMMAND_PERMISSIONS_UPDATE = Application_Command_Permissions
+    "Application command permission was updated"
+    Auto_Moderation_Rule_Create = Auto_Moderation_Rule
+    """Auto Moderation rule was created"""
+    Auto_Moderation_Rule_Update = Auto_Moderation_Rule
+    """Auto Moderation rule was updated"""
+    Auto_Moderation_Rule_Delete = Auto_Moderation_Rule
+    """Auto Moderation rule was deleted"""
+    Auto_Moderation_Action_Execution = Auto_Moderation_Action_Execution
+    """Auto Moderation rule was triggered and an action was executed"""
     Channel_Create = Channel
     """New guild channel created"""
     Channel_Update = Channel
@@ -910,23 +919,39 @@ class Gateway_Events(Events):
     Channel_Pins_Update = Channel_Pins_Update
     """Message was pinned"""
     Thread_Create = Channel
+    """Thread created, also sent when being added to a private thread"""
     Thread_Update = Channel
+    """Thread was updated"""
     Thread_Delete = Channel
+    """Thread was deleted"""
     Thread_List_Sync = Thread_List_Sync
+    """Sent when gaining access to a channel, contains all active threads in that channel"""
     Thread_Member_Update = Thread_Member
+    """Thread_Member"""
     Thread_Members_Update = Thread_Members_Update
+    """Some user"""
+    Entitlement_Create = Entitlement
+    """Entitlement was created"""
+    Entitlement_Update = Entitlement
+    """Entitlement was updated"""
+    Entitlement_Delete = Entitlement
+    """Entitlement was deleted"""
     Guild_Create = Guild
     """Lazy-load for unavailable guild, guild became available,"""
     Guild_Update = Guild
     """Guild was updated"""
     Guild_Delete = dict
     """Guild became unavailable,"""
+    Guild_Audit_Log_Entry_Create = Audit_Log_Entry
+    """A guild audit log entry was created"""
     Guild_Ban_Add = Guild_Ban_Add
     """User was banned from a guild"""
     Guild_Ban_Remove = Guild_Ban_Remove
     """User was unbanned from a guild"""
     Guild_Emojis_Update = Guild_Emojis_Update
     """Guild emojis were updated"""
+    Guild_Stickers_Update = Guild_Stickers_Update
+    """Guild stickers were updated"""
     Guild_Integrations_Update = Guild_Integrations_Update
     """Guild integration was updated"""
     Guild_Member_Add = Guild_Member_Add
@@ -943,6 +968,24 @@ class Gateway_Events(Events):
     """Guild role was updated"""
     Guild_Role_Delete = Guild_Role_Delete
     """Guild role was deleted"""
+    Guild_Scheduled_Event_Create = Guild_Scheduled_Event
+    """Guild scheduled event was created"""
+    Guild_Scheduled_Event_Update = Guild_Scheduled_Event
+    """Guild scheduled event was updated"""
+    Guild_Scheduled_Event_Delete = Guild_Scheduled_Event
+    """Guild scheduled event was deleted"""
+    Guild_Scheduled_Event_User_Add = Guild_Scheduled_Event_User_Add
+    """User subscribed to a guild scheduled event"""
+    Guild_Scheduled_Event_User_Remove = Guild_Scheduled_Event_User_Remove
+    """User unsubscribed from a guild scheduled event"""
+    Integration_Create = Integration_Create
+    """Guild integration was created"""
+    Integration_Update = Integration_Update
+    """Guild integration was updated"""
+    Integration_Delete = Integration_Delete
+    """Guild integration was deleted"""
+    Interaction_Create = Application_Command
+    """Application_Command"""
     Invite_Create = Invite_Create
     """Invite to a channel was created"""
     Invite_Delete = Invite_Delete
@@ -965,6 +1008,12 @@ class Gateway_Events(Events):
     """All reactions for a given emoji were explicitly removed from a message"""
     Presence_Update = Presence_Update
     """User was updated"""
+    Stage_Instance_Create = Stage_Instance
+    """Stage instance was created"""
+    Stage_Instance_Update = Stage_Instance
+    """Stage instance was updated"""
+    Stage_Instance_Delete = Stage_Instance
+    """Stage instance was deleted"""
     Typing_Start = Typing_Start
     """User started typing in a channel"""
     User_Update = User
@@ -973,7 +1022,9 @@ class Gateway_Events(Events):
     """Someone joined, left,"""
     Voice_Server_Update = Voice_Server_Update
     """Guild's voice server was updated"""
-    Webhooks_Update = Webhook_Update
+    Webhooks_Update = Webhooks_Update
     """Guild channel webhook was created, update,"""
-    Interaction_Create = Interaction
-    """Slash_Command"""
+    Message_Poll_Vote_Add = Message_Poll_Vote_Add_Fields
+    """User voted on a poll"""
+    Message_Poll_Vote_Remove = Message_Poll_Vote_Remove_Fields
+    """User removed a vote on a poll"""
