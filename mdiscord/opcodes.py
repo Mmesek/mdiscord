@@ -10,12 +10,12 @@ Discord API Opcodes.
 """
 import asyncio, time
 import sys, traceback, platform
-from typing import List, Optional
 from collections import Counter
+from typing import Optional
 
-import msgspec
-from mlib.types import Invalid, aInvalid
+from mlib.types import aInvalid
 
+from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError, UserError
 from .types import (
     Gateway_Events,
     Gateway_Payload,
@@ -31,8 +31,7 @@ from .types import (
     Bot_Activity,
     Identify_Connection_Properties,
 )
-from .utils import log, EventListener, deserializer
-from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError, UserError
+from .utils import log, EventListener
 
 Dispatch = {}
 Predicates = {}
@@ -49,7 +48,7 @@ class Opcodes(EventListener):
 
     async def dispatch(self, data: Gateway_Payload) -> None:
         try:
-            data.d = msgspec.convert(data.d, getattr(Gateway_Events, data.t.title()).type(), dec_hook=deserializer)
+            data.d = getattr(Gateway_Events, data.t.title()).type().from_dict(data.d)
             data.d._Client = self
         except AttributeError:
             log.debug("Received unknown event type %s", data.t)
@@ -178,7 +177,7 @@ class Opcodes(EventListener):
         query: str = "",
         limit: int = 0,
         presences: bool = False,
-        user_ids: List[Snowflake] = None,
+        user_ids: list[Snowflake] = None,
     ) -> None:
         await self.send(
             Gateway_Payload(

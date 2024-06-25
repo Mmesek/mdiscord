@@ -1,9 +1,12 @@
+import asyncio
+import time
+
 import aiohttp
-from typing import Dict
+import msgspec
 
 from mdiscord.meta_types import Snowflake
 from mdiscord.endpoints import Endpoints
-from mdiscord.serializer import Serializer, _loads
+from mdiscord.serializer import Serializer
 from mdiscord.utils import log
 
 
@@ -11,7 +14,7 @@ class HTTP_Client(Endpoints, Serializer):
     token: str
     user_id: Snowflake
     _session: aiohttp.ClientSession
-    lock: Dict[str, bool]
+    lock: dict[str, bool]
     api_version: int
 
     def __init__(self, token=None, user_id=None, *, api_version: int = None) -> None:
@@ -40,11 +43,9 @@ class HTTP_Client(Endpoints, Serializer):
         return await self._api_call(path, method, **kwargs)
 
     async def _api_call(self, path: str, method: str = "GET", **kwargs):
-        import asyncio, time
-
         try:
             bucket = path.split("/", 3)[2]
-        except:
+        except IndexError:
             bucket = None
         limit = self.lock.get(bucket, (0, 0))
         if limit is True or self.lock.get("global", False):
@@ -64,10 +65,11 @@ class HTTP_Client(Endpoints, Serializer):
         ) as res:
             from mdiscord.models import HTTP_Response_Codes
             from mdiscord.exceptions import BadRequest, NotFound
+            from .serializer import from_builtins
 
             r = await res.text(encoding="utf-8")
             if res.headers.get("content-type", None) == "application/json":
-                r = _loads(r)
+                r = msgspec.json.decode(r, dec_hook=from_builtins)
 
             self.lock[bucket] = (
                 int(res.headers.get("X-RateLimit-Remaining", 1)),
