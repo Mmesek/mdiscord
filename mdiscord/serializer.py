@@ -8,13 +8,14 @@ Serializer & Deserializer
 :copyright: (c) 2021 Mmesek
 
 """
-import aiohttp
-import zlib
-import msgspec
 from datetime import UTC
 from typing import Any
 
-from .meta_types import Snowflake, UnixTimestamp, Duration
+import aiohttp
+import msgspec
+import zlib
+
+from mdiscord.meta_types import Snowflake, UnixTimestamp, Duration
 
 
 def to_builtins(x: Any):

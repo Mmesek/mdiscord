@@ -8,14 +8,11 @@ Model overrides with additional convinience methods.
 :copyright: (c) 2021 Mmesek
 
 """
-
-from __future__ import annotations
-
 from typing import Union, Tuple
 from datetime import datetime
 
-from .meta_types import CDN_URL, BASE_URL, NotSerializable
-from .models import *  # noqa: F401
+from mdiscord.meta_types import CDN_URL, BASE_URL, NotSerializable
+from mdiscord.models import *  # noqa: F401
 
 Application_Command_Interaction_Data = Interaction_Application_Command_Callback_Data
 

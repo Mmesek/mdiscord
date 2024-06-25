@@ -1,12 +1,15 @@
 import asyncio
+import platform
 import time
 
 import aiohttp
 import msgspec
 
-from mdiscord.meta_types import Snowflake
+from mdiscord.meta_types import Snowflake, BASE_URL
 from mdiscord.endpoints import Endpoints
-from mdiscord.serializer import Serializer
+from mdiscord.exceptions import BadRequest, NotFound
+from mdiscord.serializer import Serializer, from_builtins
+from mdiscord.models import HTTP_Response_Codes
 from mdiscord.utils import log
 
 
@@ -26,12 +29,8 @@ class HTTP_Client(Endpoints, Serializer):
         super().__init__()
 
     def _new_session(self):
-        import platform
-
         if "linux" in platform.system().lower():
-            from aiohttp.resolver import AsyncResolver
-
-            resolver = AsyncResolver(nameservers=["8.8.8.8", "8.8.4.4"])
+            resolver = aiohttp.resolver.AsyncResolver(nameservers=["8.8.8.8", "8.8.4.4"])
         else:
             resolver = None
         self._session = aiohttp.ClientSession(
@@ -58,15 +57,9 @@ class HTTP_Client(Endpoints, Serializer):
             log.debug("Rate Limit exhausted on bucket %s. Sleeping for %s", bucket or "GLOBAL", limit[1] - time.time())
             await asyncio.sleep(limit[1] - time.time())
 
-        from mdiscord.base_model import BASE_URL
-
         async with self._session.request(
             method, BASE_URL + "api" + (f"/v{self.api_version}" if self.api_version else "") + path, **kwargs
         ) as res:
-            from mdiscord.models import HTTP_Response_Codes
-            from mdiscord.exceptions import BadRequest, NotFound
-            from .serializer import from_builtins
-
             r = await res.text(encoding="utf-8")
             if res.headers.get("content-type", None) == "application/json":
                 r = msgspec.json.decode(r, dec_hook=from_builtins)

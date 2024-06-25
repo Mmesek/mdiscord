@@ -14,8 +14,9 @@ from typing import Optional, Callable, Tuple, Union
 
 from mlib import logger
 
-from .base_model import DiscordObject
-from .types import Gateway_Events
+from mdiscord.base_model import DiscordObject
+from mdiscord.exceptions import Insufficient_Permissions
+from mdiscord.types import Bitwise_Permission_Flags, Gateway_Events, Intents
 
 log = logging.getLogger("mdiscord")
 log.setLevel(logger.log_level)
@@ -60,13 +61,9 @@ def Permissions(*permissions):
         def wrapped(Client, id, *args, **kwargs):
             for permission in permissions:
                 if hasattr(Client, "cache") and id in Client.cache:
-                    from .types import Bitwise_Permission_Flags
-
                     if not Bitwise_Permission_Flags.check(
                         Client.cache[id].permissions, getattr(Bitwise_Permission_Flags, permission)
                     ):
-                        from .exceptions import Insufficient_Permissions
-
                         raise Insufficient_Permissions(*permissions)
             return f(Client, id, *args, **kwargs)
 
@@ -79,8 +76,6 @@ def count(*intents):
     value = 0
     for intent in intents:
         try:
-            from .types import Intents
-
             value |= getattr(Intents, intent).value
         except AttributeError:
             pass

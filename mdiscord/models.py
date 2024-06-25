@@ -15,8 +15,8 @@ from typing import Annotated, Any, Optional
 
 from msgspec import UNSET, Meta
 
-from .base_model import DiscordObject, Events
-from .meta_types import Snowflake, DISCORD_EPOCH, Nullable, UnixTimestamp, Duration
+from mdiscord.base_model import DiscordObject, Events
+from mdiscord.meta_types import Snowflake, DISCORD_EPOCH, Nullable, UnixTimestamp, Duration
 
 
 class Limits(IntEnum):
@@ -3260,7 +3260,7 @@ class Application_Command(DiscordObject):
 
     id: Snowflake = UNSET
     """Unique ID of command"""
-    type: Optional["Application_Command_Types"] = UNSET
+    type: Optional["Application_Command_Type"] = UNSET
     """Type_Of_Command"""
     application_id: Snowflake = UNSET
     """ID of the parent application"""
@@ -3292,7 +3292,7 @@ class Application_Command(DiscordObject):
     """Autoincrementing version identifier updated during substantial record changes"""
 
 
-class Application_Command_Types(Enum):
+class Application_Command_Type(Enum):
     CHAT_INPUT = 1
     """Slash commands; a text-based command that shows up when a user types /"""
     USER = 2

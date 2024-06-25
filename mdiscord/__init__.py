@@ -10,9 +10,9 @@ Discord API.
 """
 from typing import Callable, Union
 
-from .types import *  # noqa: F401
-from .websocket import WebSocket_Client as Client  # noqa: F401
-from .exceptions import *  # noqa: F401
+from mdiscord.types import *  # noqa: F401
+from mdiscord.websocket import WebSocket_Client as Client  # noqa: F401
+from mdiscord.exceptions import *  # noqa: F401
 
 
 def onDispatch(

@@ -8,14 +8,17 @@ Discord API Client.
 :copyright: (c) 2021 Mmesek
 
 """
-
 import asyncio
-from . import types as objects
-from .http_client import HTTP_Client
-from .opcodes import Opcodes
+import time
 
-from .serializer import Deserializer, as_dict
-from .utils import log
+from mlib.types import Invalid
+
+from mdiscord import types as objects
+from mdiscord.http_client import HTTP_Client
+from mdiscord.opcodes import Opcodes
+
+from mdiscord.serializer import Deserializer, as_dict
+from mdiscord.utils import log
 
 
 class WebSocket_Client(HTTP_Client, Opcodes):
@@ -27,10 +30,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
 
     def __init__(self, name: str, cfg: dict, shard: int = 0, total_shards: int = 1):
         self.username = "[NOT CONNTECTED] " + name
-
         self.cfg = cfg
-
-        import time
 
         self.presence = objects.Gateway_Presence_Update(
             since=time.time(),
@@ -77,8 +77,6 @@ class WebSocket_Client(HTTP_Client, Opcodes):
                 if data is not None:
                     if data.op != 11 and data.s is not None:
                         self.last_sequence = data.s
-                    from mlib.types import Invalid
-
                     asyncio.create_task(self.opcodes.get(data.op, Invalid)(data), name="Dispatch")
             except Exception as ex:
                 log.exception("Exception! Type: %s", msg.type, exc_info=ex)

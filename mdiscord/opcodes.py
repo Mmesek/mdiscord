@@ -15,8 +15,8 @@ from typing import Optional
 
 from mlib.types import aInvalid
 
-from .exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError, UserError
-from .types import (
+from mdiscord.exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError, UserError
+from mdiscord.types import (
     Gateway_Events,
     Gateway_Payload,
     Gateway_Opcodes,
@@ -31,7 +31,7 @@ from .types import (
     Bot_Activity,
     Identify_Connection_Properties,
 )
-from .utils import log, EventListener
+from mdiscord.utils import log, EventListener
 
 Dispatch = {}
 Predicates = {}

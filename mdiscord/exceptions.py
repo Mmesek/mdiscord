@@ -8,10 +8,10 @@ Discord Exceptions.
 :copyright: (c) 2021 Mmesek
 
 """
-from typing import Dict, Any, Tuple
+from typing import Any
 
 
-def find_error(obj: Dict[str, Any], errors: Dict[str, Any], previous: Dict[str, Any] = None) -> Tuple[Dict, Dict]:
+def find_error(obj: dict[str, Any], errors: dict[str, Any], previous: dict[str, Any] = None) -> tuple[dict, dict]:
     for error in errors:
         if error.isdigit():
             try:
@@ -57,8 +57,8 @@ class BadRequest(RequestError):
         method: str,
         path: str,
         *args: object,
-        payload: Dict[str, Any] = None,
-        errors: Dict[str, Any] = None,
+        payload: dict[str, Any] = None,
+        errors: dict[str, Any] = None,
     ) -> None:
         self.msg = msg
         payload, errors = find_error(payload, errors)
