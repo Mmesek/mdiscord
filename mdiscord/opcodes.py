@@ -58,10 +58,12 @@ class Opcodes(EventListener):
         if not getattr(data.d, "guild_id", False) and "MESSAGE" in data.t:
             data.t = "DIRECT_" + data.t
         if getattr(data.d, "is_bot", False):
-            return
+            data.t = "BOT_" + data.t
+
         self.counters[data.t] += 1
         if self.check_listeners(data.t, data.d):
             return
+
         _completed = {}  # Cached result so we don't check same predicate for one payload multiple times
         for priority in sorted(Dispatch.get(data.t, {})):
             for function in Dispatch.get(data.t, [aInvalid])[priority]:
@@ -78,6 +80,8 @@ class Opcodes(EventListener):
                     channel_id = getattr(data.d, "channel_id")
                     if channel_id:
                         await self.create_message(channel_id=channel_id, content=str(ex))
+                except JsonBadRequest as ex:
+                    log.warn("JSON Bad Request", exc_info=ex)
                 except BadRequest as ex:
                     log.warn("Bad Request", exc_info=ex)
                 except NotFound as ex:
@@ -96,14 +100,11 @@ class Opcodes(EventListener):
                         # print('Error occured:', ex)
                         # print(sys.exc_info())
                         # print(t)
-                except JsonBadRequest as ex:
-                    log.warn("JSON Bad Request", exc_info=ex)
                 except SoftError as ex:
                     log.debug(ex)
                 except Exception as ex:
                     t = traceback.extract_tb(sys.exc_info()[2], limit=-1)
                     log.exception("Dispatch Error %s: %s at %s", type(ex), ex, t, exc_info=ex)
-        return
 
     async def reconnect(self, data: Gateway_Payload) -> None:
         log.info("Reconnecting %s", self.username)
