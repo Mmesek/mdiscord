@@ -11,18 +11,42 @@ Serializer & Deserializer
 import aiohttp
 import zlib
 import msgspec
+from datetime import UTC
+from typing import Any
 
-from .types import Gateway_Payload
-from .utils import deserializer, serializer
+from .meta_types import Snowflake, UnixTimestamp, Duration
 
-DECODER = msgspec.json.Decoder(Gateway_Payload, dec_hook=deserializer)
-ENCODER = msgspec.json.Encoder(enc_hook=serializer)
+
+def to_builtins(x: Any):
+    if isinstance(x, Snowflake):
+        return x._value
+    elif isinstance(x, UnixTimestamp):
+        return x.timestamp() * 1000
+    elif isinstance(x, Duration):
+        return int(x.total_seconds())
+    return None
+
+
+def from_builtins(typ: type, x: Any):
+    if typ is Snowflake:
+        return Snowflake(x)
+    elif typ is UnixTimestamp:
+        return UnixTimestamp.fromtimestamp(x / 1000, UTC)
+    elif typ is Duration:
+        return Duration(seconds=x)
+    return x
+
+
+ENCODER = msgspec.json.Encoder(enc_hook=to_builtins)
 
 
 class Deserializer:
     def __init__(self):
         self._buffer = bytearray()
         self._zlib = zlib.decompressobj()
+        from .types import Gateway_Payload
+
+        self._decoder = msgspec.json.Decoder(Gateway_Payload, dec_hook=from_builtins)
 
     def __call__(self, msg: bytes):
         if type(msg) is bytes:
@@ -36,7 +60,7 @@ class Deserializer:
             else:
                 return
 
-        return DECODER.decode(msg)
+        return self._decoder.decode(msg)
 
 
 def as_dict(object):

@@ -10,14 +10,12 @@ Utility functions for internal usage
 """
 import asyncio
 import logging
-from datetime import UTC
 from typing import Optional, Callable, Tuple, Union
 
 from mlib import logger
 
 from .base_model import DiscordObject
-from .types import Gateway_Events, Snowflake
-from .meta_types import UnixTimestamp, Duration
+from .types import Gateway_Events
 
 log = logging.getLogger("mdiscord")
 log.setLevel(logger.log_level)
@@ -181,23 +179,3 @@ class EventListener:
                 del self._listeners[event][id]
         if len(removed):
             return True
-
-
-def serializer(x):
-    if isinstance(x, Snowflake):
-        return x._value
-    elif isinstance(x, UnixTimestamp):
-        return x.timestamp() * 1000
-    elif isinstance(x, Duration):
-        return int(x.total_seconds())
-    return None
-
-
-def deserializer(typ, x):
-    if typ is Snowflake:
-        return Snowflake(x)
-    elif typ is UnixTimestamp:
-        return UnixTimestamp.fromtimestamp(x / 1000, UTC)
-    elif typ is Duration:
-        return Duration(seconds=x)
-    return x

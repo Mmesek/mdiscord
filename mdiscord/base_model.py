@@ -8,13 +8,13 @@ Base Types.
 :copyright: (c) 2021-2024 Mmesek
 
 """
-from typing import Optional, TYPE_CHECKING, Type, TypeVar
+from typing import Any, Optional, TYPE_CHECKING, Type, TypeVar, get_origin, get_type_hints
 from enum import Flag
-from datetime import datetime, UTC
-import msgspec
 
+import msgspec
 from mlib.types import Enum
-from .serializer import as_dict
+
+from .serializer import from_builtins, to_builtins
 from .meta_types import NotSerializable
 
 if TYPE_CHECKING:
