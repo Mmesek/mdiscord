@@ -8,6 +8,19 @@ Utility functions for internal usage
 :copyright: (c) 2021 Mmesek
 
 """
+import asyncio
+import logging
+from datetime import UTC
+from typing import Optional, Callable, Tuple, Union
+
+from mlib import logger
+
+from .base_model import DiscordObject
+from .types import Gateway_Events, Snowflake
+from .meta_types import UnixTimestamp, Duration
+
+log = logging.getLogger("mdiscord")
+log.setLevel(logger.log_level)
 
 
 def dataclass_from_dict(klass, dikt):
@@ -76,18 +89,6 @@ def count(*intents):
     return value
 
 
-import logging
-from mlib import logger
-
-log = logging.getLogger("mdiscord")
-log.setLevel(logger.log_level)
-
-import asyncio
-from typing import Optional, Callable, Dict, List, Tuple, Union
-from .base_model import DiscordObject
-from .types import Gateway_Events
-
-
 def default_check(data: DiscordObject) -> bool:
     """Default check that returns True"""
     return True
@@ -96,7 +97,7 @@ def default_check(data: DiscordObject) -> bool:
 class EventListener:
     """Event Listener mixin"""
 
-    _listeners: Dict[str, List[Tuple[asyncio.Future, Callable[[DiscordObject], bool]]]]
+    _listeners: dict[str, list[Tuple[asyncio.Future, Callable[[DiscordObject], bool]]]]
 
     def wait_for(
         self,
@@ -104,7 +105,7 @@ class EventListener:
         repeat: int = 1,
         *,
         check: Optional[Callable[[DiscordObject], bool]] = default_check,
-        timeout: Optional[float] = None
+        timeout: Optional[float] = None,
     ) -> DiscordObject:
         """Wait for Dispatch event that meets predicate statement
 
@@ -180,3 +181,23 @@ class EventListener:
                 del self._listeners[event][id]
         if len(removed):
             return True
+
+
+def serializer(x):
+    if isinstance(x, Snowflake):
+        return x._value
+    elif isinstance(x, UnixTimestamp):
+        return x.timestamp() * 1000
+    elif isinstance(x, Duration):
+        return int(x.total_seconds())
+    return None
+
+
+def deserializer(typ, x):
+    if typ is Snowflake:
+        return Snowflake(x)
+    elif typ is UnixTimestamp:
+        return UnixTimestamp.fromtimestamp(x / 1000, UTC)
+    elif typ is Duration:
+        return Duration(seconds=x)
+    return x
