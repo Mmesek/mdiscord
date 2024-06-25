@@ -14,9 +14,8 @@ from __future__ import annotations
 from typing import Union, Tuple
 from datetime import datetime
 
-from .base_model import CDN_URL, BASE_URL
+from .meta_types import CDN_URL, BASE_URL, NotSerializable
 from .models import *  # noqa: F401
-from .meta_types import NotSerializable
 
 Application_Command_Interaction_Data = Interaction_Application_Command_Callback_Data
 
@@ -26,6 +25,8 @@ class Attachment(Attachment):
     spoiler: NotSerializable[bool] = False
 
     def __post_init__(self):
+        if not self.filename:
+            self.filename = "file"
         if self.spoiler and not self.filename.startswith("SPOILER_"):
             self.filename = "SPOILER_" + self.filename
 
