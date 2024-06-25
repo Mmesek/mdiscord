@@ -1,7 +1,7 @@
 import aiohttp
 from typing import Dict
 
-from mdiscord.base_model import Snowflake
+from mdiscord.meta_types import Snowflake
 from mdiscord.endpoints import Endpoints
 from mdiscord.serializer import Serializer, _loads
 from mdiscord.utils import log

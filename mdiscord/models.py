@@ -15,7 +15,8 @@ from typing import Annotated, Any, Optional
 
 from msgspec import UNSET, Meta
 
-from .base_model import DiscordObject, Snowflake, DISCORD_EPOCH, Events, Nullable, UnixTimestamp, Duration
+from .base_model import DiscordObject, Events
+from .meta_types import Snowflake, DISCORD_EPOCH, Nullable, UnixTimestamp, Duration
 
 
 class Limits(IntEnum):
