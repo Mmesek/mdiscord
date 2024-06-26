@@ -11,7 +11,7 @@ Discord raw API types.
 """
 
 from ctypes import c_byte, c_uint, c_ushort
-from enum import IntEnum, Enum, Flag
+from enum import IntEnum, Enum, IntFlag as Flag, IntFlag
 from datetime import datetime
 from typing import Annotated, Any, Optional
 
@@ -112,7 +112,7 @@ class Application(DiscordObject):
     """List of tags describing the content and functionality of the app. Max of 5 tags"""
     install_params: Optional["Install_Params"] = UNSET
     """Settings for the app's default in-app authorization link, if enabled"""
-    integration_types_config: Optional["Application_Integration_Types"] = UNSET
+    integration_types_config: Optional["Application_Integration_Type_Configuration"] = UNSET
     """In_Preview"""
     custom_install_url: Optional[str] = UNSET
     """Default custom authorization URL for the app, if enabled"""
@@ -134,7 +134,7 @@ class Application_Integration_Type_Configuration(DiscordObject):
     """Install params for each installation context's default in-app authorization link"""
 
 
-class Application_Flags(Flag):
+class Application_Flags(IntFlag):
     APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE = 1 << 6
     """Auto_Moderation_API"""
     GATEWAY_PRESENCE = 1 << 12
@@ -481,7 +481,7 @@ class Audit_Log_Change_Key(DiscordObject):
     """text channel topic"""
     bitrate: int = UNSET
     """voice channel bitrate changed"""
-    permission_overwrites: "Overwrite" = UNSET
+    permission_overwrites: list["Overwrite"] = UNSET
     """permissions on a channel changed"""
     nsfw: bool = UNSET
     """channel nsfw restriction changed"""
@@ -723,7 +723,7 @@ class Channel(DiscordObject):
     """the id of the guild"""
     position: Optional[int] = UNSET
     """sorting position of the channel"""
-    permission_overwrites: Optional["Overwrite"] = UNSET
+    permission_overwrites: Optional[list["Overwrite"]] = UNSET
     """explicit permission overwrites for members and roles"""
     name: Optional[Nullable[str]] = UNSET
     """the name of the channel"""
@@ -1446,7 +1446,7 @@ class Emoji(DiscordObject):
     """Emoji_Id"""
     name: Nullable[str] = UNSET
     """emoji name"""
-    roles: Optional[list["Role"]] = UNSET
+    roles: Optional[list[Snowflake]] = UNSET
     """roles allowed to use this emoji"""
     user: Optional["User"] = UNSET
     """user that created this emoji"""
@@ -1569,7 +1569,7 @@ class Guild(DiscordObject):
     """Invite"""
     nsfw_level: "Guild_NSFW_Level" = UNSET
     """Guild_NSFW_Level"""
-    stickers: Optional["Sticker"] = UNSET
+    stickers: Optional[list["Sticker"]] = UNSET
     """custom guild stickers"""
     premium_progress_bar_enabled: bool = UNSET
     """whether the guild has the boost progress bar enabled"""

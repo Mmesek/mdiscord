@@ -48,7 +48,7 @@ class Opcodes(EventListener):
 
     async def dispatch(self, data: Gateway_Payload) -> None:
         try:
-            data.d = getattr(Gateway_Events, data.t.title()).type().from_dict(data.d)
+            data.d = getattr(Gateway_Events, data.t.title())(**data.d)
             data.d._Client = self
         except AttributeError:
             log.debug("Received unknown event type %s", data.t)

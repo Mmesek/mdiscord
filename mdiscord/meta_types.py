@@ -22,8 +22,9 @@ class NotSerializable(Generic[T]):
     pass
 
 
-class Nullable(Generic[T]):
-    pass
+Nullable = T | None
+# class Nullable(Generic[T]):
+#    pass
 
 
 class UnixTimestamp(datetime):

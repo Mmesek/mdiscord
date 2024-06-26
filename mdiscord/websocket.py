@@ -15,7 +15,7 @@ from mlib.types import Invalid
 
 from mdiscord import types as objects
 from mdiscord.http_client import HTTP_Client
-from mdiscord.opcodes import Opcodes
+from mdiscord.opcodes import Opcodes, Gateway_Opcodes
 
 from mdiscord.serializer import Deserializer, as_dict
 from mdiscord.utils import log
@@ -62,7 +62,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
             self._new_session()
         if not self.resume_url:
             gate = await self.get_gateway_bot()
-            url = gate["url"]
+            url = gate.url
         else:
             url = self.resume_url
         self._ws = await self._session.ws_connect(
@@ -75,9 +75,9 @@ class WebSocket_Client(HTTP_Client, Opcodes):
             try:
                 data = self.decompress(msg.data)
                 if data is not None:
-                    if data.op != 11 and data.s is not None:
+                    if data.op != Gateway_Opcodes.HEARTBEAT_ACK and data.s is not None:
                         self.last_sequence = data.s
-                    asyncio.create_task(self.opcodes.get(data.op, Invalid)(data), name="Dispatch")
+                    asyncio.create_task(self.opcodes.get(data.op.value, Invalid)(data), name="Dispatch")
             except Exception as ex:
                 log.exception("Exception! Type: %s", msg.type, exc_info=ex)
 
