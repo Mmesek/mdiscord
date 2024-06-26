@@ -51,7 +51,15 @@ class HTTP_Client(Endpoints, Serializer):
         kwargs = self._prepare_payload(**kwargs)
         return await self._api_call(path, method, **kwargs)
 
-    async def _api_call(self, path: str, method: str = "GET", **kwargs):
+    async def _api_call(
+        self,
+        path: str,
+        method: str = "GET",
+        bucket: tuple[str] = None,
+        params: dict[str, str] = None,
+        json: dict[str] = None,
+        **kwargs,
+    ):
         try:
             bucket = path.split("/", 3)[2]
         except IndexError:
@@ -68,7 +76,11 @@ class HTTP_Client(Endpoints, Serializer):
             await asyncio.sleep(limit[1] - time.time())
 
         async with self._session.request(
-            method, BASE_URL + "api" + (f"/v{self.api_version}" if self.api_version else "") + path, **kwargs
+            method,
+            BASE_URL + "api" + (f"/v{self.api_version}" if self.api_version else "") + path,
+            params=params or None,
+            json=json or None,
+            **kwargs,
         ) as res:
             r = await res.text(encoding="utf-8")
             if res.headers.get("content-type", None) == "application/json":
@@ -122,9 +134,7 @@ class HTTP_Client(Endpoints, Serializer):
                 await asyncio.sleep(1)
                 return await self._api_call(path, method, **kwargs)
 
-            if type(r) is dict:
-                return dict({"_Client": self}, **r)
-            return list(dict({"_Client": self}, **i) for i in r)
+            return r
 
     async def close(self):
         await self._session.close()
