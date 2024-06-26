@@ -9,6 +9,16 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dynamic = ["dependencies"]
+requires-python = ">=3.10"
+
+[tool.setuptools.dynamic.dependencies]
+file = "requirements.txt"
+
+[project.optional-dependencies]
+tests = ["pytest", "pytest-cov", "pytest-asyncio", "pytest-mock"]
+lint = ["ruff"]
+dev = ["mdiscord[tests,lint]", "pre-commit"]
 
 [project.urls]
 "Homepage" = "https://github.com/Mmesek/mdiscord"
@@ -18,9 +28,24 @@ classifiers = [
 [project.license]
 file = "LICENSE"
 
-[tool.isort]
-profile = "black"
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --doctest-report ndiff --cov=mdiscord tests/"
+doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
+testpaths = ["mdiscord", "tests"]
 
-[tool.black]
+[tool.ruff]
 line-length = 120
-target-version = ["py312"]
+src = ["mdiscord"]
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.ruff.lint]
+ignore = [
+    "E401", # Multiple imports on one line
+    "F403", # Wildcard import
+    "F405", # Possibly undefined symbol or imported from wildcard
+]
+isort.combine-as-imports = true
+pydocstyle.convention = "numpy"
