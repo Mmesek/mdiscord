@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+HTTP Client
+----------
+
+REST API Client for Discord API.
+
+:copyright: (c) 2021 Mmesek
+"""
+
 import asyncio
 import platform
 import time

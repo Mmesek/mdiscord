@@ -6,8 +6,8 @@ Discord API
 Base Types.
 
 :copyright: (c) 2021-2024 Mmesek
-
 """
+
 from typing import Any, Optional, TYPE_CHECKING, Type, TypeVar, get_origin, get_type_hints
 from enum import Flag
 
@@ -20,7 +20,7 @@ from mdiscord.meta_types import NotSerializable
 if TYPE_CHECKING:
     from mdiscord.websocket import WebSocket_Client as Bot
 else:
-
+    # NOTE: Hack of sorts as otherwise `_decoder` in `Deserializer` throws `NameError`
     class Bot:
         pass
 

@@ -6,8 +6,8 @@ Discord API
 Discord API.
 
 :copyright: (c) 2020 Mmesek
-
 """
+
 from typing import Callable, Union
 
 from mdiscord.types import *  # noqa: F401

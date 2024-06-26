@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Metadata Types
+----------
+
+Metadata types used for conversions to allow more convenient usage.
+
+:copyright: (c) 2024 Mmesek
+"""
+
 from datetime import datetime, timedelta, UTC
 from typing import Generic, TypeVar
 
@@ -59,4 +69,4 @@ class Snowflake(int):
         return datetime.fromtimestamp(ms // 1000.0, UTC).replace(microsecond=ms % 1000 * 1000)
 
     def styled_date(self, style: str = None) -> str:
-        return f"<t:{int(self.timestamp/1000.0)}{':'+style if style else ''}>"
+        return f"<t:{int(self.timestamp / 1000.0)}{':' + style if style else ''}>"

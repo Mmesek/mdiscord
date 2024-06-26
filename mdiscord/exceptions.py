@@ -6,9 +6,10 @@ Discord Exceptions
 Discord Exceptions.
 
 :copyright: (c) 2021 Mmesek
-
 """
+
 from typing import Any
+import json
 
 
 def find_error(obj: dict[str, Any], errors: dict[str, Any], previous: dict[str, Any] = None) -> tuple[dict, dict]:
@@ -62,8 +63,6 @@ class BadRequest(RequestError):
     ) -> None:
         self.msg = msg
         payload, errors = find_error(payload, errors)
-        import json
-
         if isinstance(payload, dict):
             payload = json.dumps(payload, indent=2)
         try:

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 Utils
-----------
+-----
 
 Utility functions for internal usage
 
 :copyright: (c) 2021 Mmesek
-
 """
+
 import asyncio
 import logging
 from typing import Optional, Callable, Tuple, Union

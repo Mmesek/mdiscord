@@ -6,8 +6,8 @@ Discord Opcodes
 Discord API Opcodes.
 
 :copyright: (c) 2020 Mmesek
-
 """
+
 import asyncio, time
 import sys, traceback, platform
 from collections import Counter

@@ -6,8 +6,8 @@ Serialization JSON<->Types
 Serializer & Deserializer
 
 :copyright: (c) 2021 Mmesek
-
 """
+
 from datetime import UTC
 from typing import Any
 

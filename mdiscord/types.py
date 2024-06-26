@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 Discord Types
-----------
+-------------
 
 Model overrides with additional convinience methods.
 
 :copyright: (c) 2021 Mmesek
-
 """
+
 from typing import Union, Tuple
 from datetime import datetime
 
@@ -101,9 +101,9 @@ class Embed(Embed):
         ----------
         color:
             Accepts HEX string, RGB Tuple or final Integer"""
-        if type(color) == str and "#" in color:
+        if type(color) is str and "#" in color:
             color = int(color.lstrip("#"), 16)
-        elif type(color) == tuple:
+        elif type(color) is tuple:
             color = (color[0] << 16) + (color[1] << 8) + color[2]
         self.color = color
         return self
