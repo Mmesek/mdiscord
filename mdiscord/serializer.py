@@ -66,8 +66,8 @@ class Deserializer:
 
 def as_dict(object):
     from datetime import datetime
-    from dataclasses import is_dataclass
     from . import Enum
+    from .base_model import DiscordObject
     from enum import Flag
 
     if isinstance(object, dict):
@@ -80,7 +80,7 @@ def as_dict(object):
         return _object
     elif isinstance(object, list):
         return [as_dict(key) for key in object]
-    elif is_dataclass(object):
+    elif isinstance(object, DiscordObject):
         if object._Client:
             object._Client = None
         return object.as_dict()
@@ -104,8 +104,8 @@ class Serializer:
             kwargs["headers"] = []
         if self.token:
             kwargs["headers"].append(("Authorization", f"{self._auth_type} {self.token}"))
-        if kwargs.get("reason", None):
-            kwargs["headers"].append(("X-Audit-Log-Reason", kwargs.pop("reason")))
+        if reason := kwargs.pop("reason", None):
+            kwargs["headers"].append(("X-Audit-Log-Reason", reason))
 
         if not (
             type(kwargs.get("json", None)) is dict
