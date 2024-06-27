@@ -11,14 +11,14 @@ Discord raw API types.
 """
 
 from ctypes import c_byte, c_uint, c_ushort
-from enum import IntEnum, Enum, IntFlag as Flag, IntFlag
 from datetime import datetime
+from enum import Enum, IntEnum, IntFlag, IntFlag as Flag
 from typing import Annotated, Any, Optional
 
 from msgspec import UNSET, Meta
 
 from mdiscord.base_model import DiscordObject, Events
-from mdiscord.meta_types import Snowflake, DISCORD_EPOCH, Nullable, UnixTimestamp, Duration
+from mdiscord.meta_types import DISCORD_EPOCH, Duration, Nullable, Snowflake, UnixTimestamp
 
 
 class Limits(IntEnum):
