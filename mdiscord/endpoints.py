@@ -2520,7 +2520,7 @@ class Endpoints:
         Includes the user field if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission.
         """
 
-    @route(method="POST", path="/guilds/{guild_id}/stickers")
+    @route(method="POST", path="/guilds/{guild_id}/stickers", json_as_form_data=True)
     async def create_guild_sticker(
         self, guild_id: Snowflake, name: str, description: str, tags: str, file: bytes
     ) -> Sticker:

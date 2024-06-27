@@ -8,18 +8,20 @@ PATH_PARAM = re.compile(r"/\{(.*)\}")  # BUG: Too greedy! It takes first and las
 MAJOR_PARAMS = ["guild_id", "channel_id", "webhook_id", "webhook_token"]
 
 
-def route(method: str, path: str):
+def route(method: str, path: str, json_as_form_data: bool = False):
     """
     Route decorator, creates an endpoint call based on parameters.
     Regular parameters are interpreted as JSON body arguments unless they are present in `path`.
     Keyword-only parameters are interpreted as Query arguments (?k=v&k2=v2).
     Return type is used for autocasting. Supports casting to an array.
+
     Parameters
     ----------
     method: `str`
         HTTP Method used when sending Request.
     path: `str`
         Path to which send Request. Supports `/{path}/` params.
+
     Returns
     -------
     `Any`, depends on decorated function.
@@ -27,11 +29,12 @@ def route(method: str, path: str):
 
     def init(f):
         # Init here
-        PATH = PATH_PARAM.findall(path)
         type_hints = get_type_hints(f)
         module = inspect.getmodule(f).__name__
         origin = get_origin(type_hints.get("return", None))
         args = inspect.getfullargspec(f)
+
+        PATH = PATH_PARAM.findall(path)
         ARGUMENTS = [
             k for k in type_hints.keys() if k != "return"
         ]  # NOTE: Don't include path params (named args in function below)
@@ -50,11 +53,13 @@ def route(method: str, path: str):
             if IS_METHOD:
                 kwargs.update()  # TODO: Set path params from available attributes here
             kwargs.update(zip(ARGUMENTS, args))
+
             try:
                 _path = path.format(**{k: v for k, v in kwargs.items() if k in PATH})
             except:
                 # NOTE: testing only
                 breakpoint
+
             r = await self.api_call(
                 path=_path,
                 method=method,
@@ -64,9 +69,12 @@ def route(method: str, path: str):
                 # bucket="|".join([str(kwargs.get(major, "-")) for major in MAJOR_PARAMS]), # NOTE: String might be bigger in size than a tuple
                 bucket=tuple(kwargs.get(major, None) for major in MAJOR_PARAMS),
             )
+
             arg = get_args(RESULT)
+
             if not issubclass(arg[0] if arg else RESULT, DiscordObject):
                 return r
+
             if IS_LIST:
                 items = []
                 for i in r:
@@ -84,6 +92,7 @@ def route(method: str, path: str):
 
             r = RESULT.from_dict(**r)
             r._Client = self
+
             return r
 
         return _api_call
