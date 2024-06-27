@@ -2649,6 +2649,22 @@ class Thread_List_Sync(DiscordObject):
     """All thread member s from the synced threads for the current user, indicating which threads the current user has been added to"""
 
 
+class Thread_List(DiscordObject):
+    threads: list["Channel"] = UNSET
+    members: list["Thread_Member"] = UNSET
+    has_more: bool = UNSET
+
+
+class Thread_Message(DiscordObject):
+    content: str = UNSET
+    embeds: list["Embed"] = UNSET
+    allowed_mentions: "Allowed_Mentions" = UNSET
+    components: list["Component"] = UNSET
+    sticker_ids: list[Snowflake] = UNSET
+    attachments: list["Attachment"] = UNSET
+    flags: Message_Flags = UNSET
+
+
 class Thread_Member_Update_Event(DiscordObject):
     guild_id: Snowflake = UNSET
     """ID of the guild"""
@@ -2720,6 +2736,11 @@ class Entitlement_Types(Enum):
     """Entitlement was claimed by user for free as a Nitro Subscriber"""
     APPLICATION_SUBSCRIPTION = 8
     """Entitlement was purchased as an app subscription"""
+
+
+class Entitlement_Subscription_Types(Enum):
+    GUILD = 1
+    USER = 2
 
 
 class Guild_Create(DiscordObject):
@@ -3286,9 +3307,9 @@ class Application_Command(DiscordObject):
     """Not recommended for use as field will soon be deprecated. Indicates whether the command is enabled by default when the app is added to a guild, defaults to true"""
     nsfw: Optional[bool] = UNSET
     """Age-restricted"""
-    integration_types: Optional["Application_Integration_Types"] = UNSET
+    integration_types: Optional[list["Application_Integration_Types"]] = UNSET
     """In_Preview"""
-    contexts: Optional[Nullable["Interaction_Context_Types"]] = UNSET
+    contexts: Optional[Nullable[list["Interaction_Context_Types"]]] = UNSET
     """In_Preview"""
     version: Snowflake = UNSET
     """Autoincrementing version identifier updated during substantial record changes"""
@@ -4870,6 +4891,13 @@ class SKU_Flags(Flag):
     """Recurring SKU that can be purchased by a user and applied to a single server. Grants access to every user in that server"""
     USER_SUBSCRIPTION = 1 << 8
     """Recurring SKU purchased by a user for themselves. Grants access to the purchasing user in every server"""
+
+
+class Authorization_Information(DiscordObject):
+    application: Application = UNSET
+    scopes: list[str] = UNSET
+    expires: datetime = UNSET
+    user: User = UNSET
 
 
 class Gateway_Commands(Events):
