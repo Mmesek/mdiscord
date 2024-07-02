@@ -1,6 +1,6 @@
 [project]
 name = "mDiscord"
-version = "3"
+version = "2.0"
 authors = [{ name = "Mmesek" }]
 description = "Discord API Wrapper with type casting"
 readme = "README.md"
