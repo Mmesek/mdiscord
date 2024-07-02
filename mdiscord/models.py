@@ -4418,11 +4418,11 @@ class Application_Command_Option(DiscordObject):
     """Localization dictionary for the description field. Values follow the same restrictions as description"""
     required: Optional[bool] = UNSET
     """Whether the parameter is required"""
-    choices: Optional["Application_Command_Option_Choice"] = UNSET
+    choices: Optional[list["Application_Command_Option_Choice"]] = UNSET
     """Choices for the user to pick from, max 25"""
-    options: Optional["Application_Command_Option"] = UNSET
+    options: Optional[list["Application_Command_Option"]] = UNSET
     """If the option is a subcommand"""
-    channel_types: Optional["Channel_Types"] = UNSET
+    channel_types: Optional[list["Channel_Types"]] = UNSET
     """The channels shown will be restricted to these types"""
     min_value: Optional[int | float] = UNSET
     """The minimum value permitted"""
