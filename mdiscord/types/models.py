@@ -903,7 +903,7 @@ class Message(DiscordObject):
     """any embedded content"""
     reactions: Optional[list["Reaction"]] = list
     """reactions to the message"""
-    nonce: Optional[int] = UNSET
+    nonce: Optional[int | str] = UNSET
     """used for validating a message was sent"""
     pinned: bool = False
     """whether this message is pinned"""
