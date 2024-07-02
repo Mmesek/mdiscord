@@ -92,6 +92,8 @@ def as_dict(object):
         return bytearray(object)
     elif type(object) is type:
         return None
+    elif object is msgspec.UNSET:
+        return None
     return object
 
 
