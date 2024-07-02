@@ -12,7 +12,7 @@ Discord raw API types.
 
 from ctypes import c_byte, c_uint, c_ushort
 from datetime import datetime
-from enum import Enum, IntEnum, IntFlag, IntFlag as Flag
+from enum import Enum, IntEnum, IntFlag
 from typing import Annotated, Any, Optional
 
 from msgspec import UNSET, Meta
@@ -831,7 +831,7 @@ class Video_Quality_Modes(Enum):
     """720p"""
 
 
-class Channel_Flags(Flag):
+class Channel_Flags(IntFlag):
     PINNED = 1 << 1
     """this thread is pinned to the top of its parent GUILD_FORUM"""
     REQUIRE_TAG = 1 << 4
@@ -1005,7 +1005,7 @@ class Message_Activity_Types(Enum):
     JOIN_REQUEST = 5
 
 
-class Message_Flags(Flag):
+class Message_Flags(IntFlag):
     CROSSPOSTED = 1 << 0
     """this message has been published to subscribed channels"""
     IS_CROSSPOST = 1 << 1
@@ -1282,12 +1282,18 @@ class Embed_Types(Enum):
     Embed types should be considered deprecated and might be removed in a future API version.
     """
 
-    RICH = "generic embed rendered from embed attributes"
-    IMAGE = "image embed"
-    VIDEO = "video embed"
-    GIFV = "animated gif image embed rendered as a video embed"
-    ARTICLE = "article embed"
-    LINK = "link embed"
+    RICH = "rich"
+    """generic embed rendered from embed attributes"""
+    IMAGE = "image"
+    """image embed"""
+    VIDEO = "video"
+    """video embed"""
+    GIFV = "gifv"
+    """animated gif image embed rendered as a video embed"""
+    ARTICLE = "article"
+    """article embed"""
+    LINK = "link"
+    """link embed"""
 
 
 class Embed_Thumbnail(DiscordObject):
@@ -1394,7 +1400,7 @@ class Attachment(DiscordObject):
     """Attachment_Flags"""
 
 
-class Attachment_Flags(Flag):
+class Attachment_Flags(IntFlag):
     IS_REMIX = 1 << 2
     """this attachment has been edited using the remix feature on mobile"""
 
@@ -1631,7 +1637,7 @@ class Premium_Tier(Enum):
     """guild has unlocked Server Boost level 3 perks"""
 
 
-class System_Channel_Flags(Flag):
+class System_Channel_Flags(IntFlag):
     SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0
     """Suppress member join notifications"""
     SUPPRESS_PREMIUM_SUBSCRIPTIONS = 1 << 1
@@ -1776,7 +1782,7 @@ class Guild_Member(DiscordObject):
     """data for the member's guild avatar decoration"""
 
 
-class Guild_Member_Flags(Flag):
+class Guild_Member_Flags(IntFlag):
     """
     > info
     > BYPASSES_VERIFICATION allows a member who does not meet verification requirements to participate in a server.
@@ -2273,7 +2279,7 @@ class User(DiscordObject):
     """data for the user's avatar decoration"""
 
 
-class User_Flags(Flag):
+class User_Flags(IntFlag):
     STAFF = 1 << 0
     """Discord Employee"""
     PARTNER = 1 << 1
@@ -3219,7 +3225,7 @@ class Activity_Secrets(DiscordObject):
     """Secret for a specific instanced match"""
 
 
-class Activity_Flags(Flag):
+class Activity_Flags(IntFlag):
     INSTANCE = 1 << 0
     JOIN = 1 << 1
     SPECTATE = 1 << 2
@@ -3800,7 +3806,7 @@ class RPC_Close_Event_Codes(Enum):
     """The encoding specified in the connection string was not valid"""
 
 
-class Intents(Flag):
+class Intents(IntFlag):
     GUILDS = 1 << 0
     GUILD_MEMBERS = 1 << 1
     GUILD_BANS = 1 << 2
@@ -3824,7 +3830,7 @@ class Intents(Flag):
     DIRECT_MESSAGE_POLLS = 1 << 25
 
 
-class Bitwise_Permission_Flags(Flag):
+class Bitwise_Permission_Flags(IntFlag):
     """
     *** These permissions require the owner account to use [two-factor authentication](https:#/discord.com/developers/docs/topics/oauth2#twofactor-authentication-requirement) when used on a guild that has server-wide 2FA enabled.**
     **** See [Permissions for Timed Out Members](https:#/discord.com/developers/docs/topics/permissions#permissions-for-timed-out-members) to understand how permissions are temporarily modified for timed out users.**
@@ -3981,7 +3987,7 @@ class Role_Tags(DiscordObject):
     """whether this role is a guild's linked role"""
 
 
-class Role_Flags(Flag):
+class Role_Flags(IntFlag):
     IN_PROMPT = 1 << 0
     """Onboarding"""
 
@@ -4769,7 +4775,7 @@ class Interaction_Application_Command_Callback_Data(DiscordObject):
     """the title of the popup modal, max 45 characters"""
 
 
-class Interaction_Application_Command_Callback_Data_Flags(Flag):
+class Interaction_Application_Command_Callback_Data_Flags(IntFlag):
     EPHEMERAL = 1 << 6
     """only the user receiving the message can see it"""
 
@@ -4880,7 +4886,7 @@ class SKU_Types(Enum):
     """System-generated group for each SUBSCRIPTION SKU created"""
 
 
-class SKU_Flags(Flag):
+class SKU_Flags(IntFlag):
     """
     For subscriptions, there are two types of access levels you can offer to users:.
     """
