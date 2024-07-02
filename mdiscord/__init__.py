@@ -8,68 +8,10 @@ Discord API.
 :copyright: (c) 2020 Mmesek
 """
 
-from typing import Callable, Union
-
 from mdiscord.exceptions import *  # noqa: F401
 from mdiscord.http.client import HTTP_Client as REST  # noqa: F401
 from mdiscord.types import *  # noqa: F401
-from mdiscord.websocket.websocket import WebSocket_Client as Client  # noqa: F401
-
-
-def onDispatch(
-    f=None,
-    priority: int = 100,
-    event: Union[str, Gateway_Events] = None,
-    optional: bool = False,
-    predicate: Union[Callable, list[Callable]] = None,
-):
-    """
-    Decorator to register function as a listener for Event from Dispatch
-    Parameters
-    ----------
-    f:
-        Decorated Function to be registered
-    priorty:
-        Controls priority in case of multiple functions listening for the same event.
-        Function is appended at the end to current functions with same priority
-    event:
-        Optional Event to which this functions should listen to.
-        Default is same as function name
-    optional:
-        Whether this listener should be excluded from Intent calculation.
-        For example, if execution is optional
-    predicate:
-        Predicate(s) which has to be met in order to call this function
-    """
-
-    def inner(f):
-        from .websocket.opcodes import Dispatch, Predicates
-
-        name = f.__name__.upper()
-        # TODO: Make event taken either from event, function name OR parameter annotation
-        # TODO: add parameter annotation based one
-        if event:
-            if type(event) is Gateway_Events:
-                name = event.name
-            name = event.upper()
-        if optional:
-            f._optional = optional
-        if predicate:
-            if name not in Predicates:
-                Predicates[name] = {}
-            if f not in Predicates[name]:
-                Predicates[name][f] = []
-            Predicates[name][f] += predicate if type(predicate) is list else [predicate]
-        if name not in Dispatch:
-            Dispatch[name] = {}
-        if priority not in Dispatch[name]:
-            Dispatch[name][priority] = []
-        Dispatch[name][priority].append(f)
-        return f
-
-    if f:
-        return inner(f)
-    return inner
+from mdiscord.websocket import Client, onDispatch  # noqa: F401
 
 
 @onDispatch

@@ -221,3 +221,57 @@ class Opcodes(EventListener):
 
     def __init__(self):
         self.opcodes = {i.value: getattr(self, i.name.lower(), aInvalid) for i in Gateway_Opcodes}
+
+
+def onDispatch(
+    f=None,
+    priority: int = 100,
+    event: str | Gateway_Events = None,
+    optional: bool = False,
+    predicate: Callable | list[Callable] = None,
+):
+    """
+    Decorator to register function as a listener for Event from Dispatch
+    Parameters
+    ----------
+    f:
+        Decorated Function to be registered
+    priorty:
+        Controls priority in case of multiple functions listening for the same event.
+        Function is appended at the end to current functions with same priority
+    event:
+        Optional Event to which this functions should listen to.
+        Default is same as function name
+    optional:
+        Whether this listener should be excluded from Intent calculation.
+        For example, if execution is optional
+    predicate:
+        Predicate(s) which has to be met in order to call this function
+    """
+
+    def inner(f):
+        name = f.__name__.upper()
+        # TODO: Make event taken either from event, function name OR parameter annotation
+        # TODO: add parameter annotation based one
+        if event:
+            if type(event) is Gateway_Events:
+                name = event.name
+            name = event.upper()
+        if optional:
+            f._optional = optional
+        if predicate:
+            if name not in PREDICATES:
+                PREDICATES[name] = {}
+            if f not in PREDICATES[name]:
+                PREDICATES[name][f] = []
+            PREDICATES[name][f] += predicate if type(predicate) is list else [predicate]
+        if name not in DISPATCH:
+            DISPATCH[name] = {}
+        if priority not in DISPATCH[name]:
+            DISPATCH[name][priority] = []
+        DISPATCH[name][priority].append(f)
+        return f
+
+    if f:
+        return inner(f)
+    return inner
