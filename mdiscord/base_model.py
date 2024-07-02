@@ -45,6 +45,13 @@ class Events(Enum):
         return self.func
 
 
+class NotStrictEnum(Enum):
+    @classmethod
+    def _missing_(cls, value):
+        # NOTE: VERY temporary #HACK
+        return [v for v in cls][0]
+
+
 class Flag(Flag):
     def check(cls, permissions: hex, *values: list[hex]):
         return all([(permissions & permission) == permission for permission in values])

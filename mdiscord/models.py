@@ -17,7 +17,7 @@ from typing import Annotated, Any, Optional
 
 from msgspec import UNSET, Meta
 
-from mdiscord.base_model import DiscordObject, Events
+from mdiscord.base_model import DiscordObject, Events, NotStrictEnum
 from mdiscord.meta_types import DISCORD_EPOCH, Duration, Nullable, Snowflake, UnixTimestamp
 
 
@@ -1652,7 +1652,7 @@ class System_Channel_Flags(IntFlag):
     """Hide role subscription sticker reply buttons"""
 
 
-class Guild_Features(Enum):
+class Guild_Features(NotStrictEnum):
     ANIMATED_BANNER = "guild has access to set an animated guild banner image"
     ANIMATED_ICON = "guild has access to set an animated guild icon"
     APPLICATION_COMMAND_PERMISSIONS_V2 = "Old_Permissions_Configuration_Behavior"
