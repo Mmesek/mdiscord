@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Route Decorator
+----------
+
+Helper decorator to automate creating API interface
+
+:copyright: (c) 2024 Mmesek
+"""
+
 import inspect
 import re
 from typing import get_args, get_origin, get_type_hints

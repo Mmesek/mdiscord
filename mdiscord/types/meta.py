@@ -23,11 +23,11 @@ NotSerializable = Annotated[T, "not_serializable"]
 
 
 class UnixTimestamp(datetime):
-    pass
+    """Helper type to support converting `Unix Timestamps` to `Datetime` objects and vice-versa"""
 
 
 class Duration(timedelta):
-    pass
+    """Helper type to support converting integers representing seconds to `timedelta` and vice-versa"""
 
 
 class Events(Enum):
@@ -50,8 +50,7 @@ class Events(Enum):
 class NotStrictEnum(Enum):
     @classmethod
     def _missing_(cls, value):
-        # NOTE: VERY temporary #HACK
-        return [v for v in cls][0]
+        return "Missing"
 
 
 class Flag(Flag):
@@ -77,8 +76,6 @@ class Snowflake(int):
     def __init__(self, value=0):
         self._value = int(value)
 
-    #    def __class_getitem__(cls, key='value'):
-    #        return cls._value
     @property
     def timestamp(self):
         return (self._value >> 22) + DISCORD_EPOCH
@@ -96,9 +93,11 @@ class Snowflake(int):
         return self._value & 0xFFF
 
     @property
-    def as_date(self):
-        ms = (self._value >> 22) + DISCORD_EPOCH
+    def as_datetime(self):
+        ms = self.timestamp
         return datetime.fromtimestamp(ms // 1000.0, UTC).replace(microsecond=ms % 1000 * 1000)
 
-    def styled_date(self, style: str = None) -> str:
+    as_date = as_datetime
+
+    def styled_date(self, style: str = "f") -> str:
         return f"<t:{int(self.timestamp / 1000.0)}{':' + style if style else ''}>"

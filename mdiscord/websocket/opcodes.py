@@ -11,12 +11,11 @@ Discord API Opcodes.
 import asyncio, platform
 import sys, time, traceback
 from collections import Counter
-from typing import Optional
-
-from mlib.types import aInvalid
+from typing import Callable, Optional
 
 from mdiscord.exceptions import BadRequest, Insufficient_Permissions, JsonBadRequest, NotFound, SoftError, UserError
 from mdiscord.types import (
+    DiscordObject,
     Activity_Types,
     Bot_Activity,
     Gateway_Events,
@@ -33,8 +32,12 @@ from mdiscord.types import (
 )
 from mdiscord.utils.utils import EventListener, log
 
-Dispatch = {}
-Predicates = {}
+DISPATCH: dict[Gateway_Events, dict[int, list[Callable[["Opcodes", DiscordObject], bool]]]] = {}
+"""Registry containing event names with corresponding lists of target functions to call in order of priority"""
+PREDICATES: dict[
+    Gateway_Events, dict[Callable[["Opcodes", DiscordObject], bool], list[Callable[[DiscordObject], bool]]]
+] = {}
+"""Registry containing event names with corresponding mapping of functions with lists of required predicates"""
 
 
 class Opcodes(EventListener):
@@ -64,10 +67,10 @@ class Opcodes(EventListener):
             return
 
         _completed = {}  # Cached result so we don't check same predicate for one payload multiple times
-        for priority in sorted(Dispatch.get(data.t, {})):
-            for function in Dispatch.get(data.t, [aInvalid])[priority]:
+        for priority in sorted(DISPATCH.get(data.t, {})):
+            for function in DISPATCH[data.t][priority]:
                 try:
-                    for predicate in Predicates.get(data.t, {}).get(function, []):
+                    for predicate in PREDICATES.get(data.t, {}).get(function, []):
                         if not _completed.get(predicate, predicate(data.d)):
                             _completed[predicate] = False
                             break
@@ -220,7 +223,7 @@ class Opcodes(EventListener):
         )
 
     def __init__(self):
-        self.opcodes = {i.value: getattr(self, i.name.lower(), aInvalid) for i in Gateway_Opcodes}
+        self.opcodes = {i.value: getattr(self, i.name.lower()) for i in Gateway_Opcodes}
 
 
 def onDispatch(
