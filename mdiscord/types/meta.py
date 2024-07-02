@@ -8,9 +8,9 @@ Metadata types used for conversions to allow more convenient usage.
 :copyright: (c) 2024 Mmesek
 """
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, UTC
+from typing import TypeVar, Type, Annotated
 from enum import Enum, Flag
-from typing import Generic, Type, TypeVar
 
 T = TypeVar("T")
 
@@ -18,11 +18,8 @@ DISCORD_EPOCH = 1420070400000
 BASE_URL = "https://discord.com/"
 CDN_URL = "https://cdn.discordapp.com/"
 
-Nullable = T | None
-
-
-class NotSerializable(Generic[T]):
-    pass
+Nullable = Annotated[T | None, "nullable"]
+NotSerializable = Annotated[T, "not_serializable"]
 
 
 class UnixTimestamp(datetime):
