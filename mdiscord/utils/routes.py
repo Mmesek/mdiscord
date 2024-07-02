@@ -1,6 +1,7 @@
-import re
 import inspect
-from typing import get_type_hints, get_origin, get_args
+import re
+from typing import get_args, get_origin, get_type_hints
+
 from mdiscord.types import DiscordObject
 from mdiscord.utils.utils import log
 

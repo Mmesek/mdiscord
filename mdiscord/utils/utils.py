@@ -10,12 +10,12 @@ Utility functions for internal usage
 
 import asyncio
 import logging
-from typing import Optional, Callable, Tuple, Union
+from typing import Callable, Optional, Tuple, Union
 
 from mlib import logger
 
 from mdiscord.exceptions import Insufficient_Permissions
-from mdiscord.types import Bitwise_Permission_Flags, Gateway_Events, Intents, DiscordObject
+from mdiscord.types import Bitwise_Permission_Flags, DiscordObject, Gateway_Events, Intents
 
 log = logging.getLogger("mdiscord")
 log.setLevel(logger.log_level)

@@ -8,30 +8,30 @@ Discord API Opcodes.
 :copyright: (c) 2020 Mmesek
 """
 
-import asyncio, time
-import sys, traceback, platform
+import asyncio, platform
+import sys, time, traceback
 from collections import Counter
 from typing import Optional
 
 from mlib.types import aInvalid
 
-from mdiscord.exceptions import BadRequest, JsonBadRequest, Insufficient_Permissions, NotFound, SoftError, UserError
+from mdiscord.exceptions import BadRequest, Insufficient_Permissions, JsonBadRequest, NotFound, SoftError, UserError
 from mdiscord.types import (
+    Activity_Types,
+    Bot_Activity,
     Gateway_Events,
-    Gateway_Payload,
     Gateway_Opcodes,
+    Gateway_Payload,
     Gateway_Presence_Update,
     Gateway_Voice_State_Update,
     Identify,
-    Resume,
+    Identify_Connection_Properties,
     Request_Guild_Members as Guild_Request_Members,
+    Resume,
     Snowflake,
     Status_Types,
-    Activity_Types,
-    Bot_Activity,
-    Identify_Connection_Properties,
 )
-from mdiscord.utils.utils import log, EventListener
+from mdiscord.utils.utils import EventListener, log
 
 Dispatch = {}
 Predicates = {}

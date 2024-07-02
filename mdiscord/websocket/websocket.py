@@ -15,10 +15,9 @@ from mlib.types import Invalid
 
 from mdiscord import types as objects
 from mdiscord.http.client import HTTP_Client
-from mdiscord.websocket.opcodes import Opcodes, Gateway_Opcodes
-
 from mdiscord.utils.serializer import Deserializer, as_dict
 from mdiscord.utils.utils import log
+from mdiscord.websocket.opcodes import Gateway_Opcodes, Opcodes
 
 
 class WebSocket_Client(HTTP_Client, Opcodes):

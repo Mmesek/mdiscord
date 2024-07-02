@@ -8,13 +8,11 @@ Model overrides with additional convinience methods.
 :copyright: (c) 2021 Mmesek
 """
 
-from typing import Union, Tuple
 from datetime import datetime
+from typing import Tuple, Union
 
-from mdiscord.types.meta_types import CDN_URL, BASE_URL, NotSerializable
+from mdiscord.types.meta import BASE_URL, CDN_URL, NotSerializable
 from mdiscord.types.models import *  # noqa: F401
-
-Application_Command_Interaction_Data = Interaction_Application_Command_Callback_Data
 
 
 class Attachment(Attachment):
@@ -627,7 +625,7 @@ class User(User):
 
 
 class Interaction(Interaction):
-    data: Application_Command_Interaction_Data = None
+    data: Interaction_Application_Command_Callback_Data = None
     _deferred = False
     _replied = False
     _followup_id = None

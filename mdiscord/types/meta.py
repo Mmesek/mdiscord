@@ -8,8 +8,9 @@ Metadata types used for conversions to allow more convenient usage.
 :copyright: (c) 2024 Mmesek
 """
 
-from datetime import datetime, timedelta, UTC
-from typing import Generic, TypeVar
+from datetime import UTC, datetime, timedelta
+from enum import Enum, Flag
+from typing import Generic, Type, TypeVar
 
 T = TypeVar("T")
 
@@ -17,14 +18,11 @@ DISCORD_EPOCH = 1420070400000
 BASE_URL = "https://discord.com/"
 CDN_URL = "https://cdn.discordapp.com/"
 
+Nullable = T | None
+
 
 class NotSerializable(Generic[T]):
     pass
-
-
-Nullable = T | None
-# class Nullable(Generic[T]):
-#    pass
 
 
 class UnixTimestamp(datetime):
@@ -33,6 +31,42 @@ class UnixTimestamp(datetime):
 
 class Duration(timedelta):
     pass
+
+
+class Events(Enum):
+    def __call__(self, *args, **kwargs):
+        try:
+            return self.func.from_dict(*args, **kwargs)
+        except AttributeError:
+            return kwargs
+
+    def __new__(cls: Type[T], value: object) -> T:
+        obj = object.__new__(cls)
+        obj.func = value
+        obj._value_ = len(cls.__members__) + 1
+        return obj
+
+    def type(self):
+        return self.func
+
+
+class NotStrictEnum(Enum):
+    @classmethod
+    def _missing_(cls, value):
+        # NOTE: VERY temporary #HACK
+        return [v for v in cls][0]
+
+
+class Flag(Flag):
+    def check(cls, permissions: hex, *values: list[hex]):
+        return all([(permissions & permission) == permission for permission in values])
+
+    def current_permissions(cls, permissions: hex):
+        current = []
+        for permission in cls:
+            if (permissions & permission.value) == permission.value:
+                current.append(permission.name)
+        return current
 
 
 class Snowflake(int):

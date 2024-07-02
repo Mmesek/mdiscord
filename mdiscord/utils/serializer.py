@@ -8,14 +8,14 @@ Serializer & Deserializer
 :copyright: (c) 2021 Mmesek
 """
 
+import zlib
 from datetime import UTC
 from typing import Any
 
 import aiohttp
 import msgspec
-import zlib
 
-from mdiscord.types.meta_types import Snowflake, UnixTimestamp, Duration
+from mdiscord.types.meta import Duration, Snowflake, UnixTimestamp
 
 
 def to_builtins(x: Any):
@@ -66,9 +66,10 @@ class Deserializer:
 
 def as_dict(object):
     from datetime import datetime
+    from enum import Flag
+
     from mdiscord import Enum
     from mdiscord.types import DiscordObject
-    from enum import Flag
 
     if isinstance(object, dict):
         _object = {}
