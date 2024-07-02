@@ -4,7 +4,7 @@ from typing import get_type_hints, get_origin, get_args
 from mdiscord.base_model import DiscordObject
 from mdiscord.utils import log
 
-PATH_PARAM = re.compile(r"/\{(.*)\}")  # BUG: Too greedy! It takes first and last instead of groups
+PATH_PARAM = re.compile(r"/\{(.*?)\}")
 MAJOR_PARAMS = ["guild_id", "channel_id", "webhook_id", "webhook_token"]
 
 
