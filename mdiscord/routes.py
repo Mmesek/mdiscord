@@ -5,7 +5,7 @@ from mdiscord.base_model import DiscordObject
 from mdiscord.utils import log
 
 PATH_PARAM = re.compile(r"/\{(.*?)\}")
-MAJOR_PARAMS = ["guild_id", "channel_id", "webhook_id", "webhook_token"]
+MAJOR_PARAMS = ["application_id", "guild_id", "channel_id", "webhook_id", "webhook_token"]
 
 
 def route(method: str, path: str, json_as_form_data: bool = False):
@@ -31,7 +31,6 @@ def route(method: str, path: str, json_as_form_data: bool = False):
         # Init here
         type_hints = get_type_hints(f)
         module = inspect.getmodule(f).__name__
-        origin = get_origin(type_hints.get("return", None))
         args = inspect.getfullargspec(f)
 
         PATH = PATH_PARAM.findall(path)
@@ -42,13 +41,26 @@ def route(method: str, path: str, json_as_form_data: bool = False):
         JSON = {
             a for a in args.args if a not in PATH and a not in {"self"}
         }  # TODO: Retrieve ALL json params from func definition ("Regular" params)
-        IS_LIST = origin is list  # TODO: Check if return type is a list
-        RESULT = type_hints.get("return", None)  # TODO: Retrieve from function definition
+
+        RESULT = type_hints.get("return", None)
+        result_args = get_args(RESULT)
+        origin = get_origin(RESULT)
+
+        if result_args:
+            RESULT = result_args[0]
+
+        IS_LIST = origin is list
         IS_METHOD = (
             module.split(".")[-1] != "endpoints"
         )  # False  # TODO: Set if route is attached to an object, not bot though
 
         async def _api_call(self, *args, reason: str = None, **kwargs):
+            def create_object(result):
+                if issubclass(RESULT, DiscordObject):
+                    result = RESULT.from_dict(**result)
+                    result._Client = self
+                return result
+
             # Overwrite actual call here
             if IS_METHOD:
                 kwargs.update()  # TODO: Set path params from available attributes here
@@ -56,9 +68,8 @@ def route(method: str, path: str, json_as_form_data: bool = False):
 
             try:
                 _path = path.format(**{k: v for k, v in kwargs.items() if k in PATH})
-            except:
-                # NOTE: testing only
-                breakpoint
+            except KeyError as ex:
+                log.debug("Path parameter %s is not a part of MAJOR_PARAMS", ex)
 
             r = await self.api_call(
                 path=_path,
@@ -70,28 +81,14 @@ def route(method: str, path: str, json_as_form_data: bool = False):
                 bucket=tuple(kwargs.get(major, None) for major in MAJOR_PARAMS),
             )
 
-            arg = get_args(RESULT)
-
-            if not issubclass(arg[0] if arg else RESULT, DiscordObject):
-                return r
-
             if IS_LIST:
                 items = []
                 for i in r:
-                    # BUG: Result is not always a type!
-                    # NOTE: Check against union types too!
-                    r = RESULT.from_dict(**i)
-                    r._Client = self
+                    r = create_object(i)
                     items.append(r)
-                return items
-
-            if type(r) is list:
-                log.warn(
-                    "Expected result is either wrong or Discord sends Union of List and Single element which we need to handle!"
-                )
-
-            r = RESULT.from_dict(**r)
-            r._Client = self
+                r = items
+            else:
+                r = create_object(r)
 
             return r
 
