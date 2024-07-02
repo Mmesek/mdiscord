@@ -1,0 +1,13 @@
+services:
+  mdiscord:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+      target: base
+    image: mdiscord
+    container_name: mDiscord
+    hostname: mdiscord
+    command: ["python", "-m", "mdiscord"]
+    environment:
+      - TZ=utc
+    restart: unless-stopped
