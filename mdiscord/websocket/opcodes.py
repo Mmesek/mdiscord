@@ -31,7 +31,7 @@ from mdiscord.types import (
     Bot_Activity,
     Identify_Connection_Properties,
 )
-from mdiscord.utils import log, EventListener
+from mdiscord.utils.utils import log, EventListener
 
 Dispatch = {}
 Predicates = {}

@@ -11,8 +11,8 @@ Model overrides with additional convinience methods.
 from typing import Union, Tuple
 from datetime import datetime
 
-from mdiscord.meta_types import CDN_URL, BASE_URL, NotSerializable
-from mdiscord.models import *  # noqa: F401
+from mdiscord.types.meta_types import CDN_URL, BASE_URL, NotSerializable
+from mdiscord.types.models import *  # noqa: F401
 
 Application_Command_Interaction_Data = Interaction_Application_Command_Callback_Data
 

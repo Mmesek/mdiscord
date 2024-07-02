@@ -14,11 +14,11 @@ from enum import Flag
 import msgspec
 from mlib.types import Enum
 
-from mdiscord.serializer import from_builtins, to_builtins
-from mdiscord.meta_types import NotSerializable
+from mdiscord.utils.serializer import from_builtins, to_builtins
+from mdiscord.types.meta_types import NotSerializable
 
 if TYPE_CHECKING:
-    from mdiscord.websocket import WebSocket_Client as Bot
+    from mdiscord.websocket.websocket import WebSocket_Client as Bot
 else:
     # NOTE: Hack of sorts as otherwise `_decoder` in `Deserializer` throws `NameError`
     class Bot:

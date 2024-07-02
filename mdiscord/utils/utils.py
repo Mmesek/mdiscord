@@ -14,9 +14,8 @@ from typing import Optional, Callable, Tuple, Union
 
 from mlib import logger
 
-from mdiscord.base_model import DiscordObject
 from mdiscord.exceptions import Insufficient_Permissions
-from mdiscord.types import Bitwise_Permission_Flags, Gateway_Events, Intents
+from mdiscord.types import Bitwise_Permission_Flags, Gateway_Events, Intents, DiscordObject
 
 log = logging.getLogger("mdiscord")
 log.setLevel(logger.log_level)

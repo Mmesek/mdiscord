@@ -11,7 +11,7 @@ Discord API.
 from typing import Callable, Union
 
 from mdiscord.types import *  # noqa: F401
-from mdiscord.websocket import WebSocket_Client as Client  # noqa: F401
+from mdiscord.websocket.websocket import WebSocket_Client as Client  # noqa: F401
 from mdiscord.exceptions import *  # noqa: F401
 
 
@@ -42,7 +42,7 @@ def onDispatch(
     """
 
     def inner(f):
-        from .opcodes import Dispatch, Predicates
+        from .websocket.opcodes import Dispatch, Predicates
 
         name = f.__name__.upper()
         # TODO: Make event taken either from event, function name OR parameter annotation
@@ -77,6 +77,6 @@ async def ready(self: Client, ready: Ready):
     self.username = ready.user.username
     self.resume_url = ready.resume_gateway_url
     self.session_id = ready.session_id
-    from .utils import log
+    from .utils.utils import log
 
     log.info("Connected as %s", ready.user.username)

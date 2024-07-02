@@ -15,7 +15,7 @@ import aiohttp
 import msgspec
 import zlib
 
-from mdiscord.meta_types import Snowflake, UnixTimestamp, Duration
+from mdiscord.types.meta_types import Snowflake, UnixTimestamp, Duration
 
 
 def to_builtins(x: Any):
@@ -45,7 +45,7 @@ class Deserializer:
     def __init__(self):
         self._buffer = bytearray()
         self._zlib = zlib.decompressobj()
-        from .types import Gateway_Payload
+        from mdiscord.types import Gateway_Payload
 
         self._decoder = msgspec.json.Decoder(Gateway_Payload, dec_hook=from_builtins)
 
@@ -66,8 +66,8 @@ class Deserializer:
 
 def as_dict(object):
     from datetime import datetime
-    from . import Enum
-    from .base_model import DiscordObject
+    from mdiscord import Enum
+    from mdiscord.types import DiscordObject
     from enum import Flag
 
     if isinstance(object, dict):

@@ -1,8 +1,8 @@
 import re
 import inspect
 from typing import get_type_hints, get_origin, get_args
-from mdiscord.base_model import DiscordObject
-from mdiscord.utils import log
+from mdiscord.types import DiscordObject
+from mdiscord.utils.utils import log
 
 PATH_PARAM = re.compile(r"/\{(.*?)\}")
 MAJOR_PARAMS = ["application_id", "guild_id", "channel_id", "webhook_id", "webhook_token"]

@@ -14,11 +14,11 @@ import time
 from mlib.types import Invalid
 
 from mdiscord import types as objects
-from mdiscord.http_client import HTTP_Client
-from mdiscord.opcodes import Opcodes, Gateway_Opcodes
+from mdiscord.http.client import HTTP_Client
+from mdiscord.websocket.opcodes import Opcodes, Gateway_Opcodes
 
-from mdiscord.serializer import Deserializer, as_dict
-from mdiscord.utils import log
+from mdiscord.utils.serializer import Deserializer, as_dict
+from mdiscord.utils.utils import log
 
 
 class WebSocket_Client(HTTP_Client, Opcodes):

@@ -15,12 +15,11 @@ import time
 import aiohttp
 import msgspec
 
-from mdiscord.meta_types import Snowflake, BASE_URL
-from mdiscord.endpoints import Endpoints
+from mdiscord.http.endpoints import Endpoints
 from mdiscord.exceptions import BadRequest, NotFound
-from mdiscord.serializer import Serializer, from_builtins
-from mdiscord.models import HTTP_Response_Codes
-from mdiscord.utils import log
+from mdiscord.utils.serializer import Serializer, from_builtins
+from mdiscord.types import Snowflake, BASE_URL, HTTP_Response_Codes
+from mdiscord.utils.utils import log
 
 
 class HTTP_Client(Endpoints, Serializer):
