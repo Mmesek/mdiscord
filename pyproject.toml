@@ -29,9 +29,18 @@ dev = ["mdiscord[tests,lint]", "pre-commit"]
 file = "LICENSE"
 
 [tool.pytest.ini_options]
-addopts = "--doctest-modules --doctest-report ndiff --cov=mdiscord tests/"
+addopts = "--doctest-modules --doctest-report ndiff --cov=mdiscord"
 doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
 testpaths = ["mdiscord", "tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if TYPE_CHECKING:"
+]
+omit = [
+    "endpoints.py",
+    "models.py"
+]
 
 [tool.ruff]
 line-length = 120
