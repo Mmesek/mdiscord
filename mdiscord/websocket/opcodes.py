@@ -11,13 +11,14 @@ Discord API Opcodes.
 import asyncio, platform
 import sys, time, traceback
 from collections import Counter
-from typing import Callable, Optional
+from inspect import getfullargspec
+from typing import Callable, Optional, Union, get_args, get_origin
 
 from mdiscord.exceptions import BadRequest, Insufficient_Permissions, JsonBadRequest, NotFound, SoftError, UserError
 from mdiscord.types import (
-    DiscordObject,
     Activity_Types,
     Bot_Activity,
+    DiscordObject,
     Gateway_Events,
     Gateway_Opcodes,
     Gateway_Payload,
@@ -250,29 +251,78 @@ def onDispatch(
         For example, if execution is optional
     predicate:
         Predicate(s) which has to be met in order to call this function
+
+    Example
+    -------
+    >>> @onDispatch
+    ... async def ready(client, payload): ...
+    >>> ready in DISPATCH["READY"][100]
+    True
+
+    Function can be renamed if event is specified as either `Gateway_Events`
+    >>> @onDispatch(event=Gateway_Events.Message_Create, priority=50)
+    ... async def enum_value(a, b): ...
+    >>> enum_value in DISPATCH["MESSAGE_CREATE"][50]
+    True
+
+    or string
+    >>> @onDispatch(event="message_update")
+    ... async def string_name(_, d): ...
+    >>> string_name in DISPATCH["MESSAGE_UPDATE"][100]
+    True
+
+    It's also possible to specify from typehint
+    >>> from mdiscord import Message_Delete
+    >>> @onDispatch
+    ... async def typehint(_, msg: Message_Delete): ...
+    >>> typehint in DISPATCH["MESSAGE_DELETE"][100]
+    True
+
+    or from argument name
+    >>> @onDispatch
+    ... async def argument(_, message_delete): ...
+    >>> argument in DISPATCH["MESSAGE_DELETE"][100]
+    True
     """
 
     def inner(f):
         name = f.__name__.upper()
-        # TODO: Make event taken either from event, function name OR parameter annotation
-        # TODO: add parameter annotation based one
+
         if event:
             if type(event) is Gateway_Events:
-                name = event.name
-            name = event.upper()
+                name = event.name.upper()
+            else:
+                name = event.upper()
+        elif name.title() not in Gateway_Events._member_names_:
+            args = getfullargspec(f)
+            k = args.args[1]
+            v = args.annotations.get(k, None)
+            if v:
+                if get_origin(v) is Union:
+                    v = get_args(v)[0]
+
+                if issubclass(v, DiscordObject):
+                    name = v.__name__.upper()
+
+            if name.title() not in Gateway_Events._member_names_:
+                name = k.upper()
+
         if optional:
             f._optional = optional
+
         if predicate:
             if name not in PREDICATES:
                 PREDICATES[name] = {}
             if f not in PREDICATES[name]:
                 PREDICATES[name][f] = []
             PREDICATES[name][f] += predicate if type(predicate) is list else [predicate]
+
         if name not in DISPATCH:
             DISPATCH[name] = {}
         if priority not in DISPATCH[name]:
             DISPATCH[name][priority] = []
         DISPATCH[name][priority].append(f)
+
         return f
 
     if f:
