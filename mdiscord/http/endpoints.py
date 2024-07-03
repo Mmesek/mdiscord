@@ -1898,7 +1898,6 @@ class Endpoints:
             :type: the integration type
             :id: the integration id
         """
-        await self.api_call(path=f"/guilds/{guild_id}/integrations", method="POST", json={"type": type, "id": id})
 
     @permissions(Bitwise_Permission_Flags.MANAGE_GUILD)
     @route(method="PATCH", path="/guilds/{guild_id}/integrations")
@@ -1937,7 +1936,7 @@ class Endpoints:
     @permissions(Bitwise_Permission_Flags.MANAGE_GUILD)
     @route(method="POST", path="/guilds/{guild_id}/integrations/{integration_id}/sync")
     async def sync_guild_integration(self, guild_id: Snowflake, integration_id: Snowflake) -> None:
-        pass
+        """Syncs guidl integrations"""
 
     @permissions(Bitwise_Permission_Flags.MANAGE_GUILD)
     @route(method="GET", path="/guilds/{guild_id}/widget")
