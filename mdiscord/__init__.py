@@ -16,6 +16,14 @@ from mdiscord.websocket import Client, onDispatch  # noqa: F401
 
 @onDispatch
 async def ready(self: Client, ready: Ready):
+    """
+    Example
+    -------
+    >>> import asyncio
+    >>> client = Client("Test", {"Test": {}, "DiscordTokens": {"Test": ""}})
+    >>> asyncio.run(ready(client, Ready(user=User(), session_id=123)))
+    >>> assert client.session_id == 123
+    """
     self.user_id = ready.user.id
     self.username = ready.user.username
     self.resume_url = ready.resume_gateway_url

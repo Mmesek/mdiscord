@@ -19,6 +19,17 @@ from mdiscord.types.meta import Duration, Snowflake, UnixTimestamp
 
 
 def to_builtins(x: Any):
+    """
+    Example
+    -------
+    >>> to_builtins(Snowflake(5))
+    5
+    >>> to_builtins(UnixTimestamp(2024, 7, 1))
+    1719784800000.0
+    >>> to_builtins(Duration(seconds=60))
+    60
+    >>> assert to_builtins([1]) == None
+    """
     if isinstance(x, Snowflake):
         return x._value
     elif isinstance(x, UnixTimestamp):
@@ -29,6 +40,18 @@ def to_builtins(x: Any):
 
 
 def from_builtins(typ: type, x: Any):
+    """
+    Example
+    -------
+    >>> from_builtins(Snowflake, 5)
+    5
+    >>> from_builtins(UnixTimestamp, 1719784800000)
+    UnixTimestamp(2024, 6, 30, 22, 0, tzinfo=datetime.timezone.utc)
+    >>> from_builtins(Duration, 60)
+    Duration(seconds=60)
+    >>> from_builtins(int, 1)
+    1
+    """
     if typ is Snowflake:
         return Snowflake(x)
     elif typ is UnixTimestamp:

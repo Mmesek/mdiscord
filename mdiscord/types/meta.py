@@ -78,26 +78,62 @@ class Snowflake(int):
 
     @property
     def timestamp(self):
+        """
+        Example
+        -------
+        >>> Snowflake(517445947446525952).timestamp
+        1543439127552
+        """
         return (self._value >> 22) + DISCORD_EPOCH
 
     @property
     def internal_worker_id(self):
+        """
+        Example
+        -------
+        >>> Snowflake(517445947446525952).internal_worker_id
+        2
+        """
         return (self._value & 0x3E0000) >> 17
 
     @property
     def internal_process_id(self):
+        """
+        Example
+        -------
+        >>> Snowflake(517445947446525952).internal_process_id
+        0
+        """
         return (self._value & 0x1F000) >> 12
 
     @property
     def increment(self):
+        """
+        Example
+        -------
+        >>> Snowflake(517445947446525952).increment
+        0
+        """
         return self._value & 0xFFF
 
     @property
     def as_datetime(self):
+        """
+        Example
+        -------
+        >>> Snowflake(517445947446525952).as_datetime
+        datetime.datetime(2018, 11, 28, 21, 5, 27, 552000, tzinfo=datetime.timezone.utc)
+        """
         ms = self.timestamp
         return datetime.fromtimestamp(ms // 1000.0, UTC).replace(microsecond=ms % 1000 * 1000)
 
     as_date = as_datetime
 
     def styled_date(self, style: str = "f") -> str:
+        """
+        Example
+        -------
+        >>> Snowflake(517445947446525952).styled_date()
+        '<t:1543439127:f>'
+        """
         return f"<t:{int(self.timestamp / 1000.0)}{':' + style if style else ''}>"

@@ -8,7 +8,7 @@ Base Types.
 :copyright: (c) 2021-2024 Mmesek
 """
 
-from typing import TYPE_CHECKING, Any, Optional, get_origin, get_type_hints
+from typing import TYPE_CHECKING, Any, Optional, get_type_hints
 
 import msgspec
 
@@ -26,6 +26,13 @@ class DiscordObject(msgspec.Struct, kw_only=True, omit_defaults=True):
     _Client: NotSerializable[Optional["Bot"]] = msgspec.UNSET
 
     def as_dict(self) -> dict[str, Any]:
+        """
+        Example
+        -------
+        >>> from mdiscord import Message
+        >>> Message(channel_id=123).as_dict()
+        {'channel_id': 123}
+        """
         return {
             k: v
             for k, v in msgspec.to_builtins(self, enc_hook=to_builtins).items()
@@ -35,4 +42,12 @@ class DiscordObject(msgspec.Struct, kw_only=True, omit_defaults=True):
 
     @classmethod
     def from_dict(cls, **kwargs):
+        """
+        Example
+        -------
+        >>> class Message(DiscordObject):
+        ...     channel_id: int
+        >>> Message.from_dict(**{"channel_id": 123})
+        Message(channel_id=123, _Client=UNSET)
+        """
         return msgspec.convert(kwargs, cls, dec_hook=from_builtins)

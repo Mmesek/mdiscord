@@ -38,6 +38,12 @@ def Permissions(*permissions):
 
 
 def count(*intents):
+    """
+    Example
+    -------
+    >>> count("GUILDS", "GUILD_MEMBERS", "Unknown")
+    3
+    """
     value = 0
     for intent in intents:
         try:
