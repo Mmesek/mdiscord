@@ -53,11 +53,6 @@ def count(*intents):
     return value
 
 
-def default_check(data: DiscordObject) -> bool:
-    """Default check that returns True"""
-    return True
-
-
 class EventListener:
     """Event Listener mixin"""
 
@@ -68,7 +63,7 @@ class EventListener:
         event: Union[str, Gateway_Events],
         repeat: int = 1,
         *,
-        check: Optional[Callable[[DiscordObject], bool]] = default_check,
+        check: Optional[Callable[[DiscordObject], bool]],
         timeout: Optional[float] = None,
     ) -> DiscordObject:
         """Wait for Dispatch event that meets predicate statement
