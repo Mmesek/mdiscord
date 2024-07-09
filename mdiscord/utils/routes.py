@@ -11,9 +11,10 @@ Helper decorator to automate creating API interface
 import inspect
 import re
 from typing import get_args, get_origin, get_type_hints
+from functools import wraps
 
-from mdiscord.types import DiscordObject
-from mdiscord.utils.utils import log
+from mdiscord.types import DiscordObject, Gateway_Opcodes, Gateway_Payload
+from mdiscord.utils.utils import log as _log
 
 PATH_PARAM = re.compile(r"/\{(.*?)\}")
 MAJOR_PARAMS = ["application_id", "guild_id", "channel_id", "webhook_id", "webhook_token"]
@@ -80,7 +81,7 @@ def route(method: str, path: str, json_as_form_data: bool = False):
             try:
                 _path = path.format(**{k: v for k, v in kwargs.items() if k in PATH})
             except KeyError as ex:
-                log.debug("Path parameter %s is not a part of MAJOR_PARAMS", ex)
+                _log.debug("Path parameter %s is not a part of MAJOR_PARAMS", ex)
 
             r = await self.api_call(
                 path=_path,
@@ -105,4 +106,27 @@ def route(method: str, path: str, json_as_form_data: bool = False):
 
         return _api_call
 
+    return init
+
+
+def opcode(cls=None, *, from_args: DiscordObject = None, log: str = None):
+    def init(f):
+        OPCODE = Gateway_Opcodes.by_str(f.__name__.upper())
+
+        @wraps(f)
+        async def _send(self, *args, **kwargs):
+            if log:
+                _log.debug(log.format(self))
+
+            if from_args:
+                data = from_args(*args, **kwargs)
+            else:
+                data = await f(self, *args, **kwargs)
+            await self.send(Gateway_Payload(op=OPCODE, d=data))
+            return data
+
+        return _send
+
+    if cls:
+        return init(cls)
     return init
