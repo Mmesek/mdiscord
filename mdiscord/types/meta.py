@@ -30,6 +30,31 @@ class Duration(timedelta):
     """Helper type to support converting integers representing seconds to `timedelta` and vice-versa"""
 
 
+class Enum(Enum):
+    def upper(self):
+        return self.name.upper()
+
+    def title(self):
+        return self.name.title()
+
+    def annotation(cls, default=None):
+        return cls.__annotations__.get(cls.name, default)
+
+    @classmethod
+    def by_str(cls: Type[T], name: str) -> Type[T]:
+        return getattr(cls, name)
+
+    @classmethod
+    def _missing_(cls, value):
+        """
+        >>> class MyEnum(NotStrictEnum):
+        ...     a = "1"
+        >>> MyEnum("2")
+        <MyEnum.a: '1'>
+        """
+        return [v for v in cls][0]
+
+
 class Events(Enum):
     def __call__(self, *args, **kwargs):
         try:
@@ -47,10 +72,7 @@ class Events(Enum):
         return self.func
 
 
-class NotStrictEnum(Enum):
-    @classmethod
-    def _missing_(cls, value):
-        return "Missing"
+NotStrictEnum = Enum
 
 
 class Flag(Flag):
