@@ -12,7 +12,7 @@ import asyncio, platform
 import sys, time, traceback
 from collections import Counter
 from inspect import getfullargspec
-from typing import Callable, Optional, Union, get_args, get_origin
+from typing import Callable, Optional, get_args
 
 from mdiscord.exceptions import BadRequest, Insufficient_Permissions, JsonBadRequest, NotFound, SoftError, UserError
 from mdiscord.types import (
@@ -32,13 +32,18 @@ from mdiscord.types import (
     Status_Types,
 )
 from mdiscord.utils.utils import EventListener, log
+from collections import defaultdict
 
-DISPATCH: dict[Gateway_Events, dict[int, list[Callable[["Opcodes", DiscordObject], bool]]]] = {}
+DISPATCH: dict[Gateway_Events, dict[int, list[Callable[["Opcodes", DiscordObject], bool]]]] = defaultdict(
+    lambda: defaultdict(list)
+)
 """Registry containing event names with corresponding lists of target functions to call in order of priority"""
 PREDICATES: dict[
     Gateway_Events, dict[Callable[["Opcodes", DiscordObject], bool], list[Callable[[DiscordObject], bool]]]
-] = {}
+] = defaultdict(lambda: defaultdict(list))
 """Registry containing event names with corresponding mapping of functions with lists of required predicates"""
+INTENTS = 0
+"""Required Intents value to execute all registered functions"""
 
 
 class Opcodes(EventListener):
@@ -254,6 +259,7 @@ def onDispatch(
 
     Example
     -------
+    ### Registering listeners
     >>> @onDispatch
     ... async def ready(client, payload): ...
     >>> ready in DISPATCH["READY"][100]
@@ -283,48 +289,73 @@ def onDispatch(
     ... async def argument(_, message_delete): ...
     >>> argument in DISPATCH["MESSAGE_DELETE"][100]
     True
+
+    Use union type to register under multiple events at once:
+    >>> from mdiscord import Message_Delete_Bulk
+    >>> @onDispatch
+    ... async def with_union(_, msg: Message_Delete | Message_Delete_Bulk): ...
+    >>> with_union in DISPATCH["MESSAGE_DELETE"][100] and with_union in DISPATCH["MESSAGE_DELETE_BULK"][100]
+    True
+
+    ### Event filtering
+
+    Filter events using custom predicate:
+    >>> predicate = lambda x: x.guild_id == 1
+    >>> @onDispatch(predicate=predicate)
+    ... async def message_create(_, msg): ...
+    >>> predicate in PREDICATES["MESSAGE_CREATE"][message_create]
+    True
+
+    Or multiple:
+    >>> predicate_a = lambda x: x.guild_id == 1
+    >>> predicate_b = lambda x: x.message_id == 1
+    >>> @onDispatch(predicate=[predicate_a, predicate_b])
+    ... async def message_update(_, msg): ...
+    >>> all(p in PREDICATES["MESSAGE_UPDATE"][message_update] for p in [predicate_a, predicate_b])
+    True
     """
 
     def inner(f):
-        name = f.__name__.upper()
+        # Set name from event or function's name
+        names: set[str] = {event or f.__name__}
 
-        if event:
-            if type(event) is Gateway_Events:
-                name = event.name.upper()
-            else:
-                name = event.upper()
-        elif name.title() not in Gateway_Events._member_names_:
+        if any(clean_name(name) not in Gateway_Events._member_names_ for name in names):
+            # If name is still not proper try to guess from typehint
             args = getfullargspec(f)
-            k = args.args[1]
-            v = args.annotations.get(k, None)
-            if v:
-                if get_origin(v) is Union:
-                    v = get_args(v)[0]
+            k = args.args[1]  # Second parameter is always data
+            if v := args.annotations.get(k, None):
+                # If we are dealing with union, add both
+                names.update({i.__name__ for i in get_args(v) or [v]})
+            names.add(k)
 
-                if issubclass(v, DiscordObject):
-                    name = v.__name__.upper()
+        for name in names:
+            if type(name) is str and clean_name(name) not in Gateway_Events._member_names_:
+                # Make sure we only add valid events
+                continue
+            _name = Gateway_Events.by_str(clean_name(name))
 
-            if name.title() not in Gateway_Events._member_names_:
-                name = k.upper()
+            if not optional:
+                global INTENTS
+                INTENTS |= _name.annotation(0)
 
-        if optional:
-            f._optional = optional
+            name = _name.upper()
+            if predicate:
+                PREDICATES[name][f] += predicate if type(predicate) is list else [predicate]
 
-        if predicate:
-            if name not in PREDICATES:
-                PREDICATES[name] = {}
-            if f not in PREDICATES[name]:
-                PREDICATES[name][f] = []
-            PREDICATES[name][f] += predicate if type(predicate) is list else [predicate]
-
-        if name not in DISPATCH:
-            DISPATCH[name] = {}
-        if priority not in DISPATCH[name]:
-            DISPATCH[name][priority] = []
-        DISPATCH[name][priority].append(f)
+            DISPATCH[name][priority].append(f)
 
         return f
 
     if f:
         return inner(f)
     return inner
+
+
+def clean_name(name: str) -> str:
+    """
+    Example
+    -------
+    >>> clean_name("DIRECT_BOT_MESSAGE")
+    'Message'
+    """
+    return name.upper().replace("DIRECT_", "").replace("BOT_", "").title()
