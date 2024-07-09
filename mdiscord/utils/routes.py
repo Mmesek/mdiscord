@@ -40,19 +40,16 @@ def route(method: str, path: str, json_as_form_data: bool = False):
     """
 
     def init(f):
-        # Init here
         type_hints = get_type_hints(f)
         module = inspect.getmodule(f).__name__
         args = inspect.getfullargspec(f)
 
         PATH = PATH_PARAM.findall(path)
-        ARGUMENTS = [
-            k for k in type_hints.keys() if k != "return"
-        ]  # NOTE: Don't include path params (named args in function below)
-        QUERY = set(args.kwonlyargs)  # TODO: Retrieve ALL query params from func definition (keyword-only arguments)
+        ARGUMENTS = [k for k in type_hints.keys() if k != "return"]
+        QUERY = set(args.kwonlyargs)  # Retrieve ALL query params from func definition (keyword-only parameters)
         JSON = {
             a for a in args.args if a not in PATH and a not in {"self"}
-        }  # TODO: Retrieve ALL json params from func definition ("Regular" params)
+        }  # Retrieve ALL json params from func definition (Positionla parameters)
 
         RESULT = type_hints.get("return", None)
         result_args = get_args(RESULT)
@@ -62,9 +59,7 @@ def route(method: str, path: str, json_as_form_data: bool = False):
             RESULT = result_args[0]
 
         IS_LIST = origin is list
-        IS_METHOD = (
-            module.split(".")[-1] != "endpoints"
-        )  # False  # TODO: Set if route is attached to an object, not bot though
+        IS_METHOD = module.split(".")[-1] != "endpoints"  # TODO: Set if route is attached to an object, not bot though
 
         async def _api_call(self, *args, reason: str = None, **kwargs):
             def create_object(result):
