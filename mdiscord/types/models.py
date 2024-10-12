@@ -1992,7 +1992,7 @@ class Guild_Scheduled_Event(DiscordObject):
     """the time the scheduled event will end, required if entity_type is EXTERNAL"""
     privacy_level: "Privacy_Level" = UNSET
     """the privacy level of the scheduled event"""
-    status: list["Guild_Scheduled_Event_Status"] = UNSET
+    status: "Guild_Scheduled_Event_Status" = UNSET
     """the status of the scheduled event"""
     entity_type: "Guild_Scheduled_Event_Entity_Types" = UNSET
     """the type of the scheduled event"""
@@ -2496,7 +2496,7 @@ class Gateway_Payload(DiscordObject):
 
     op: "Gateway_Opcodes" = UNSET
     """Gateway_Opcode"""
-    d: Nullable[dict[Any, Any]] = UNSET
+    d: Nullable[dict[Any, Any] | Any] = UNSET
     """Event data"""
     s: Nullable[int] = UNSET
     """Resuming_Sessions"""
