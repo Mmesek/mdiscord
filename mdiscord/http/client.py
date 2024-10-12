@@ -57,6 +57,7 @@ class HTTP_Client(Endpoints, Serializer):
         bucket: tuple[str] = None,
         params: dict[str, str] = None,
         json: dict[str] = None,
+        payload: dict[str] | list | str | int = None,
         **kwargs,
     ):
         try:
@@ -78,7 +79,7 @@ class HTTP_Client(Endpoints, Serializer):
             method,
             BASE_URL + "api" + (f"/v{self.api_version}" if self.api_version else "") + path,
             params=params or None,
-            json=json or None,
+            json=payload if payload is not None else json or None,
             **kwargs,
         ) as res:
             r = await res.text(encoding="utf-8")
@@ -99,7 +100,7 @@ class HTTP_Client(Endpoints, Serializer):
                     msg=r.get("message", r),
                     method=method,
                     path=path,
-                    payload=kwargs.get("json"),
+                    payload=json,
                     errors=r.get("errors", {}),
                 )
 

@@ -139,7 +139,7 @@ class Serializer:
             and len(kwargs.get("json", {}).get("attachments", []))
             and all(i.file for i in kwargs.get("json", {}).get("attachments", []))
         ):
-            if kwargs.get("json"):
+            if kwargs.get("json") or "payload" in kwargs:
                 kwargs["headers"].append(("Content-Type", "application/json"))
             else:
                 kwargs["headers"].append(("Content-Type", "text/html"))
@@ -169,6 +169,13 @@ class Serializer:
                 for key, value in kwargs["json"].items():
                     if key in {"embeds", "components"} and type(value) is not list:
                         kwargs["json"][key] = [value]
+
+        if kwargs.get("payload"):
+            kwargs["payload"] = as_dict(kwargs["payload"])
+            if type(kwargs["payload"]) is dict:
+                for key, value in kwargs["payload"].items():
+                    if key in {"embeds", "components"} and type(value) is not list:
+                        kwargs["payload"][key] = [value]
 
         if kwargs.get("params"):
             for param in kwargs["params"]:

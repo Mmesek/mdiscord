@@ -61,7 +61,7 @@ def route(method: str, path: str, json_as_form_data: bool = False):
         IS_LIST = origin is list
         IS_METHOD = module.split(".")[-1] != "endpoints"  # TODO: Set if route is attached to an object, not bot though
 
-        async def _api_call(self, *args, reason: str = None, **kwargs):
+        async def _api_call(self, *args, payload=None, reason: str = None, **kwargs):
             def create_object(result):
                 if issubclass(RESULT, DiscordObject):
                     result = RESULT.from_dict(**result)
@@ -71,6 +71,7 @@ def route(method: str, path: str, json_as_form_data: bool = False):
             # Overwrite actual call here
             if IS_METHOD:
                 kwargs.update()  # TODO: Set path params from available attributes here
+                # NOTE: this is to be taken from context we have, which means object we operate on if the request originates from `Model.endpoint()``
             kwargs.update(zip(ARGUMENTS, args))
 
             try:
@@ -84,6 +85,7 @@ def route(method: str, path: str, json_as_form_data: bool = False):
                 reason=reason,
                 params={k: v for k, v in kwargs.items() if k in QUERY},
                 json={k: v for k, v in kwargs.items() if k in JSON},
+                payload=payload,
                 # bucket="|".join([str(kwargs.get(major, "-")) for major in MAJOR_PARAMS]), # NOTE: String might be bigger in size than a tuple
                 bucket=tuple(kwargs.get(major, None) for major in MAJOR_PARAMS),
             )

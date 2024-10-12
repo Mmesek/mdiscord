@@ -3138,7 +3138,7 @@ class Endpoints:
 
     @route(method="PUT", path="/applications/{application_id}/commands")
     async def bulk_overwrite_global_application_commands(
-        self, application_id: Snowflake, application_commands: list[Application_Command]
+        self, application_id: Snowflake, *, payload: list[Application_Command]
     ) -> list[Application_Command]:
         """
         Takes a list of application commands, overwriting the existing global command list for this application.
@@ -3266,7 +3266,7 @@ class Endpoints:
 
     @route(method="PUT", path="/applications/{application_id}/guilds/{guild_id}/commands")
     async def bulk_overwrite_guild_application_commands(
-        self, application_id: Snowflake, guild_id: Snowflake, application_commands: list[Application_Command]
+        self, application_id: Snowflake, guild_id: Snowflake, *, payload: list[Application_Command]
     ) -> list[Application_Command]:
         """
         Takes a list of application commands, overwriting the existing command list for this application for the targeted guild.
