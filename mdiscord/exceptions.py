@@ -62,13 +62,10 @@ class BadRequest(RequestError):
         errors: dict[str, Any] = None,
     ) -> None:
         self.msg = msg
-        payload, errors = find_error(payload, errors)
-        if isinstance(payload, dict):
-            payload = json.dumps(payload, indent=2)
-        try:
-            errors = json.dumps(errors, indent=2)
-        except:
-            pass
+        _payload, errors = find_error(payload, errors)
+        if isinstance(_payload, dict):
+            payload = json.dumps(_payload, indent=2)
+        errors = json.dumps(errors, indent=2)
         super().__init__(reason, method, path, f" {self.msg}\nPayload: {payload}\nError: {errors}")
 
 
