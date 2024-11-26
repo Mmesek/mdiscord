@@ -66,7 +66,8 @@ from mdiscord.types import (
     Install_Params,
     Integration,
     Interaction_Context_Types,
-    Interaction_Response,
+    Interaction_Callback_Type,
+    Interaction_Application_Command_Callback_Data,
     Invite,
     Layout_Type,
     Locales,
@@ -3304,7 +3305,11 @@ class Endpoints:
 
     @route(method="POST", path="/interactions/{interaction_id}/{interaction_token}/callback")
     async def create_interaction_response(
-        self, interaction_id: Snowflake, interaction_token: str, response: Interaction_Response
+        self,
+        interaction_id: Snowflake,
+        interaction_token: str,
+        type: Interaction_Callback_Type,
+        data: Optional[Interaction_Application_Command_Callback_Data] = None,
     ) -> None:
         """
         This endpoint also supports file attachments similar to the webhook endpoints.

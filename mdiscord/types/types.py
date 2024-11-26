@@ -620,15 +620,15 @@ class User(User):
 
     def get_avatar(self) -> str:
         if self.avatar:
-            return CDN_URL + CDN_Endpoints.User_Avatar.value.format(user_id=self.id, user_avatar=self.avatar)
-        return CDN_URL + CDN_Endpoints.Default_User_Avatar.value.format(user_discriminator=self.discriminator % 5)
+            return CDN_URL + CDN_Endpoints.USER_AVATAR.value.format(user_id=self.id, user_avatar=self.avatar)
+        return CDN_URL + CDN_Endpoints.DEFAULT_USER_AVATAR.value.format(user_discriminator=self.discriminator % 5)
 
 
 class Interaction(Interaction):
-    data: Interaction_Application_Command_Callback_Data = None
-    _deferred = False
-    _replied = False
-    _followup_id = None
+    data: Application_Command_Data = None
+    _deferred: bool = False
+    _replied: bool = False
+    _followup_id: Snowflake = None
 
     @property
     def is_private(self) -> bool:
@@ -668,10 +668,8 @@ class Interaction(Interaction):
         return await self._Client.create_interaction_response(
             self.id,
             self.token,
-            Interaction_Response(
-                type=Interaction_Callback_Type.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
-                data=Interaction_Application_Command_Callback_Data(flags=Message_Flags.EPHEMERAL if private else None),
-            ),
+            type=Interaction_Callback_Type.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+            data=Interaction_Application_Command_Callback_Data(flags=Message_Flags.EPHEMERAL if private else None),
         )
 
     async def reply(
@@ -961,7 +959,7 @@ class Gateway_Events(Events):
     """Guild integration was updated"""
     Integration_Delete: Intents.GUILD_INTEGRATIONS = Integration_Delete
     """Guild integration was deleted"""
-    Interaction_Create = Application_Command
+    Interaction_Create = Interaction
     """Application_Command"""
     Invite_Create: Intents.GUILD_INVITES = Invite_Create
     """Invite to a channel was created"""

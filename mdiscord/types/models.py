@@ -4585,7 +4585,7 @@ class Interaction(DiscordObject):
     """Guild's_Preferred_Locale"""
     entitlements: list["Entitlement"] = UNSET
     """Monetized_Apps"""
-    authorizing_integration_owners: list["Application_Integration_Types"] = UNSET
+    authorizing_integration_owners: dict["Application_Integration_Types", Snowflake] = UNSET
     """Authorizing_Integration_Owners"""
     context: Optional["Interaction_Context_Types"] = UNSET
     """Context where the interaction was triggered from"""
@@ -4598,7 +4598,7 @@ class Message_Interaction_Metadata(DiscordObject):
     """Type of interaction"""
     user: "User" = UNSET
     """User who triggered the interaction"""
-    authorizing_integration_owners: list["Application_Integration_Types"] = UNSET
+    authorizing_integration_owners: dict["Application_Integration_Types", Snowflake] = UNSET
     """Authorizing_Integration_Owners"""
     original_response_message_id: Optional[Snowflake] = UNSET
     """Follow-up_Messages"""
