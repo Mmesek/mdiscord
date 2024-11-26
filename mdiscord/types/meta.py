@@ -10,7 +10,7 @@ Metadata types used for conversions to allow more convenient usage.
 
 from datetime import datetime, timedelta, UTC
 from typing import TypeVar, Type, Annotated
-from enum import Enum, Flag
+from enum import Enum, IntFlag
 
 T = TypeVar("T")
 
@@ -75,11 +75,39 @@ class Events(Enum):
 NotStrictEnum = Enum
 
 
-class Flag(Flag):
+class Flag(IntFlag):
     def check(cls, permissions: hex, *values: list[hex]):
+        """
+        Example
+        -------
+        >>> class MyFlag(Flag):
+        ...     A = 1
+        ...     B = 2
+        ...     C = 3
+        ...     D = 4
+        >>> MyFlag.A.check(2, 2)
+        True
+        >>> MyFlag.A.check(4, 2)
+        False
+        """
         return all([(permissions & permission) == permission for permission in values])
 
     def current_permissions(cls, permissions: hex):
+        """
+        Example
+        -------
+        >>> class MyFlag(Flag):
+        ...     A = 1
+        ...     B = 2
+        ...     C = 3
+        ...     D = 4
+        >>> MyFlag.current_permissions(MyFlag, 2)
+        ['B']
+        >>> MyFlag.current_permissions(MyFlag, 8)
+        []
+        >>> MyFlag.current_permissions(MyFlag, 5)
+        ['A', 'D']
+        """
         current = []
         for permission in cls:
             if (permissions & permission.value) == permission.value:
