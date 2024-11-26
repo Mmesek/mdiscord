@@ -50,4 +50,4 @@ class DiscordObject(msgspec.Struct, kw_only=True, omit_defaults=True):
         >>> Message.from_dict(**{"channel_id": 123})
         Message(channel_id=123, _Client=UNSET)
         """
-        return msgspec.convert(kwargs, cls, dec_hook=from_builtins)
+        return msgspec.convert(kwargs, cls, dec_hook=from_builtins, strict=False)
