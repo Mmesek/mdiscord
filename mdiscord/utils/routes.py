@@ -117,6 +117,10 @@ def opcode(cls=None, *, from_args: DiscordObject = None, log: str = None):
 
             if from_args:
                 data = from_args(*args, **kwargs)
+                _kwargs = {k: v.default for k, v in inspect.signature(f).parameters.items()}
+                _kwargs.update(data.as_dict())
+                _kwargs.pop("self")
+                data = from_args(**_kwargs)
             else:
                 data = await f(self, *args, **kwargs)
             await self.send(Gateway_Payload(op=OPCODE, d=data))
