@@ -15,13 +15,13 @@ Simple (relatively) typehinted Discord API Wrapper with type casting.
 Made (and meant) to work in conjunction with [MFramework.py](https://github.com/Mmesek/MFramework.py) hence it's usage on it's own is rather limited (Read: It's mainly a REST wrapper with Gateway's Dispatch)
 
 # Features
-- [Generated](https://github.com/Mmesek/DocParser) 1:1 Mapping of [models](mdiscord/models.py) & [endpoints](mdiscord/endpoints.py) based on Discord [documentation](https://github.com/discord/discord-api-docs). All endpoints are available as methods of `Client`.
-- *In theory* 100% of API coverage. 
-- Iterating prioritizable event [listeners](mdiscord/__init__.py) supporting predicates without blocking them.
+- [Generated](https://github.com/Mmesek/DocParser) 1:1 Mapping of [models](mdiscord/types/models.py) & [endpoints](mdiscord/http/endpoints.py) based on Discord [documentation](https://github.com/discord/discord-api-docs). All endpoints are available as methods of `Client`.
+- *In theory* 100% of documented API coverage. 
+- Iterating prioritizable event [listeners](mdiscord/utils/utils.py) supporting predicates without blocking them.
 - [Differentiating](mdiscord/opcodes.py) direct messages from guild messages by prependeding them with `DIRECT_`.
 - Automatic [skipping](mdiscord/opcodes.py) of events sent by bots (Those containing `is_bot` attribute set to `True`)
-- [Embed](mdiscord/types.py) builder respecting message limits without throwing.
-- Convenience methods for models in [`types.py`](mdiscord/types.py).
+- [Embed](mdiscord/types/types.py) builder respecting message limits without throwing.
+- Convenience methods for models in [`types.py`](mdiscord/types/types.py).
 - Just a simple API wrapper with Gateway client without anything fancy, really.
 
 # Examples
