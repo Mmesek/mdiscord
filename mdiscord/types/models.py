@@ -4644,7 +4644,7 @@ class Application_Command_Data(DiscordObject):
     """type"""
     resolved: Optional["Resolved_Data"] = UNSET
     """converted users + roles + channels + attachments"""
-    options: Optional[list["Application_Command_Interaction_Data_Option"]] = list
+    options: Optional[list["Application_Command_Interaction_Data_Option"]] = []
     """the params + values from the user"""
     guild_id: Optional[Snowflake] = UNSET
     """the id of the guild the command is registered to"""
@@ -4652,14 +4652,14 @@ class Application_Command_Data(DiscordObject):
     """User"""
 
 
-class Message_Component_Data(DiscordObject):
+class Message_Component_Data(Application_Command_Data):
     """
     * This is always present for select menu components.
     """
 
     custom_id: str = UNSET
     """custom_id"""
-    component_type: int = UNSET
+    component_type: Component_Types = UNSET
     """Type"""
     values: list["Select_Option"] = UNSET
     """Select_Menu"""
