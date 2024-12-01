@@ -89,6 +89,7 @@ class Deserializer:
 
 def as_dict(object):
     from datetime import datetime
+    from dataclasses import is_dataclass, asdict
     from enum import Flag
 
     from mdiscord import Enum
@@ -104,9 +105,15 @@ def as_dict(object):
         return _object
     elif isinstance(object, list):
         return [as_dict(key) for key in object]
+    elif isinstance(object, tuple):
+        return [as_dict(key) for key in object]
     elif isinstance(object, DiscordObject):
         if object._Client:
             object._Client = None
+        return object.as_dict()
+    elif is_dataclass(object):
+        return {k: as_dict(v) for k, v in asdict(object).items()}
+    elif hasattr(object, "as_dict"):
         return object.as_dict()
     elif isinstance(object, datetime):
         return object.isoformat()
