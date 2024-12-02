@@ -48,6 +48,8 @@ class HTTP_Client(Endpoints, Serializer):
 
     async def api_call(self, path: str, method: str, **kwargs):
         kwargs = self._prepare_payload(**kwargs)
+        a = kwargs.get("json")
+        log.log(5, path + " | " + str(a if a else kwargs.get("payload")))
         return await self._api_call(path, method, **kwargs)
 
     async def _api_call(
