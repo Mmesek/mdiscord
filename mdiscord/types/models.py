@@ -4667,7 +4667,7 @@ class Message_Component_Data(Application_Command_Data):
     """resolved entities from selected options"""
 
 
-class Modal_Submit_Data(DiscordObject):
+class Modal_Submit_Data(Message_Component_Data):
     custom_id: str = UNSET
     """custom_id"""
     components: list[Component] = UNSET

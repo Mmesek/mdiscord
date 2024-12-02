@@ -625,7 +625,7 @@ class User(User):
 
 
 class Interaction(Interaction):
-    data: Message_Component_Data = None
+    data: Modal_Submit_Data = None
     _deferred: bool = False
     _replied: bool = False
     _followup_id: Snowflake = None
