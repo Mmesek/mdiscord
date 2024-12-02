@@ -12,13 +12,23 @@ Discord raw API types.
 
 from ctypes import c_byte, c_uint, c_ushort
 from datetime import datetime
-from enum import IntEnum, IntFlag
+from enum import IntEnum
 from typing import Annotated, Any, Optional
 
 from msgspec import UNSET, Meta
 
 from mdiscord.types.base import DiscordObject
-from mdiscord.types.meta import DISCORD_EPOCH, Duration, Enum, Events, NotStrictEnum, Nullable, Snowflake, UnixTimestamp
+from mdiscord.types.meta import (
+    DISCORD_EPOCH,
+    Duration,
+    Enum,
+    Events,
+    NotStrictEnum,
+    Nullable,
+    Snowflake,
+    UnixTimestamp,
+    Flag as IntFlag,
+)
 
 
 class Limits(IntEnum):
@@ -891,17 +901,17 @@ class Message(DiscordObject):
     """whether this was a TTS message"""
     mention_everyone: bool = False
     """whether this message mentions everyone"""
-    mentions: list["User"] = list
+    mentions: list["User"] = []
     """users specifically mentioned in the message"""
-    mention_roles: list["Role"] = list
+    mention_roles: list["Role"] = []
     """roles specifically mentioned in this message"""
-    mention_channels: list["Channel_Mention"] = list
+    mention_channels: list["Channel_Mention"] = []
     """channels specifically mentioned in this message"""
-    attachments: list["Attachment"] = list
+    attachments: list["Attachment"] = []
     """any attached files"""
-    embeds: list["Embed"] = list
+    embeds: list["Embed"] = []
     """any embedded content"""
-    reactions: Optional[list["Reaction"]] = list
+    reactions: Optional[list["Reaction"]] = []
     """reactions to the message"""
     nonce: Optional[int | str] = UNSET
     """used for validating a message was sent"""
@@ -1271,7 +1281,7 @@ class Embed(DiscordObject):
     """provider information"""
     author: Optional["Embed_Author"] = UNSET
     """author information"""
-    fields: Optional[EmbedFieldsConstraint] = UNSET
+    fields: Optional[EmbedFieldsConstraint] = []
     """fields information, max of 25"""
 
 
@@ -1426,11 +1436,11 @@ class Allowed_Mention_Types(Enum):
 
 
 class Allowed_Mentions(DiscordObject):
-    parse: list["Allowed_Mention_Types"] = list
+    parse: list["Allowed_Mention_Types"] = []
     """Allowed_Mention_Types"""
-    roles: list[Snowflake] = list
+    roles: list[Snowflake] = []
     """Array of role_ids to mention"""
-    users: list[Snowflake] = list
+    users: list[Snowflake] = []
     """Array of user_ids to mention"""
     replied_user: bool = UNSET
     """For replies, whether to mention the author of the message being replied to"""
@@ -1507,11 +1517,11 @@ class Guild(DiscordObject):
     """Message_Notifications_Level"""
     explicit_content_filter: "Explicit_Content_Filter_Level" = UNSET
     """Explicit_Content_Filter_Level"""
-    roles: list["Role"] = UNSET
+    roles: list["Role"] = []
     """roles in the guild"""
-    emojis: list["Emoji"] = UNSET
+    emojis: list["Emoji"] = []
     """custom guild emojis"""
-    features: list["Guild_Features"] = UNSET
+    features: list["Guild_Features"] = []
     """enabled guild features"""
     mfa_level: "MFA_Level" = UNSET
     """MFA_Level"""
@@ -1531,19 +1541,19 @@ class Guild(DiscordObject):
     """true if this guild is unavailable due to an outage"""
     member_count: Optional[int] = UNSET
     """total number of members in this guild"""
-    voice_states: Optional[list["Voice_State"]] = UNSET
+    voice_states: Optional[list["Voice_State"]] = []
     """states of members currently in voice channels; lacks the `guild_id` key"""
-    members: Optional[list["Guild_Member"]] = UNSET
+    members: Optional[list["Guild_Member"]] = []
     """users in the guild"""
-    channels: Optional[list[Channel]] = UNSET
+    channels: Optional[list[Channel]] = []
     """channels in the guild"""
-    threads: Optional[list[Channel]] = UNSET
+    threads: Optional[list[Channel]] = []
     """all active threads in the guild that current user has permission to view"""
-    presences: Optional[list["Presence_Update"]] = UNSET
+    presences: Optional[list["Presence_Update"]] = []
     """presences of the members in the guild, will only include non-offline members if the size is greater than `large threshold`"""
-    stage_instances: Optional[list["Stage_Instance"]] = UNSET
+    stage_instances: Optional[list["Stage_Instance"]] = []
     """Stage instances in the guild"""
-    guild_scheduled_events: Optional[list["Guild_Scheduled_Event"]] = UNSET
+    guild_scheduled_events: Optional[list["Guild_Scheduled_Event"]] = []
     """Scheduled events in the guild"""
     max_presences: Optional[Nullable[int]] = UNSET
     """the maximum number of presences for the guild"""
@@ -1575,7 +1585,7 @@ class Guild(DiscordObject):
     """Invite"""
     nsfw_level: "Guild_NSFW_Level" = UNSET
     """Guild_NSFW_Level"""
-    stickers: Optional[list["Sticker"]] = UNSET
+    stickers: Optional[list["Sticker"]] = []
     """custom guild stickers"""
     premium_progress_bar_enabled: bool = UNSET
     """whether the guild has the boost progress bar enabled"""
