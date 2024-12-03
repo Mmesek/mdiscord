@@ -749,7 +749,7 @@ class Channel(DiscordObject):
     """the user limit of the voice channel"""
     rate_limit_per_user: Duration = UNSET
     """amount of seconds a user has to wait before sending another message"""
-    recipients: Optional["User"] = UNSET
+    recipients: Optional[list["User"]] = UNSET
     """the recipients of the DM"""
     icon: Optional[Nullable[str]] = UNSET
     """icon hash of the group DM"""
