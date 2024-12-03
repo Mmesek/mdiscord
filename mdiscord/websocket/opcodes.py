@@ -329,7 +329,7 @@ def onDispatch(
                 global INTENTS
                 INTENTS |= _name.annotation(0)
 
-            name = _name.upper()
+            name = name.upper()
             if predicate:
                 PREDICATES[name][f] += predicate if type(predicate) is list else [predicate]
 
