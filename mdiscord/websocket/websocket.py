@@ -54,6 +54,10 @@ class WebSocket_Client(HTTP_Client, Opcodes):
         )
         log.debug("Initating Bot with token %s[...]%s", self.token[:5], self.token[-5:])
 
+    async def init(self):
+        """Feel free to overwrite this method to perform any async initialization that needs to happen"""
+        pass
+
     async def __aenter__(self):
         self.decompress = Deserializer()
         if self._session and self._session.closed or not self._session:
@@ -98,6 +102,7 @@ class WebSocket_Client(HTTP_Client, Opcodes):
     @classmethod
     async def runner(cls, **kwargs):
         ws = cls(**kwargs)
+        await ws.init()
         while True:
             async with ws:
                 try:
