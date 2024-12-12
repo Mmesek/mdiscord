@@ -57,7 +57,7 @@ class Opcodes(EventListener):
     session_id: str = None
     resume_url: str = None
 
-    async def dispatch(self, data: Gateway_Payload) -> None:
+    async def prepare_payload(self, data: Gateway_Payload):
         try:
             data.d = getattr(Gateway_Events, data.t.title())(**data.d)
             data.d._Client = self
@@ -70,6 +70,7 @@ class Opcodes(EventListener):
         if getattr(data.d, "is_bot", False):
             data.t = "BOT_" + data.t
 
+    async def dispatch(self, data: Gateway_Payload) -> None:
         self.counters[data.t] += 1
         if self.check_listeners(data.t, data.d):
             return
