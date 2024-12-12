@@ -1009,3 +1009,27 @@ class Gateway_Events(Events):
     """User voted on a poll"""
     Message_Poll_Vote_Remove: Intents.GUILD_MESSAGE_POLLS = Message_Poll_Vote_Remove_Fields
     """User removed a vote on a poll"""
+
+
+def override_base_types():
+    from mdiscord.types import models
+    from mdiscord.types.base import DiscordObject
+    from inspect import get_annotations
+    from typing import get_args, get_origin, ForwardRef, Union
+
+    v = {i.__name__: i for i in globals().values() if getattr(i, "__module__", None) == "mdiscord.types.types"}
+
+    for model in [i for i in vars(models).values() if getattr(i, "__module__", None) == "mdiscord.types.models"]:
+        if issubclass(model, DiscordObject):
+            for name, attr in get_annotations(model).items():
+                if args := get_args(attr):
+                    if isinstance(args[0], ForwardRef):
+                        ref = args[0].__forward_arg__
+                        if new_type := v.get(ref, None):
+                            model.__annotations__[name] = new_type
+                            breakpoint
+            if n := v.get(model.__name__, None):
+                setattr(models, model.__name__, n)
+
+
+override_base_types()
