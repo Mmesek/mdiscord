@@ -1436,11 +1436,11 @@ class Allowed_Mention_Types(Enum):
 
 
 class Allowed_Mentions(DiscordObject):
-    parse: list["Allowed_Mention_Types"] = []
+    parse: list["Allowed_Mention_Types"] = UNSET
     """Allowed_Mention_Types"""
-    roles: list[Snowflake] = []
+    roles: list[Snowflake] = UNSET
     """Array of role_ids to mention"""
-    users: list[Snowflake] = []
+    users: list[Snowflake] = UNSET
     """Array of user_ids to mention"""
     replied_user: bool = UNSET
     """For replies, whether to mention the author of the message being replied to"""
@@ -1547,11 +1547,11 @@ class Guild(DiscordObject):
     """users in the guild"""
     channels: Optional[list[Channel]] = []
     """channels in the guild"""
-    threads: Optional[list[Channel]] = []
+    threads: list[Channel] = []
     """all active threads in the guild that current user has permission to view"""
-    presences: Optional[list["Presence_Update"]] = []
+    presences: list["Presence_Update"] = []
     """presences of the members in the guild, will only include non-offline members if the size is greater than `large threshold`"""
-    stage_instances: Optional[list["Stage_Instance"]] = []
+    stage_instances: list["Stage_Instance"] = []
     """Stage instances in the guild"""
     guild_scheduled_events: Optional[list["Guild_Scheduled_Event"]] = []
     """Scheduled events in the guild"""
