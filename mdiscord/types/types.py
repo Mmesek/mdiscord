@@ -115,21 +115,21 @@ class Embed(Embed):
 
     setUrl = set_url
 
-    def set_image(self, url: str, proxy_url: str = None, height: int = None, width: int = None) -> Embed:
+    def set_image(self, url: str, proxy_url: str = UNSET, height: int = UNSET, width: int = UNSET) -> Embed:
         """Sets Embed's Image"""
         self.image = Embed_Image(url=url, proxy_url=proxy_url, height=height, width=width)
         return self
 
     setImage = set_image
 
-    def set_thumbnail(self, url: str, proxy_url: str = None, height: int = None, width: int = None) -> Embed:
+    def set_thumbnail(self, url: str, proxy_url: str = UNSET, height: int = UNSET, width: int = UNSET) -> Embed:
         """Sets Embed's Thumbnail"""
         self.thumbnail = Embed_Thumbnail(url=url, proxy_url=proxy_url, height=height, width=width)
         return self
 
     setThumbnail = set_thumbnail
 
-    def set_footer(self, text: str = "", icon_url: str = None, proxy_icon_url: str = None) -> Embed:
+    def set_footer(self, text: str = UNSET, icon_url: str = UNSET, proxy_icon_url: str = UNSET) -> Embed:
         """Sets Embed's Footer respecting footer's text limit"""
         text = str(text)[: Limits.FOOTER_TEXT]
         if self.total_characters + len(str(text)) <= Limits.TOTAL:
@@ -154,7 +154,7 @@ class Embed(Embed):
 
     setTimestamp = set_timestamp
 
-    def set_author(self, name: str = "", url: str = None, icon_url: str = None, proxy_icon_url: str = None) -> Embed:
+    def set_author(self, name: str = "", url: str = UNSET, icon_url: str = UNSET, proxy_icon_url: str = UNSET) -> Embed:
         """Sets Embed's Author respecting author's name limit if it's not above total limit"""
         name = str(name)[: Limits.AUTHOR_NAME]
         if self.total_characters + len(str(name)) <= Limits.TOTAL:
