@@ -10,7 +10,8 @@ Metadata types used for conversions to allow more convenient usage.
 
 from datetime import datetime, timedelta, UTC
 from typing import TypeVar, Type, Annotated
-from enum import Enum, IntFlag
+from enum import IntFlag
+from mlib.types import Enum
 
 T = TypeVar("T")
 
