@@ -63,6 +63,8 @@ def route(method: str, path: str, json_as_form_data: bool = False):
 
         async def _api_call(self, *args, payload=None, reason: str = None, **kwargs):
             def create_object(result):
+                if result is None:
+                    return
                 if issubclass(RESULT, DiscordObject):
                     result = RESULT.from_dict(**result)
                     result._Client = self
