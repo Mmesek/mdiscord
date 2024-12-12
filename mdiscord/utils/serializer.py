@@ -140,6 +140,12 @@ class Serializer:
         if reason := kwargs.pop("reason", None):
             kwargs["headers"].append(("X-Audit-Log-Reason", reason))
 
+        if kwargs["params"]:
+            params = {k: v for k, v in kwargs["params"].items()}
+            for param, value in params.items():
+                if value is None:
+                    kwargs["params"].pop(param)
+
         if not (
             type(kwargs.get("json", None)) is dict
             and kwargs.get("json", {}).get("attachments", None)
