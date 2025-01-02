@@ -935,7 +935,7 @@ class Endpoints:
         rate_limit_per_user: Optional[Nullable[int]] = UNSET,
         applied_tags: Optional[list[Snowflake]] = None,
         reason: str = None,
-    ):
+    ) -> Channel:
         """
         _ Files must be attached using a multipart/form_data body as described in [Uploading Files](https://discord.com/developers/docs/reference#uploading_files).
 
