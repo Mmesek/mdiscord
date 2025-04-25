@@ -74,7 +74,7 @@ class Discord_Paths(Enum):
 
 
 class Embed(Embed):
-    def set_title(self, title: str) -> Embed:
+    def set_title(self, title: str) -> 'Embed':
         """Sets Embed's Title respecting title limit if it's not above total limit"""
         title = str(title)[: Limits.TITLE]
         if self.total_characters + len(str(title)) <= Limits.TOTAL:
@@ -83,7 +83,7 @@ class Embed(Embed):
 
     setTitle = set_title
 
-    def set_description(self, description: str) -> Embed:
+    def set_description(self, description: str) -> 'Embed':
         """Sets Embed's Description respecting description limit if it's not above total limit"""
         description = str(description)[: Limits.DESCRIPTION]
         if self.total_characters + len(str(description)) <= Limits.TOTAL:
@@ -92,7 +92,7 @@ class Embed(Embed):
 
     setDescription = set_description
 
-    def set_color(self, color: Union[str, Tuple[int, int, int], int]) -> Embed:
+    def set_color(self, color: Union[str, Tuple[int, int, int], int]) -> 'Embed':
         """Set's Embed's Color.
 
         Parameters
@@ -108,28 +108,28 @@ class Embed(Embed):
 
     setColor = set_color
 
-    def set_url(self, url: str) -> Embed:
+    def set_url(self, url: str) -> 'Embed':
         """Sets URL."""
         self.url = url
         return self
 
     setUrl = set_url
 
-    def set_image(self, url: str, proxy_url: str = UNSET, height: int = UNSET, width: int = UNSET) -> Embed:
+    def set_image(self, url: str, proxy_url: str = UNSET, height: int = UNSET, width: int = UNSET) -> 'Embed':
         """Sets Embed's Image"""
         self.image = Embed_Image(url=url, proxy_url=proxy_url, height=height, width=width)
         return self
 
     setImage = set_image
 
-    def set_thumbnail(self, url: str, proxy_url: str = UNSET, height: int = UNSET, width: int = UNSET) -> Embed:
+    def set_thumbnail(self, url: str, proxy_url: str = UNSET, height: int = UNSET, width: int = UNSET) -> 'Embed':
         """Sets Embed's Thumbnail"""
         self.thumbnail = Embed_Thumbnail(url=url, proxy_url=proxy_url, height=height, width=width)
         return self
 
     setThumbnail = set_thumbnail
 
-    def set_footer(self, text: str = UNSET, icon_url: str = UNSET, proxy_icon_url: str = UNSET) -> Embed:
+    def set_footer(self, text: str = UNSET, icon_url: str = UNSET, proxy_icon_url: str = UNSET) -> 'Embed':
         """Sets Embed's Footer respecting footer's text limit"""
         text = str(text)[: Limits.FOOTER_TEXT]
         if self.total_characters + len(str(text)) <= Limits.TOTAL:
@@ -138,7 +138,7 @@ class Embed(Embed):
 
     setFooter = set_footer
 
-    def set_timestamp(self, timestamp: datetime) -> Embed:
+    def set_timestamp(self, timestamp: datetime) -> 'Embed':
         """Sets Timestamp.
 
         Parameters
@@ -154,7 +154,7 @@ class Embed(Embed):
 
     setTimestamp = set_timestamp
 
-    def set_author(self, name: str = "", url: str = UNSET, icon_url: str = UNSET, proxy_icon_url: str = UNSET) -> Embed:
+    def set_author(self, name: str = "", url: str = UNSET, icon_url: str = UNSET, proxy_icon_url: str = UNSET) -> 'Embed':
         """Sets Embed's Author respecting author's name limit if it's not above total limit"""
         name = str(name)[: Limits.AUTHOR_NAME]
         if self.total_characters + len(str(name)) <= Limits.TOTAL:
@@ -163,7 +163,7 @@ class Embed(Embed):
 
     setAuthor = set_author
 
-    def add_field(self, name: str, value: str, inline: bool = False) -> Embed:
+    def add_field(self, name: str, value: str, inline: bool = False) -> 'Embed':
         """Adds single field respecting limits if it's not above total limit"""
         name = str(name)[: Limits.FIELD_NAME]
         value = str(value)[: Limits.FIELD_VALUE]
@@ -175,7 +175,7 @@ class Embed(Embed):
 
     addField = add_field
 
-    def add_fields(self, title: str, text: str, inline: bool = False) -> Embed:
+    def add_fields(self, title: str, text: str, inline: bool = False) -> 'Embed':
         """
         Adds as many fields as neccessary to store whole text
         while respecting limits and as long as it's not above total Embed's limit"""
@@ -238,7 +238,7 @@ class Sendable:
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         private: bool = False,
-    ) -> Message:
+    ) -> 'Message':
         """Creates reply message.
         Basically a wrapper around `send` method.
 
@@ -272,7 +272,7 @@ class Sendable:
         reply: bool = False,
         private: bool = False,
         channel_id: Snowflake = None,
-    ) -> Message:
+    ) -> 'Message':
         """Sends message
 
         Parameters
@@ -303,7 +303,7 @@ class Sendable:
         attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         flags: Message_Flags = None,
-    ) -> Message:
+    ) -> 'Message':
         """Edits message
 
         Parameters
@@ -330,7 +330,7 @@ class Sendable:
         """Fetches message"""
         raise NotImplementedError
 
-    async def publish(self) -> Message:
+    async def publish(self) -> 'Message':
         """Publishes message if in announcement channel"""
         raise NotImplementedError
 
@@ -347,7 +347,7 @@ class Sendable:
         flags: Message_Flags = None,
         wait: bool = False,
         thread_id: Snowflake = None,
-    ) -> Union[Message, None]:
+    ) -> Union['Message', None]:
         """Creates followup message. (Replies to previous message)
         Basically a wrapper around `send_webhook` method.
 
@@ -384,7 +384,7 @@ class Sendable:
         attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = [],
         flags: Message_Flags = None,
-    ) -> Union[Message, None]:
+    ) -> Union['Message', None]:
         """Edits last followup message. (Edits last reply)
         Basically a wrapper around `edit_webhook` method.
 
@@ -450,7 +450,7 @@ class Message(Message, Sendable):
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         private: bool = None,
-    ) -> Message:
+    ) -> 'Message':
         return await self.send(
             content=content,
             embeds=embeds,
@@ -482,7 +482,7 @@ class Message(Message, Sendable):
         reply: bool = False,
         private: bool = False,
         channel_id: Snowflake = None,
-    ) -> Message:
+    ) -> 'Message':
         return await self._Client.create_message(
             channel_id or self.channel_id,
             content=content,  # if content != "" else self.content,
@@ -501,7 +501,7 @@ class Message(Message, Sendable):
         attachments: list[Attachment] = None,
         allowed_mentions: Allowed_Mentions = None,
         flags: Message_Flags = None,
-    ) -> Message:
+    ) -> 'Message':
         return await self._Client.edit_message(
             channel_id=self.channel_id,
             message_id=self.id,
@@ -520,7 +520,7 @@ class Message(Message, Sendable):
 
     async def webhook(
         self, webhook_id: Snowflake, webhook_token: int, username: str = None, avatar_url: str = None
-    ) -> Message:
+    ) -> 'Message':
         """Sends message as a webhook"""
         return await self._Client.execute_webhook(
             webhook_id,
@@ -546,7 +546,7 @@ class Message(Message, Sendable):
             webhook_id, webhook_token, self.id, content, embeds, allowed_mentions
         )
 
-    async def get(self) -> Message:
+    async def get(self) -> 'Message':
         return await self._Client.get_channel_message(self.channel_id, self.id)
 
     async def react(self, reaction: str) -> None:
@@ -555,7 +555,7 @@ class Message(Message, Sendable):
 
     async def get_reactions(
         self, emoji: str, users: list[User] = [], last_id: Snowflake = 0, limit: Snowflake = 100
-    ) -> list[User]:
+    ) -> list['User']:
         """Retrieves all users that reacted to this message"""
         # for chunk in range(int(count / 100) + (count % 100 > 0)): #Alternative pagination method
         r = await self._Client.get_reactions(self.channel_id, self.id, emoji, after=last_id, limit=limit)
@@ -567,7 +567,7 @@ class Message(Message, Sendable):
         """Deletes reaction"""
         return await self._Client.delete_own_reaction(self.channel_id, self.id, reaction)
 
-    async def publish(self) -> Message:
+    async def publish(self) -> 'Message':
         return await self._Client.crosspost_message(self.channel_id, self.id)
 
     def attachments_as_embed(self, embed=None, title_attachments="Attachments", title_image="Image"):
@@ -578,7 +578,8 @@ class Message(Message, Sendable):
             embed = Embed()
         embed.setImage(self.attachments[0].url)
         if self.attachments[0].url[-3:] not in ["png", "jpg", "jpeg", "webp", "gif"] or len(self.attachments) > 1:
-            filename = "\n".join([f"[{i.filename}]({i.url})" for i in self.attachments])
+            filename = "\n".join(
+                [f"[{i.filename}]({i.url})" for i in self.attachments])
             embed.addFields(title_attachments, filename, True)
         else:
             embed.addField(title_image, self.attachments[0].filename, True)
@@ -605,7 +606,7 @@ class Guild(Guild):
 
 
 class Channel(Channel):
-    async def get_messages(self, before_id: Snowflake = None, messages: list[Message] = [], limit: int = 100):
+    async def get_messages(self, before_id: Snowflake = None, messages: list[Message] = [], limit: int = 100) -> list['Message']:
         if limit < 1:
             return messages
         r = await self._Client.get_channel_messages(self.id, before=before_id, limit=min(limit, 100))
@@ -681,7 +682,7 @@ class Interaction(Interaction):
         allowed_mentions: Allowed_Mentions = None,
         message_reference: Message_Reference = None,
         private: bool = None,
-    ) -> Message:
+    ) -> 'Message':
         if self._deferred:
             _f = self.edit
             kw = {}
@@ -713,7 +714,7 @@ class Interaction(Interaction):
         channel_id: Snowflake = None,
         custom_id: str = None,
         title: str = None,
-    ) -> Message:
+    ) -> 'Message':
         flags = Message_Flags.EPHEMERAL if private else None
         if channel_id:
             return await self._Client.create_message(
@@ -793,7 +794,7 @@ class Interaction(Interaction):
         flags: Message_Flags = None,
         wait: bool = None,
         thread_id: Snowflake = None,
-    ) -> Union[Message, None]:
+    ) -> Union['Message', None]:
         m = await self._Client.create_followup_message(
             self._Client.application.id,
             self.token,
@@ -820,7 +821,7 @@ class Interaction(Interaction):
         allowed_mentions: Allowed_Mentions = None,
         flags: Message_Flags = None,
         private: bool = False,
-    ) -> Message:
+    ) -> 'Message':
         return await self._Client.edit_original_interaction_response(
             self._Client.application.id,
             self.token,
@@ -841,7 +842,7 @@ class Interaction(Interaction):
         allowed_mentions: Allowed_Mentions = None,
         attachments: list[Attachment] = None,
         flags: Message_Flags = None,
-    ) -> Union[Message, None]:
+    ) -> Union['Message', None]:
         return await self._Client.edit_followup_message(
             self._Client.application.id,
             self.token,
