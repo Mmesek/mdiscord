@@ -1051,7 +1051,7 @@ class Endpoints:
     @route(method="GET", path="/channels/{channel_id}/threads/archived/public")
     async def list_public_archived_threads(
         self, channel_id: Snowflake, *, before: Optional[datetime] = None, limit: Optional[int] = None
-    ) -> list[Thread_List]:
+    ) -> Thread_List:
         """
         Returns archived threads in the channel that are public.
         When called on a GUILD_TEXT channel, returns threads of [type](https://discord.com/developers/docs/resources/channel#channel_object_channel_types) PUBLIC_THREAD.
@@ -1070,7 +1070,7 @@ class Endpoints:
     @route(method="GET", path="/channels/{channel_id}/threads/archived/private")
     async def list_private_archived_threads(
         self, channel_id: Snowflake, *, before: Optional[datetime] = None, limit: Optional[int] = None
-    ) -> list[Thread_List]:
+    ) -> Thread_List:
         """
         Returns archived threads in the channel that are of [type](https://discord.com/developers/docs/resources/channel#channel_object_channel_types) PRIVATE_THREAD.
         Threads are ordered by archive_timestamp, in descending order.
@@ -1088,7 +1088,7 @@ class Endpoints:
     @route(method="GET", path="/channels/{channel_id}/users/@me/threads/archived/private")
     async def list_joined_private_archived_threads(
         self, channel_id: Snowflake, *, before: Optional[Snowflake] = None, limit: Optional[int] = None
-    ) -> list[Thread_List]:
+    ) -> Thread_List:
         """
         Returns archived threads in the channel that are of [type](https://discord.com/developers/docs/resources/channel#channel_object_channel_types) PRIVATE_THREAD, and the user has joined.
         Threads are ordered by their id, in descending order.
@@ -1550,7 +1550,13 @@ class Endpoints:
     @permissions(Bitwise_Permission_Flags.CHANGE_NICKNAME)
     @route(method="PATCH", path="/guilds/{guild_id}/members/@me")
     async def modify_current_member(
-        self, guild_id: Snowflake, nick: Optional[Nullable[str]] = UNSET, reason: str = None
+        self,
+        guild_id: Snowflake,
+        nick: Optional[Nullable[str]] = UNSET,
+        banner: Optional[Nullable[str]] = UNSET,
+        avatar: Optional[Nullable[str]] = UNSET,
+        bio: Optional[Nullable[str]] = UNSET,
+        reason: str = None,
     ) -> Guild_Member:
         """
         Modifies the current member in a guild.
