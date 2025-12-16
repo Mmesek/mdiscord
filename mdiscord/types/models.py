@@ -911,7 +911,7 @@ class Message(DiscordObject):
     """any attached files"""
     embeds: list["Embed"] = []
     """any embedded content"""
-    reactions: Optional[list["Reaction"]] = []
+    reactions: list["Reaction"] = []
     """reactions to the message"""
     nonce: Optional[int | str] = UNSET
     """used for validating a message was sent"""
@@ -1281,7 +1281,7 @@ class Embed(DiscordObject):
     """provider information"""
     author: Optional["Embed_Author"] = UNSET
     """author information"""
-    fields: Optional[EmbedFieldsConstraint] = []
+    fields: EmbedFieldsConstraint = []
     """fields information, max of 25"""
 
 
@@ -1541,11 +1541,11 @@ class Guild(DiscordObject):
     """true if this guild is unavailable due to an outage"""
     member_count: Optional[int] = UNSET
     """total number of members in this guild"""
-    voice_states: Optional[list["Voice_State"]] = []
+    voice_states: list["Voice_State"] = []
     """states of members currently in voice channels; lacks the `guild_id` key"""
-    members: Optional[list["Guild_Member"]] = []
+    members: list["Guild_Member"] = []
     """users in the guild"""
-    channels: Optional[list[Channel]] = []
+    channels: list[Channel] = []
     """channels in the guild"""
     threads: list[Channel] = []
     """all active threads in the guild that current user has permission to view"""
@@ -1553,7 +1553,7 @@ class Guild(DiscordObject):
     """presences of the members in the guild, will only include non-offline members if the size is greater than `large threshold`"""
     stage_instances: list["Stage_Instance"] = []
     """Stage instances in the guild"""
-    guild_scheduled_events: Optional[list["Guild_Scheduled_Event"]] = []
+    guild_scheduled_events: list["Guild_Scheduled_Event"] = []
     """Scheduled events in the guild"""
     max_presences: Optional[Nullable[int]] = UNSET
     """the maximum number of presences for the guild"""
@@ -1585,7 +1585,7 @@ class Guild(DiscordObject):
     """Invite"""
     nsfw_level: "Guild_NSFW_Level" = UNSET
     """Guild_NSFW_Level"""
-    stickers: Optional[list["Sticker"]] = []
+    stickers: list["Sticker"] = []
     """custom guild stickers"""
     premium_progress_bar_enabled: bool = UNSET
     """whether the guild has the boost progress bar enabled"""
@@ -2669,6 +2669,7 @@ class Thread_List(DiscordObject):
     threads: list["Channel"] = UNSET
     members: list["Thread_Member"] = UNSET
     has_more: bool = UNSET
+    first_messages: list[Message] = UNSET
 
 
 class Thread_Message(DiscordObject):
@@ -4654,7 +4655,7 @@ class Application_Command_Data(DiscordObject):
     """type"""
     resolved: Optional["Resolved_Data"] = UNSET
     """converted users + roles + channels + attachments"""
-    options: Optional[list["Application_Command_Interaction_Data_Option"]] = []
+    options: list["Application_Command_Interaction_Data_Option"] = []
     """the params + values from the user"""
     guild_id: Optional[Snowflake] = UNSET
     """the id of the guild the command is registered to"""
