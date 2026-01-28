@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, UTC
 from typing import TypeVar, Type, Annotated
 from enum import IntFlag
 from mlib.types import Enum
+import inspect
 
 T = TypeVar("T")
 
@@ -39,7 +40,7 @@ class Enum(Enum):
         return self.name.title()
 
     def annotation(cls, default=None):
-        return cls.__annotations__.get(cls.name, default)
+        return inspect.get_annotations(cls).get(cls.name, default)
 
     @classmethod
     def by_str(cls: Type[T], name: str) -> Type[T]:
