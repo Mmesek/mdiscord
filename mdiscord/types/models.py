@@ -3079,7 +3079,7 @@ class Presence_Update(DiscordObject):
     """Either 'idle', 'dnd', 'online' or 'offline'"""
     activities: list["Activity"] = UNSET
     """User's current activities"""
-    client_status: list["Client_Status"] = UNSET
+    client_status: "Client_Status" = UNSET
     """User's platform-dependent status"""
 
 
@@ -3207,11 +3207,11 @@ class Activity_Party(DiscordObject):
 
 
 class Activity_Assets(DiscordObject):
-    large_image: Optional["Activity_Asset_Image"] = UNSET
+    large_image: Optional["Activity_Asset_Image"] | str = UNSET
     """Activity_Asset_Image"""
     large_text: Optional[str] = UNSET
     """Text displayed when hovering over the large image of the activity"""
-    small_image: Optional["Activity_Asset_Image"] = UNSET
+    small_image: Optional["Activity_Asset_Image"] | str = UNSET
     """Activity_Asset_Image"""
     small_text: Optional[str] = UNSET
     """Text displayed when hovering over the small image of the activity"""
